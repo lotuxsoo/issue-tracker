@@ -8,7 +8,7 @@ create table USERS
     name        varchar(255)                       not null,
     created_at  timestamp                          not null,
     profile_img varchar(255),
-    type        enum ('normal', 'github', 'apple') not null
+    type        enum ('normal', 'github', 'apple') not null default 'normal'
 );
 
 create table ISSUE
@@ -18,8 +18,8 @@ create table ISSUE
     title            varchar(255)           not null,
     comment          text                   not null,
     created_at       timestamp              not null,
-    last_modified_at timestamp              not null,
-    status           enum ('open', 'close') not null,
+    last_modified_at timestamp              not null default current_timestamp,
+    status           enum ('open', 'close') not null default 'open',
     foreign key (user_id) references USERS (id)
 );
 
@@ -47,8 +47,8 @@ create table COMMENT
     user_id          varchar(255) not null,
     issue_id         bigint       not null,
     created_at       timestamp    not null,
-    last_modified_at timestamp    not null,
-    hasEmoji         boolean      not null,
+    last_modified_at timestamp    not null default current_timestamp,
+    hasEmoji         boolean      not null default false,
     foreign key (user_id) references USERS (id),
     foreign key (issue_id) references ISSUE (id)
 );
