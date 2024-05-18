@@ -1,0 +1,59 @@
+name: CD with Gradle
+
+on:
+   push:
+     branches: [ "Deploy" ]
+   pull_request:
+     branches: [ "Deploy" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: "corretto"
+      
+    - name: Make db-config.yml
+      run: |
+          cd ${{ github.workspace }}/be/issue_tracker/src/main/resources
+          echo "${{ secrets.DB_CONFIG }}" | base64 --decode > ./db-config.yml
+      shell: bash
+     
+    - name: Build with Gradle
+      run: |
+            chmod +x ${{ github.workspace }}/be/issue_tracker/gradlew
+            cd ${{ github.workspace }}/be/issue_tracker
+            ./gradlew clean build -x test
+
+            
+    - name: Docker build & push to docker repo
+      run: |
+            echo ${{ secrets.DOCKER_TOKEN }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+            cd ${{ github.workspace }}/be/issue_tracker
+            docker build -f ./Dockerfile -t ${{ secrets.DOCKER_REPO }}/issue_tracker:latest . 
+            docker push ${{ secrets.DOCKER_REPO }}/issue_tracker:latest
+
+    
+    - name: Deploy to server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          sudo docker rm -f $(sudo docker ps -qa)
+          sudo docker pull ${{ secrets.DOCKER_REPO }}/issue_tracker:latest
+
+          sudo docker run -d -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/issue_tracker:latest
+          sudo docker image prune -f
+          sudo docker volume prune -f
