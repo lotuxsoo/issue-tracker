@@ -17,6 +17,7 @@ import team1.issuetracker.domain.user.auth.annotation.AuthenticatedUserId;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/issue")
 @Slf4j
 @RestController
