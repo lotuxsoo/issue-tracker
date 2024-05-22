@@ -52,9 +52,9 @@ jobs:
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          sudo docker rm -f $(sudo docker ps -qa)
+          sudo docker rm -f $(docker ps -aq --filter name=issue_tracker)
           sudo docker pull ${{ secrets.DOCKER_REPO }}/issue_tracker:latest
 
-          sudo docker run -d -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/issue_tracker:latest
+          sudo docker run -d -p 8080:8080 --name issue_tracker ${{ secrets.DOCKER_USERNAME }}/issue_tracker:latest 
           sudo docker image prune -f
           sudo docker volume prune -f
