@@ -45,9 +45,9 @@ public class IssueController {
     }
 
     @GetMapping("/list")
-    public List<IssueListResponse> openIssues(@RequestParam(required = false) String keyword) {
+    public List<IssueListResponse> openIssues() {
         log.debug("Show Open issue list");
-        List<Issue> openIssues = issueService.getOpenIssues(keyword);
+        List<Issue> openIssues = issueService.getOpenIssues();
 
         return openIssues.stream().map(this::getPreviewOf).toList();
     }

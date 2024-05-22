@@ -26,7 +26,8 @@ public class IssueService implements Authorizable<Issue, Long> {
         this.issueRepository = issueRepository;
     }
 
-    public List<Issue> getOpenIssues(String keyword) {
+    public List<Issue> getOpenIssues() {
+        String keyword = null;
         if(keyword != null && !keyword.isEmpty()){
             parsingKeyword(keyword);
             // 키워드가 널이 아니고 비어있지 않으면 실행
