@@ -1,5 +1,8 @@
 package team1.issuetracker.domain.Issue;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
@@ -23,7 +26,12 @@ public class IssueService implements Authorizable<Issue, Long> {
         this.issueRepository = issueRepository;
     }
 
-    public List<Issue> getOpenIssues() {
+    public List<Issue> getOpenIssues(String keyword) {
+        if(keyword != null && !keyword.isEmpty()){
+            parsingKeyword(keyword);
+            // 키워드가 널이 아니고 비어있지 않으면 실행
+            return issueRepository.findAllByStatus(IssueStatus.CLOSE);
+        }
         return issueRepository.findAllByStatus(IssueStatus.OPEN);
     }
 
@@ -82,6 +90,15 @@ public class IssueService implements Authorizable<Issue, Long> {
             }
         });
         return new ResultWithError<>(result, exceptionMessages.toString());
+    }
+
+    private Map<String, String> parsingKeyword(String keyword) {
+        Map<String,String> keywordMap =new HashMap<>();
+
+        String[] tokens = keyword.split(" "); //여기까지 하면 들어온 값을 파싱
+        //ex) label:be label:bug milestone:Feature-2 author:eddy
+
+        return keywordMap;
     }
 
     @Override

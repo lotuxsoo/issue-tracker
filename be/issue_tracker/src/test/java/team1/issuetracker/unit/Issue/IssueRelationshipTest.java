@@ -28,6 +28,15 @@ public class IssueRelationshipTest {
     @Autowired
     CommentRepository commentRepository;
 
+    @DisplayName("keyword filter test")
+    @Test
+    void filterTest() {
+        //given
+        String keyowrd = "label:Discussion label:BE author:test1";
+
+        issueRepository.findAll();
+    }
+
     @DisplayName("작성자 ID와 제목만 전달하여 새 이슈를 저장할 수 있다.")
     @Test
     @Transactional
