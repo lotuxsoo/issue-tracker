@@ -1,17 +1,16 @@
 package team1.issuetracker.domain.user;
 
+import org.springframework.stereotype.Service;
+import team1.issuetracker.domain.Issue.Issue;
+import team1.issuetracker.domain.Issue.ref.AssigneeRef;
+import team1.issuetracker.domain.user.dto.LoginInfo;
+import team1.issuetracker.domain.user.dto.RegisterInfo;
+import team1.issuetracker.domain.user.dto.UserInfoResponse;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import org.springframework.stereotype.Service;
-import team1.issuetracker.domain.Issue.Issue;
-import team1.issuetracker.domain.Issue.ref.AssigneeRef;
-import team1.issuetracker.domain.user.dto.AssigneeInfo;
-import team1.issuetracker.domain.user.dto.LoginInfo;
-import team1.issuetracker.domain.user.dto.RegisterInfo;
-import team1.issuetracker.domain.user.dto.UserInfoResponse;
 
 @Service
 public class UserService {
