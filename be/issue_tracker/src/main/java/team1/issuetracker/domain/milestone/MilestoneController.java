@@ -29,10 +29,10 @@ public class MilestoneController {
 
     @Authenticate
     @PostMapping
-    public Milestone createMilestone(@RequestBody MilestoneMakeRequest milestoneMakeRequest, @AuthenticatedUserId String userId)
+    public MilestoneListResponse createMilestone(@RequestBody MilestoneMakeRequest milestoneMakeRequest, @AuthenticatedUserId String userId)
             throws IllegalArgumentException {
-        return milestoneService.createMilestone(milestoneMakeRequest.name(), milestoneMakeRequest.description(),
-                milestoneMakeRequest.deadline(), userId);
+        return MilestoneListResponse.of(milestoneService.createMilestone(milestoneMakeRequest.name(), milestoneMakeRequest.description(),
+                milestoneMakeRequest.deadline(), userId));
     }
 
     @Authenticate

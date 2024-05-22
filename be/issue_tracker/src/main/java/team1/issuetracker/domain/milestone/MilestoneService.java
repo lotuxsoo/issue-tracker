@@ -1,11 +1,9 @@
 package team1.issuetracker.domain.milestone;
 
-import java.util.Date;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 import team1.issuetracker.domain.Issue.Issue;
 import team1.issuetracker.domain.milestone.dto.MilestoneInfo;
@@ -47,8 +45,18 @@ public class MilestoneService implements Authorizable<Milestone, Long> {
     }
 
     public Milestone createMilestone(String name, String description, Date deadline, String userId) {
-        Milestone milestone = Milestone.builder().name(name).description(description).deadline(deadline).userId(userId).build();
-        return milestoneRepository.save(milestone);
+        Milestone milestone = Milestone.builder()
+                .name(name)
+                .description(description)
+                .deadline(deadline)
+                .userId(userId)
+                .issues(new HashSet<>())
+                .build();
+        try {
+            return milestoneRepository.save(milestone);
+        }catch (DbActionExecutionException failToCreate){
+            throw new IllegalArgumentException("마일스톤 제목은 중복될 수 없습니다! 다시 확인하세요!");
+        }
     }
 
     public void deleteMilestone(Long id, String userId) {
@@ -79,7 +87,7 @@ public class MilestoneService implements Authorizable<Milestone, Long> {
     @Override
     public Milestone authorize(Long milestoneId, String userId) {
         Milestone milestone = getMilestoneById(milestoneId);
-        if (milestone.getUserId().equals(userId)) {
+        if (!milestone.getUserId().equals(userId)) {
             throw new AuthorizeException(milestoneId + "번 마일스톤에 대한 권한이 없습니다.");
         }
 
