@@ -51,14 +51,6 @@ public class LabelService implements Authorizable<Label, Long> {
         labelRepository.delete(authorize(id,userId));
     }
 
-    private Label getLabel(Long id) throws NoSuchElementException {
-        Optional<Label> optionalLabel = labelRepository.findById(id);
-        if (optionalLabel.isEmpty()) {
-            throw new NoSuchElementException(id + "라벨이 존재하지 않습니다!");
-        }
-
-        return optionalLabel.get();
-    }
 
     public List<LabelListResponse> getList() {
         List<Label> labelList = (List<Label>) labelRepository.findAll();
@@ -78,5 +70,14 @@ public class LabelService implements Authorizable<Label, Long> {
         if(!label.getUserId().equals(userId)) throw new AuthorizeException(labelId + "번 라벨에 대한 권한이 없습니다");
 
         return label;
+    }
+
+    private Label getLabel(Long id) throws NoSuchElementException {
+        Optional<Label> optionalLabel = labelRepository.findById(id);
+        if (optionalLabel.isEmpty()) {
+            throw new NoSuchElementException(id + "라벨이 존재하지 않습니다!");
+        }
+
+        return optionalLabel.get();
     }
 }
