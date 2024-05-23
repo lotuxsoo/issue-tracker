@@ -91,7 +91,7 @@ extension LabelListController: UITableViewDataSource, UITableViewDelegate {
         let deleteAction = createSwipeAction(title: "삭제",
                                              color: .myRed,
                                              image: UIImage(systemName: "trash.fill"),
-                                             style: .destructive) { _, _, completionHandler in
+                                             style: .normal) { _, _, completionHandler in
             guard let label = self.labelModel.item(at: indexPath.row) else {
                 completionHandler(false)
                 return
@@ -99,7 +99,7 @@ extension LabelListController: UITableViewDataSource, UITableViewDelegate {
             
             self.labelModel.deleteLabel(at: indexPath.row) { success in
                 if success {
-                    tableView.deleteRows(at: [indexPath], with: .automatic)
+                    tableView.deleteRows(at: [indexPath], with: .bottom)
                     print("\(label.id) 삭제")
                 }
                 completionHandler(success)

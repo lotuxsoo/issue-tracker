@@ -42,7 +42,7 @@ class MilestoneListController: UIViewController {
         
         milestoneModel.milestoneDeleted
             .sink { [weak self] index in
-                self?.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+                self?.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .bottom)
             }
             .store(in: &cancelMilestones)
     }
