@@ -42,7 +42,7 @@ jobs:
             echo ${{ secrets.DOCKER_TOKEN }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
             cd ${{ github.workspace }}/be/issue_tracker
             docker build -f ./Dockerfile -t ${{ secrets.DOCKER_REPO }}:latest . 
-            docker push ${{ secrets.DOCKER_REPO }}/issue_tracker:latest
+            docker push ${{ secrets.DOCKER_REPO }}:latest
 
     
     - name: Deploy to server
