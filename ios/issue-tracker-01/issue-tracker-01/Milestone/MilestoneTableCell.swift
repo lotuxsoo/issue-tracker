@@ -23,12 +23,6 @@ class MilestoneTableCell: UITableViewCell {
         
         configureFont()
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
     
     private func configureFont() {
         self.nameLabel.applyStyle(fontManager: FontManager(weight: .semibold, size: .large), textColor: .gray900)

@@ -52,24 +52,36 @@ class MilestoneEditorViewController: UIViewController {
         deadlineField.addTarget(self, action: #selector(deadlineFieldDidChange(_:)), for: .editingChanged)
     }
     
+    @objc private func textFieldDidChange(_ textField: UITextField) {
+        let isTitleValid = !(titleField.text?.isEmpty ?? true)
+                
+        navigationItem.rightBarButtonItem?.isEnabled = isTitleValid
+    }
+    
     @objc private func deadlineFieldDidChange(_ textField: UITextField) {
-        if let deadlineText = textField.text, isVaildData(dateString: deadlineText) {
+        if let deadlineText = textField.text, isVaildDate(dateString: deadlineText) {
             deadlineLabel.textColor = .gray800
+            navigationItem.rightBarButtonItem?.isEnabled = isAllFieldsValid()
         } else {
             deadlineLabel.textColor = .red
+            navigationItem.rightBarButtonItem?.isEnabled = false
         }
     }
     
-    private func isVaildData(dateString: String) -> Bool {
+    private func isAllFieldsValid() -> Bool {
+        guard let titleText = titleField.text,
+              let deadlineText = deadlineField.text,
+              !titleText.isEmpty,
+              isVaildDate(dateString: deadlineText) else {
+            return false
+        }
+        return true
+    }
+    
+    private func isVaildDate(dateString: String) -> Bool {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy.MM.dd"
         return dateFormatter.date(from: dateString) != nil
-    }
-    
-    @objc private func textFieldDidChange(_ textField: UITextField) {
-        let isTitleValid = !(titleField.text?.isEmpty ?? true)
-        
-        navigationItem.rightBarButtonItem?.isEnabled = isTitleValid
     }
 
     private func configureFont() {
