@@ -9,6 +9,12 @@ import Foundation
 import os
 
 class NetworkManager {
+    
+    enum NetworkError: Error {
+        case invalidURL
+        case unknown
+    }
+    
     static let shared = NetworkManager()
     private let httpManager: HTTPManagerProtocol
     
@@ -16,6 +22,29 @@ class NetworkManager {
     
     init(httpManager: HTTPManagerProtocol = HTTPManager.shared) {
         self.httpManager = httpManager
+    }
+    
+    func fetchSelectedOption<T: Codable>(from endpoint: APIEndpoint, decodingType: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+        guard let url = URL(string: URLDefines.select + endpoint.urlString) else {
+            completion(.failure(NetworkError.invalidURL))
+            return
+        }
+        let request = URLRequest(url: url)
+        
+        httpManager.sendRequest(request) { data, _, error in
+            guard let data = data, error == nil else {
+                completion(.failure(error ?? NetworkError.unknown))
+                return
+            }
+            
+            do {
+                let decodedData = try JSONDecoder().decode(T.self, from: data)
+                self.prettyPrintJSON(decodedData)
+                completion(.success(decodedData))
+            } catch {
+                completion(.failure(error))
+            }
+        }
     }
     
     func fetchIssues(completion: @escaping ([Issue]?) -> Void) {
@@ -44,7 +73,7 @@ class NetworkManager {
         }
     }
     
-    func fetchIssueDetail(issueId: Int, completion: @escaping (IssueDetail?) -> Void) {
+    func fetchIssueDetail(issueId: Int, completion: @escaping (IssueDetailResponse?) -> Void) {
         guard let url = URL(string: URLDefines.issue + "/\(issueId)") else {
             completion(nil)
             return
@@ -59,7 +88,7 @@ class NetworkManager {
             }
             
             do {
-                let issueDetail = try JSONDecoder().decode(IssueDetail.self, from: data)
+                let issueDetail = try JSONDecoder().decode(IssueDetailResponse.self, from: data)
                 self.prettyPrintJSON(issueDetail)
                 completion(issueDetail)
                 return
@@ -109,6 +138,46 @@ class NetworkManager {
                 return
             }
             completion(true)
+        }
+    }
+    
+    func createIssue(issueCreationRequest: IssueCreationRequest, completion: @escaping (Bool, IssueDetailResponse?) -> Void) {
+        guard let url = URL(string: URLDefines.issue) else {
+            completion(false, nil)
+            return
+        }
+        guard let token = token else { return }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = HTTPMethod.post.rawValue
+        request.addValue(token, forHTTPHeaderField: "Authorization")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            let jsonData = try JSONEncoder().encode(issueCreationRequest)
+            request.httpBody = jsonData
+        } catch {
+            os_log("[ createIssue ]: \(error)")
+            completion(false, nil)
+            return
+        }
+        
+        httpManager.sendRequest(request) { data, response, error in
+            guard let data = data, error == nil,
+                  let response = response, (200..<300).contains(response.statusCode) else {
+                os_log("[ createIssue ] : \(String(describing: error?.localizedDescription))\n[ statusCode ]: \(String(describing: response?.statusCode))")
+                
+                completion(false, nil)
+                return
+            }
+            
+            do {
+                let decodedIssue = try JSONDecoder().decode(IssueDetailResponse.self, from: data)
+                completion(true, decodedIssue)
+            } catch {
+                os_log("[ createIssue ] : \(String(describing: error))")
+                completion(false, nil)
+            }
         }
     }
     

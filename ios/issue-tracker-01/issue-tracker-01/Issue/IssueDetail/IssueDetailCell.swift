@@ -35,7 +35,7 @@ class IssueDetailCell: UITableViewCell {
         self.timeLabel.text = nil
         self.contentLabel.text = nil
         self.contentLabel.text = nil
-        self.authorLabel.text = nil
+        self.authorLabel.isHidden = true
     }
     
     private func configureFont() {

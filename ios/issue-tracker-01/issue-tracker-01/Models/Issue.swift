@@ -15,7 +15,7 @@ struct Issue: Codable {
     let milestone: CurrentMilestone?
 }
 
-struct IssueDetail: Codable {
+struct IssueDetailResponse: Codable {
     let id: Int
     let title: String
     let author: String
@@ -35,4 +35,12 @@ struct Comment: Codable {
     let fileUrls: [String]
     let likedCount: Int
     let lastModifiedAt: String
+}
+
+struct IssueCreationRequest: Codable {
+    let title: String
+    let comment: String
+    let assigneeIds: [String]
+    let labelIds: [Int]
+    let milestoneId: Int?
 }

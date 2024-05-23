@@ -15,6 +15,8 @@ class IssueEditorViewController: UIViewController {
     @IBOutlet weak var optionInfoLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
     
+    var issueModel: IssueModel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -109,11 +111,37 @@ extension IssueEditorViewController: UITableViewDataSource, UITableViewDelegate 
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let editorOptionVC = EditorOptionViewController(nibName: EditorOptionViewController.identifier, bundle: nil)
+        editorOptionVC.issueModel = self.issueModel
         
         switch indexPath.row {
-        case 0: editorOptionVC.sectionTitle = "담당자"
+        case 0: 
+            editorOptionVC.sectionTitle = "담당자"
+            issueModel.fetchAssignees { result in
+                switch result {
+                case .success(let assignees):
+                    editorOptionVC.options = assignees.map { OptionType.assignee($0) }
+                case .failure(let error):
+                    print("[ fetch assignees 실패 ]: \(error) ")
+                }
+            }
         case 1: editorOptionVC.sectionTitle = "레이블"
+            issueModel.fetchLabels { result in
+                switch result {
+                case .success(let labels):
+                    editorOptionVC.options = labels.map { OptionType.label($0) }
+                case .failure(let error):
+                    print("[ fetch labels 실패 ]: \(error) ")
+                }
+            }
         case 2: editorOptionVC.sectionTitle = "마일스톤"
+            issueModel.fetchMilestones { result in
+                switch result {
+                case .success(let milestones):
+                    editorOptionVC.options = milestones.map { OptionType.milestone($0) }
+                case .failure(let error):
+                    print("[ fetch milestones 실패 ]: \(error) ")
+                }
+            }
         default: return
         }
         

@@ -30,12 +30,15 @@ class LabelCell: UICollectionViewCell {
     }
 
     private func configureFont() {
-        self.titleLabel.applyStyle(fontManager: FontManager(weight: .bold, size: .medium), textColor: .gray50)
+        self.titleLabel.applyStyle(fontManager: FontManager(weight: .medium, size: .small), textColor: .gray50)
         self.titleLabel.backgroundColor = .clear
     }
     
     func setLabel(_ data: LabelResponse) {
+        let color = UIColor(hex: data.color)
+        
         self.titleLabel.text = data.name
-        self.titleLabel.backgroundColor = UIColor(hex: data.color)
+        self.titleLabel.backgroundColor = color
+        self.titleLabel.textColor = color.isDarkColor ? .gray50 : .gray900
     }
 }

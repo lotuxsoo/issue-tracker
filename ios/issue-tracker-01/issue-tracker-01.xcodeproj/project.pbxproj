@@ -33,6 +33,9 @@
 		D61AACA32BFDE9E200D35399 /* MilestoneModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61AACA22BFDE9E200D35399 /* MilestoneModel.swift */; };
 		D61AACA62BFE0C6A00D35399 /* MilestoneEditorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D61AACA52BFE0C6A00D35399 /* MilestoneEditorViewController.xib */; };
 		D61AACA72BFE0C6A00D35399 /* MilestoneEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61AACA42BFE0C6A00D35399 /* MilestoneEditorViewController.swift */; };
+		D61AACA92BFF38FB00D35399 /* OptionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61AACA82BFF38FB00D35399 /* OptionType.swift */; };
+		D61AACAC2BFF3A9400D35399 /* SelectedOptionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D61AACAB2BFF3A9400D35399 /* SelectedOptionCell.xib */; };
+		D61AACAD2BFF3A9400D35399 /* SelectedOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61AACAA2BFF3A9400D35399 /* SelectedOptionCell.swift */; };
 		D6369F462BEA0F8F001BDAAB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6369F452BEA0F8F001BDAAB /* AppDelegate.swift */; };
 		D6369F482BEA0F8F001BDAAB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6369F472BEA0F8F001BDAAB /* SceneDelegate.swift */; };
 		D6369F4A2BEA0F8F001BDAAB /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6369F492BEA0F8F001BDAAB /* LoginController.swift */; };
@@ -112,6 +115,9 @@
 		D61AACA22BFDE9E200D35399 /* MilestoneModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestoneModel.swift; sourceTree = "<group>"; };
 		D61AACA42BFE0C6A00D35399 /* MilestoneEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestoneEditorViewController.swift; sourceTree = "<group>"; };
 		D61AACA52BFE0C6A00D35399 /* MilestoneEditorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MilestoneEditorViewController.xib; sourceTree = "<group>"; };
+		D61AACA82BFF38FB00D35399 /* OptionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionType.swift; sourceTree = "<group>"; };
+		D61AACAA2BFF3A9400D35399 /* SelectedOptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedOptionCell.swift; sourceTree = "<group>"; };
+		D61AACAB2BFF3A9400D35399 /* SelectedOptionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelectedOptionCell.xib; sourceTree = "<group>"; };
 		D6369F422BEA0F8F001BDAAB /* issue-tracker-01.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "issue-tracker-01.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6369F452BEA0F8F001BDAAB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D6369F472BEA0F8F001BDAAB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -250,6 +256,7 @@
 				D61179732BEC8FA900E7C267 /* Issue.swift */,
 				D61AAC962BFDA93100D35399 /* Label.swift */,
 				D61AAC982BFDAA4F00D35399 /* Milestone.swift */,
+				D61AACA82BFF38FB00D35399 /* OptionType.swift */,
 				D6A632162BF46ACC000E9C30 /* BaseModel.swift */,
 				D61AAC862BFAD62700D35399 /* IssueModel.swift */,
 				D61AAC882BFAF1A600D35399 /* LabelModel.swift */,
@@ -370,6 +377,8 @@
 				D642E2692BF6EFD000ACAE45 /* EditorOptionCell.xib */,
 				D642E26C2BF717BB00ACAE45 /* EditorOptionViewController.swift */,
 				D642E26D2BF717BB00ACAE45 /* EditorOptionViewController.xib */,
+				D61AACAA2BFF3A9400D35399 /* SelectedOptionCell.swift */,
+				D61AACAB2BFF3A9400D35399 /* SelectedOptionCell.xib */,
 			);
 			path = IssueEditor;
 			sourceTree = "<group>";
@@ -482,6 +491,7 @@
 				D61179502BEB792D00E7C267 /* .swiftlint.yml in Resources */,
 				D61AAC8C2BFB884500D35399 /* LabelEditorViewController.xib in Resources */,
 				D642E2732BF740A400ACAE45 /* LabelTableCell.xib in Resources */,
+				D61AACAC2BFF3A9400D35399 /* SelectedOptionCell.xib in Resources */,
 				D642E2662BF6182B00ACAE45 /* IssueEditorViewController.xib in Resources */,
 				D642E26F2BF717BB00ACAE45 /* EditorOptionViewController.xib in Resources */,
 				D6A6320B2BF34589000E9C30 /* IssueDetailViewController.xib in Resources */,
@@ -549,6 +559,8 @@
 				D6A631FB2BF1FE5A000E9C30 /* NetworkManager.swift in Sources */,
 				D642E26A2BF6EFD000ACAE45 /* EditorOptionCell.swift in Sources */,
 				D61AAC892BFAF1A600D35399 /* LabelModel.swift in Sources */,
+				D61AACAD2BFF3A9400D35399 /* SelectedOptionCell.swift in Sources */,
+				D61AACA92BFF38FB00D35399 /* OptionType.swift in Sources */,
 				D6A631FD2BF20BAC000E9C30 /* URLDefines.swift in Sources */,
 				D61AAC8F2BFC3AB400D35399 /* LabelEditorPaddingLabel.swift in Sources */,
 				D6A632032BF22217000E9C30 /* HTTPMethod.swift in Sources */,

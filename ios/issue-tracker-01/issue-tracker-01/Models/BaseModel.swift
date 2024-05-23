@@ -11,7 +11,7 @@ protocol ItemManaging: AnyObject {
     associatedtype T
     
     var count: Int { get }
-    func updateItems(with newItems: [T])
+    func updateItems(with newItems: [T]?)
     func item(at index: Int) -> T?
     func removeItem(at index: Int)
     func appendItem(_ item: T)
@@ -25,8 +25,10 @@ class BaseModel<T>: ItemManaging {
         return items.count
     }
     
-    func updateItems(with newItems: [T]) {
-        self.items = newItems
+    func updateItems(with newItems: [T]?) {
+        if let newItems = newItems {
+            self.items = newItems
+        }
     }
     
     func item(at index: Int) -> T? {

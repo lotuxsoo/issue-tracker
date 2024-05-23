@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 class IssueDetailViewController: UIViewController {
     
@@ -14,8 +15,9 @@ class IssueDetailViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     var issueId: Int?
-    var issueDetail: IssueDetail?
+    var issueModel: IssueModel!
     let commentViewModel = BaseModel<Comment>()
+    private var cancellables = Set<AnyCancellable>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,6 +26,7 @@ class IssueDetailViewController: UIViewController {
         
         configureNavigationBar()
         setupTableView()
+        bindModel()
         
         if let issueId = issueId {
             self.fetchIssueDetail(issueId: issueId)
@@ -38,15 +41,17 @@ class IssueDetailViewController: UIViewController {
     }
     
     private func fetchIssueDetail(issueId: Int) {
-        NetworkManager.shared.fetchIssueDetail(issueId: issueId) { [weak self] issueDetail in
-            DispatchQueue.main.async {
-                if let issueDetail = issueDetail {
-                    self?.issueDetail = issueDetail
-                    self?.commentViewModel.updateItems(with: issueDetail.comments)
-                    self?.tableView.reloadData()
-                }
+        issueModel.fetchIssueDetail(issueId: issueId)
+    }
+    
+    private func bindModel() {
+        issueModel.issueDetailPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.commentViewModel.updateItems(with: self?.issueModel.comment)
+                self?.tableView.reloadData()
             }
-        }
+            .store(in: &cancellables)
     }
 
     private func configureNavigationBar() {
@@ -81,7 +86,7 @@ extension IssueDetailViewController: UITableViewDataSource, UITableViewDelegate 
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: IssueDetailCell.identifier, for: indexPath) as? IssueDetailCell,
-              let issueDetail = issueDetail else {
+              let issueDetail = issueModel.issueDetail else {
             return UITableViewCell()
         }
         
@@ -94,7 +99,7 @@ extension IssueDetailViewController: UITableViewDataSource, UITableViewDelegate 
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: IssueDetailHeaderView.identifier) as? IssueDetailHeaderView,
-              let issueDetail = issueDetail else {
+              let issueDetail = issueModel.issueDetail else {
             return nil
         }
         headerView.contentView.backgroundColor = .systemBackground

@@ -38,7 +38,7 @@ class IssueDetailHeaderView: UITableViewHeaderFooterView {
         self.captionLabel.applyStyle(fontManager: FontManager(weight: .medium, size: .medium), textColor: .gray700)
     }
     
-    func setDetail(with issueDetail: IssueDetail) {
+    func setDetail(with issueDetail: IssueDetailResponse) {
         self.titleLabel.text = issueDetail.title
         self.idLabel.text = "#\(issueDetail.id)"
         

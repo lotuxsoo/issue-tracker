@@ -22,4 +22,5 @@ enum URLDefines {
     static let labelList = "\(base)/label/list"
     static let milestone = "\(base)/milestone"
     static let milestoneList = "\(base)/milestone/list"
+    static let select = "\(base)/select"
 }

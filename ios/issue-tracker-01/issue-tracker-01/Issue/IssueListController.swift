@@ -57,6 +57,8 @@ class IssueListController: UIViewController {
     
     @objc private func plusButtonTapped() {
         let issueEditorVC = IssueEditorViewController(nibName: IssueEditorViewController.identifier, bundle: nil)
+        issueEditorVC.issueModel = self.issueModel
+        
         navigationController?.pushViewController(issueEditorVC, animated: true)
     }
 }
@@ -130,6 +132,7 @@ extension IssueListController: UITableViewDataSource, UITableViewDelegate {
     private func showIssueDetail(issueId: Int) {
         let issueDetailVC = IssueDetailViewController(nibName: IssueDetailViewController.identifier, bundle: nil)
         issueDetailVC.issueId = issueId
+        issueDetailVC.issueModel = self.issueModel
         issueDetailVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(issueDetailVC, animated: true)
     }
