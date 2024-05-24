@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CurrentMilestone: Codable {
+struct CurrentMilestone: Codable, Hashable {
     let id: Int
     let title: String
 }

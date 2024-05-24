@@ -11,6 +11,12 @@ class EditorOptionViewController: UIViewController {
 
     static let identifier: String = "EditorOptionViewController"
     
+    enum Notifications {
+        static let didUpdateAssignees = Notification.Name("didUpdateAssignees")
+        static let didUpdateLabels = Notification.Name("didUpdateLabels")
+        static let didUpdateMilestone = Notification.Name("didUpdateMilestone")
+    }
+    
     @IBOutlet weak var tableView: UITableView!
     
     var sectionTitle: String?
@@ -24,6 +30,7 @@ class EditorOptionViewController: UIViewController {
     
     private var unselectedOptions: [OptionType] = []
     private var selectedOptions: [OptionType] = []
+    private var selectedMilestone: CurrentMilestone?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,24 +39,40 @@ class EditorOptionViewController: UIViewController {
         setupTableView()
     }
     
+    func setupSelectedOptions(with options: [OptionType]) {
+        self.selectedOptions = options
+        self.unselectedOptions = self.options.filter { !self.selectedOptions.contains($0) }
+        
+        if let selectedMilestone = options.first(where: {
+            if case .milestone = $0 {
+                return true
+            }
+            return false
+        }) {
+            self.selectedOptions = [selectedMilestone]
+        }
+        self.tableView.reloadData()
+    }
+    
     private func setupTableView() {
         tableView.register(UINib(nibName: SelectedOptionCell.identifier, bundle: .main), forCellReuseIdentifier: SelectedOptionCell.identifier)
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.rowHeight = 44
     }
     
     private func configureNavigationBar() {
         let backButton = UIBarButtonItem(image: UIImage(systemName: "chevron.left"),
                                          style: .plain,
                                          target: self,
-                                         action: #selector(backBtnTapped)
+                                         action: #selector(backButtonTapped)
         )
         navigationItem.leftBarButtonItem = backButton
         
         let saveButton = UIBarButtonItem(title: "저장",
                                          style: .plain,
                                          target: self,
-                                         action: #selector(saveBtnTapped)
+                                         action: #selector(saveButtonTapped)
         )
         navigationItem.rightBarButtonItem = saveButton
         
@@ -58,12 +81,24 @@ class EditorOptionViewController: UIViewController {
         }
     }
     
-    @objc private func backBtnTapped() {
+    @objc private func backButtonTapped() {
         navigationController?.dismiss(animated: true)
     }
     
-    @objc private func saveBtnTapped() {
+    @objc private func saveButtonTapped() {
+        guard let sectionTitle = sectionTitle else { return }
         
+        switch sectionTitle {
+        case "담당자":
+            NotificationCenter.default.post(name: Notifications.didUpdateAssignees, object: selectedOptions)
+        case "레이블":
+            NotificationCenter.default.post(name: Notifications.didUpdateLabels, object: selectedOptions)
+        case "마일스톤":
+            NotificationCenter.default.post(name: Notifications.didUpdateMilestone, object: selectedMilestone)
+        default:
+            return
+        }
+        dismiss(animated: true)
     }
 }
 
@@ -109,15 +144,47 @@ extension EditorOptionViewController: UITableViewDataSource, UITableViewDelegate
         
         switch indexPath.section {
         case 0:
-            let option = selectedOptions.remove(at: indexPath.row)
-            unselectedOptions.append(option)
+            handleUnselection(at: indexPath.row)
         case 1:
-            let option = unselectedOptions.remove(at: indexPath.row)
-            selectedOptions.append(option)
+            handleSelection(at: indexPath.row)
         default:
             return
         }
         
         tableView.reloadData()
+    }
+    
+    private func handleUnselection(at index: Int) {
+        let option = selectedOptions.remove(at: index)
+        unselectedOptions.append(option)
+        if case .milestone = option {
+            selectedMilestone = nil
+        } 
+    }
+    
+    private func handleSelection(at index: Int) {
+        let option = unselectedOptions.remove(at: index)
+        if case .milestone(let newtMilestone) = option {
+            updateSelectedMilestone(with: newtMilestone)
+        } else {
+            selectedOptions.append(option)
+        }
+    }
+    
+    private func updateSelectedMilestone(with newMilestone: CurrentMilestone) {
+        if let currentMilestone = selectedMilestone {
+            if let index = selectedOptions.firstIndex(where: {
+                if case .milestone(let newMilestone) = $0 {
+                    return newMilestone.id == currentMilestone.id
+                }
+                return false
+            }) {
+                let removedMilestone = selectedOptions.remove(at: index)
+                unselectedOptions.append(removedMilestone)
+            }
+        }
+        
+        selectedMilestone = newMilestone
+        selectedOptions = [OptionType.milestone(newMilestone)]
     }
 }

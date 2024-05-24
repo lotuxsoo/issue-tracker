@@ -72,11 +72,6 @@ class IssueTableCell: UITableViewCell {
         self.lables = data
         self.collectionView.reloadData()
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-    }
 }
 
 extension IssueTableCell: UICollectionViewDataSource, UICollectionViewDelegate {

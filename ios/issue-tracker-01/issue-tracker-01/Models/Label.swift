@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct LabelResponse: Codable {
+struct LabelResponse: Codable, Hashable {
     let id: Int
     let name: String
     let description: String

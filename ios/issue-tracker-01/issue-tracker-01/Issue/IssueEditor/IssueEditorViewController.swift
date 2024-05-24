@@ -17,6 +17,10 @@ class IssueEditorViewController: UIViewController {
     
     var issueModel: IssueModel!
     
+    private var selectedAssignees: [AssigneeResponse] = []
+    private var selectedLabels: [LabelResponse] = []
+    private var selectedMilestone: CurrentMilestone?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -25,6 +29,47 @@ class IssueEditorViewController: UIViewController {
         setupTableView()
         configureFont()
         configureNavigationBar()
+        setupObservers()
+    }
+    
+    private func setupObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(handleUpdatedAssignees(_:)), name: EditorOptionViewController.Notifications.didUpdateAssignees, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleUpdatedLabels(_:)), name: EditorOptionViewController.Notifications.didUpdateLabels, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleUpdatedMilestone(_:)), name: EditorOptionViewController.Notifications.didUpdateMilestone, object: nil)
+    }
+    
+    @objc private func handleUpdatedAssignees(_ notification: Notification) {
+        if let options = notification.object as? [OptionType] {
+            let assignees = options.compactMap { option -> AssigneeResponse? in
+                if case .assignee(let assignee) = option {
+                    return assignee
+                }
+                return nil
+            }
+            selectedAssignees = assignees
+            tableView.reloadData()
+        }
+        
+    }
+    
+    @objc private func handleUpdatedLabels(_ notification: Notification) {
+        if let options = notification.object as? [OptionType] {
+            let labels = options.compactMap { option -> LabelResponse? in
+                if case .label(let labelResponse) = option {
+                    return labelResponse
+                }
+                return nil
+            }
+            selectedLabels = labels
+            tableView.reloadData()
+        }
+    }
+    
+    @objc private func handleUpdatedMilestone(_ notification: Notification) {
+        if let milestone = notification.object as? CurrentMilestone {
+            selectedMilestone = milestone
+            tableView.reloadData()
+        }
     }
     
     private func setupTableView() {
@@ -96,9 +141,20 @@ extension IssueEditorViewController: UITableViewDataSource, UITableViewDelegate 
         }
         
         switch indexPath.row {
-        case 0: cell.configureTitle(title: "담당자")
-        case 1: cell.configureTitle(title: "레이블")
-        case 2: cell.configureTitle(title: "마일스톤")
+        case 0: 
+            cell.configureTitle(title: "담당자")
+            cell.configureOptions(options: selectedAssignees.map { OptionType.assignee($0) })
+        case 1:
+            cell.configureTitle(title: "레이블")
+            cell.configureOptions(options: selectedLabels.map { OptionType.label($0) })
+        case 2:
+            cell.configureTitle(title: "마일스톤")
+            if let milestone = selectedMilestone {
+                cell.configureOptions(options: [OptionType.milestone(milestone)])
+            } else {
+                cell.configureOptions(options: [])
+            }
+            
         default: return UITableViewCell()
         }
         
@@ -114,12 +170,15 @@ extension IssueEditorViewController: UITableViewDataSource, UITableViewDelegate 
         editorOptionVC.issueModel = self.issueModel
         
         switch indexPath.row {
-        case 0: 
+        case 0:
             editorOptionVC.sectionTitle = "담당자"
             issueModel.fetchAssignees { result in
                 switch result {
                 case .success(let assignees):
+                    let selectedOptions = self.selectedAssignees.map { OptionType.assignee($0) }
+                    
                     editorOptionVC.options = assignees.map { OptionType.assignee($0) }
+                    editorOptionVC.setupSelectedOptions(with: selectedOptions )
                 case .failure(let error):
                     print("[ fetch assignees 실패 ]: \(error) ")
                 }
@@ -128,7 +187,10 @@ extension IssueEditorViewController: UITableViewDataSource, UITableViewDelegate 
             issueModel.fetchLabels { result in
                 switch result {
                 case .success(let labels):
+                    let selectedOptions = self.selectedLabels.map { OptionType.label($0) }
+                    
                     editorOptionVC.options = labels.map { OptionType.label($0) }
+                    editorOptionVC.setupSelectedOptions(with: selectedOptions)
                 case .failure(let error):
                     print("[ fetch labels 실패 ]: \(error) ")
                 }
@@ -138,6 +200,10 @@ extension IssueEditorViewController: UITableViewDataSource, UITableViewDelegate 
                 switch result {
                 case .success(let milestones):
                     editorOptionVC.options = milestones.map { OptionType.milestone($0) }
+                    
+                    if let selectedMilestone = self.selectedMilestone {
+                        editorOptionVC.setupSelectedOptions(with: [OptionType.milestone(selectedMilestone)])
+                    }
                 case .failure(let error):
                     print("[ fetch milestones 실패 ]: \(error) ")
                 }

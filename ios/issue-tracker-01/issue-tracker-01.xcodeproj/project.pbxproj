@@ -36,6 +36,8 @@
 		D61AACA92BFF38FB00D35399 /* OptionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61AACA82BFF38FB00D35399 /* OptionType.swift */; };
 		D61AACAC2BFF3A9400D35399 /* SelectedOptionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D61AACAB2BFF3A9400D35399 /* SelectedOptionCell.xib */; };
 		D61AACAD2BFF3A9400D35399 /* SelectedOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61AACAA2BFF3A9400D35399 /* SelectedOptionCell.swift */; };
+		D61AACB22C00497700D35399 /* EditorOptionLabelCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D61AACB12C00497700D35399 /* EditorOptionLabelCell.xib */; };
+		D61AACB32C00497700D35399 /* EditorOptionLabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61AACB02C00497700D35399 /* EditorOptionLabelCell.swift */; };
 		D6369F462BEA0F8F001BDAAB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6369F452BEA0F8F001BDAAB /* AppDelegate.swift */; };
 		D6369F482BEA0F8F001BDAAB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6369F472BEA0F8F001BDAAB /* SceneDelegate.swift */; };
 		D6369F4A2BEA0F8F001BDAAB /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6369F492BEA0F8F001BDAAB /* LoginController.swift */; };
@@ -118,6 +120,8 @@
 		D61AACA82BFF38FB00D35399 /* OptionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionType.swift; sourceTree = "<group>"; };
 		D61AACAA2BFF3A9400D35399 /* SelectedOptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedOptionCell.swift; sourceTree = "<group>"; };
 		D61AACAB2BFF3A9400D35399 /* SelectedOptionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelectedOptionCell.xib; sourceTree = "<group>"; };
+		D61AACB02C00497700D35399 /* EditorOptionLabelCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorOptionLabelCell.swift; sourceTree = "<group>"; };
+		D61AACB12C00497700D35399 /* EditorOptionLabelCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EditorOptionLabelCell.xib; sourceTree = "<group>"; };
 		D6369F422BEA0F8F001BDAAB /* issue-tracker-01.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "issue-tracker-01.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6369F452BEA0F8F001BDAAB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D6369F472BEA0F8F001BDAAB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -375,6 +379,8 @@
 				D642E2652BF6182B00ACAE45 /* IssueEditorViewController.xib */,
 				D642E2682BF6EFD000ACAE45 /* EditorOptionCell.swift */,
 				D642E2692BF6EFD000ACAE45 /* EditorOptionCell.xib */,
+				D61AACB02C00497700D35399 /* EditorOptionLabelCell.swift */,
+				D61AACB12C00497700D35399 /* EditorOptionLabelCell.xib */,
 				D642E26C2BF717BB00ACAE45 /* EditorOptionViewController.swift */,
 				D642E26D2BF717BB00ACAE45 /* EditorOptionViewController.xib */,
 				D61AACAA2BFF3A9400D35399 /* SelectedOptionCell.swift */,
@@ -494,6 +500,7 @@
 				D61AACAC2BFF3A9400D35399 /* SelectedOptionCell.xib in Resources */,
 				D642E2662BF6182B00ACAE45 /* IssueEditorViewController.xib in Resources */,
 				D642E26F2BF717BB00ACAE45 /* EditorOptionViewController.xib in Resources */,
+				D61AACB22C00497700D35399 /* EditorOptionLabelCell.xib in Resources */,
 				D6A6320B2BF34589000E9C30 /* IssueDetailViewController.xib in Resources */,
 				D6369F4F2BEA0F90001BDAAB /* Assets.xcassets in Resources */,
 				D679EE472BEA355400A3FC61 /* Color.xcassets in Resources */,
@@ -558,6 +565,7 @@
 				D61AAC8D2BFB884500D35399 /* LabelEditorViewController.swift in Sources */,
 				D6A631FB2BF1FE5A000E9C30 /* NetworkManager.swift in Sources */,
 				D642E26A2BF6EFD000ACAE45 /* EditorOptionCell.swift in Sources */,
+				D61AACB32C00497700D35399 /* EditorOptionLabelCell.swift in Sources */,
 				D61AAC892BFAF1A600D35399 /* LabelModel.swift in Sources */,
 				D61AACAD2BFF3A9400D35399 /* SelectedOptionCell.swift in Sources */,
 				D61AACA92BFF38FB00D35399 /* OptionType.swift in Sources */,

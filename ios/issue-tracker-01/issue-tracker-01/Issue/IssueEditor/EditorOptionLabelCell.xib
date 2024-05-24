@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="EditorOptionLabelCell" customModule="issue_tracker_01" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="91" height="32"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="91" height="32"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JBL-we-hAt">
+                        <rect key="frame" x="0.0" y="0.0" width="91" height="32"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ag2-Ab-nSC" customClass="LabelEditorPaddingLabel" customModule="issue_tracker_01" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="91" height="32"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="Ag2-Ab-nSC" firstAttribute="leading" secondItem="JBL-we-hAt" secondAttribute="leading" id="90N-W0-3si"/>
+                            <constraint firstAttribute="bottom" secondItem="Ag2-Ab-nSC" secondAttribute="bottom" id="AU2-8r-ojh"/>
+                            <constraint firstAttribute="height" constant="30" id="akw-f3-Hn8"/>
+                            <constraint firstItem="Ag2-Ab-nSC" firstAttribute="top" secondItem="JBL-we-hAt" secondAttribute="top" id="dzG-Oy-4s9"/>
+                            <constraint firstAttribute="trailing" secondItem="Ag2-Ab-nSC" secondAttribute="trailing" id="pkS-gD-aCe"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="JBL-we-hAt" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="bfy-5N-ebE"/>
+                <constraint firstAttribute="trailing" secondItem="JBL-we-hAt" secondAttribute="trailing" id="td3-HN-VVd"/>
+                <constraint firstAttribute="bottom" secondItem="JBL-we-hAt" secondAttribute="bottom" id="tuq-ax-qms"/>
+                <constraint firstItem="JBL-we-hAt" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="vwR-Gm-2FU"/>
+            </constraints>
+            <size key="customSize" width="139" height="62"/>
+            <connections>
+                <outlet property="containerView" destination="JBL-we-hAt" id="4i6-x0-x1X"/>
+                <outlet property="titleLabel" destination="Ag2-Ab-nSC" id="J91-N0-Q3k"/>
+            </connections>
+            <point key="canvasLocation" x="70.992366412213741" y="-8.4507042253521139"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
