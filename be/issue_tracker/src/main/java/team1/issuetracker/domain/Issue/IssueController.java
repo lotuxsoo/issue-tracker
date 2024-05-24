@@ -3,7 +3,9 @@ package team1.issuetracker.domain.Issue;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import team1.issuetracker.domain.Issue.dto.*;
+
 import team1.issuetracker.domain.comment.CommentService;
 import team1.issuetracker.domain.comment.dto.CommentPostRequest;
 import team1.issuetracker.domain.label.LabelService;
@@ -45,14 +47,12 @@ public class IssueController {
     }
 
     @GetMapping("/list")
-    public List<IssueListResponse> openIssues() {
+    public List<IssueListResponse> getOpenIssues() {
         log.debug("Show Open issue list");
         List<Issue> openIssues = issueService.getOpenIssues();
 
         return openIssues.stream().map(this::getPreviewOf).toList();
     }
-
-
 
     @Authenticate
     @PostMapping
