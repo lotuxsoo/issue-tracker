@@ -3,8 +3,6 @@ name: CD with Gradle
 on:
    push:
      branches: [ "Deploy" ]
-   pull_request:
-     branches: [ "Deploy" ]
 
 permissions:
   contents: read
