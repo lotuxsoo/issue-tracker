@@ -20,6 +20,7 @@ jobs:
       with:
         java-version: '17'
         distribution: "corretto"
+        cache: gradle
       
     - name: Make db-config.yml
       run: |
@@ -27,12 +28,29 @@ jobs:
           echo "${{ secrets.DB_CONFIG }}" | base64 --decode > ./db-config.yml
           echo "${{ secrets.JWT_CONFIG }}" | base64 --decode > ./jwt.yml
       shell: bash
+
+    - name: Gradle Caching
+      uses: actions/cache@v4
+      with:
+         path: |  
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+         restore-keys: |
+           ${{ runner.os }}-gradle-
      
     - name: Build with Gradle
       run: |
             chmod +x ${{ github.workspace }}/be/issue_tracker/gradlew
             cd ${{ github.workspace }}/be/issue_tracker
-            ./gradlew clean build -x test
+            
+            ./gradlew build -x test \
+            --no-daemon \
+            -Dorg.gradle.jvmargs=-Xmx1024m \
+            --build-cache \
+            --project-cache-dir=./gradle-cache/project \
+            --gradle-user-home=./gradle-cache/global \
+            --project-dir="./"
 
             
     - name: Docker build & push to docker repo
