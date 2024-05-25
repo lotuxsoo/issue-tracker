@@ -21,13 +21,6 @@ jobs:
         java-version: '17'
         distribution: "corretto"
         cache: gradle
-      
-    - name: Make db-config.yml
-      run: |
-          cd ${{ github.workspace }}/be/issue_tracker/src/main/resources
-          echo "${{ secrets.DB_CONFIG }}" | base64 --decode > ./db-config.yml
-          echo "${{ secrets.JWT_CONFIG }}" | base64 --decode > ./jwt.yml
-      shell: bash
 
     - name: Gradle Caching
       uses: actions/cache@v4
@@ -38,21 +31,23 @@ jobs:
          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
          restore-keys: |
            ${{ runner.os }}-gradle-
+      
+    - name: Make db-config.yml
+      run: |
+          cd ${{ github.workspace }}/be/issue_tracker/src/main/resources
+          echo "${{ secrets.DB_CONFIG }}" | base64 --decode > ./db-config.yml
+          echo "${{ secrets.JWT_CONFIG }}" | base64 --decode > ./jwt.yml
+      shell: bash
+
+
      
     - name: Build with Gradle
       run: |
             chmod +x ${{ github.workspace }}/be/issue_tracker/gradlew
             cd ${{ github.workspace }}/be/issue_tracker
-            
-            ./gradlew build -x test \
-            --no-daemon \
-            -Dorg.gradle.jvmargs=-Xmx1024m \
-            --build-cache \
-            --project-cache-dir=./gradle-cache/project \
-            --gradle-user-home=./gradle-cache/global \
-            --project-dir="./"
+            ./gradlew build -x test
 
-            
+
     - name: Docker build & push to docker repo
       run: |
             echo ${{ secrets.DOCKER_TOKEN }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
@@ -71,6 +66,6 @@ jobs:
           sudo docker rm -f $(docker ps -aq --filter name=issue_tracker)
           sudo docker pull ${{ secrets.DOCKER_REPO }}/issue_tracker:latest
 
-          sudo docker run -d -p 8080:8080 --name issue_tracker ${{ secrets.DOCKER_USERNAME }}/issue_tracker:latest 
+          sudo docker run -d -p 8088:8080 --name issue_tracker ${{ secrets.DOCKER_USERNAME }}/issue_tracker:latest 
           sudo docker image prune -f
           sudo docker volume prune -f
