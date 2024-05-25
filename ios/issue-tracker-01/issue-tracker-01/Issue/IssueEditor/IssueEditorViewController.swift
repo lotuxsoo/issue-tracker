@@ -14,12 +14,16 @@ class IssueEditorViewController: UIViewController {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var optionInfoLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var titleField: UITextField!
+    @IBOutlet weak var descriptionField: UITextView!
     
     var issueModel: IssueModel!
     
     private var selectedAssignees: [AssigneeResponse] = []
     private var selectedLabels: [LabelResponse] = []
     private var selectedMilestone: CurrentMilestone?
+    
+    private let placeholderText = "설명을 입력해주세요"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,7 +33,20 @@ class IssueEditorViewController: UIViewController {
         setupTableView()
         configureFont()
         configureNavigationBar()
+        setupTextFields()
         setupObservers()
+    }
+    
+    private func setupTextFields() {
+        descriptionField.delegate = self
+        descriptionField.text = placeholderText
+        descriptionField.textColor = .lightGray
+        
+        titleField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+    }
+    
+    @objc private func textFieldDidChange() {
+        updateSaveButtonState()
     }
     
     private func setupObservers() {
@@ -87,16 +104,17 @@ class IssueEditorViewController: UIViewController {
         let backButton = UIBarButtonItem(image: UIImage(systemName: "chevron.left"),
                                          style: .plain,
                                          target: self,
-                                         action: #selector(backBtnTapped)
+                                         action: #selector(backButtonTapped)
         )
         navigationItem.leftBarButtonItem = backButton
         
         let saveButton = UIBarButtonItem(title: "저장",
                                          style: .plain,
                                          target: self,
-                                         action: #selector(saveBtnTapped)
+                                         action: #selector(saveButtonTapped)
         )
         navigationItem.rightBarButtonItem = saveButton
+        navigationItem.rightBarButtonItem?.isEnabled = false
         
         let segmentedControl = UISegmentedControl(items: ["마크다운", "미리보기"])
         segmentedControl.selectedSegmentIndex = 0
@@ -110,12 +128,34 @@ class IssueEditorViewController: UIViewController {
         navigationItem.titleView = segmentedControl
     }
     
-    @objc private func backBtnTapped() {
+    @objc private func backButtonTapped() {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc private func saveBtnTapped() {
-        print("저장")
+    @objc private func saveButtonTapped() {
+        guard let title = titleField.text, !title.isEmpty,
+              let description = descriptionField.text, !description.isEmpty || description == placeholderText else {
+            return
+        }
+        
+        let assigneeIds = selectedAssignees.map { $0.id }
+        let labelIds = selectedLabels.map { $0.id }
+        let milestoneId = selectedMilestone?.id
+        
+        let issueRequest = IssueCreationRequest(title: title,
+                                                comment: description,
+                                                assigneeIds: assigneeIds,
+                                                labelIds: labelIds,
+                                                milestoneId: milestoneId
+        )
+        
+        issueModel.createIsuue(issueRequest: issueRequest) { [weak self] success in
+            if success {
+                self?.navigationController?.popViewController(animated: true)
+            } else {
+                print("이슈 생성 실패")
+            }
+        }
     }
     
     @objc private func segmentChanged(_ sender: UISegmentedControl) {
@@ -213,5 +253,33 @@ extension IssueEditorViewController: UITableViewDataSource, UITableViewDelegate 
         
         let navigationController = UINavigationController(rootViewController: editorOptionVC)
         present(navigationController, animated: true)
+    }
+}
+
+extension IssueEditorViewController: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.text == placeholderText {
+            textView.text = ""
+            textView.textColor = .black
+        }
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        updateSaveButtonState()
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = placeholderText
+            textView.textColor = .lightGray
+        }
+    }
+    
+    private func updateSaveButtonState() {
+        let titleText = titleField.text ?? ""
+        let descriptionText = descriptionField.text ?? ""
+        let isDescriptionEmpty = descriptionText.isEmpty || descriptionText == placeholderText
+        
+        navigationItem.rightBarButtonItem?.isEnabled = !titleText.isEmpty && !isDescriptionEmpty
     }
 }

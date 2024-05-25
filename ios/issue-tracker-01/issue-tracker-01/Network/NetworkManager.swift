@@ -12,7 +12,12 @@ class NetworkManager {
     
     enum NetworkError: Error {
         case invalidURL
-        case unknown
+        case jsonEncodingFailed
+        case jsonDecodingFailed
+        case noData
+        case invalidResponse(Int)
+        case unauthorized
+        case networkFailed(Error)
     }
     
     static let shared = NetworkManager()
@@ -33,7 +38,7 @@ class NetworkManager {
         
         httpManager.sendRequest(request) { data, _, error in
             guard let data = data, error == nil else {
-                completion(.failure(error ?? NetworkError.unknown))
+                completion(.failure(NetworkError.noData))
                 return
             }
             
@@ -42,7 +47,7 @@ class NetworkManager {
                 self.prettyPrintJSON(decodedData)
                 completion(.success(decodedData))
             } catch {
-                completion(.failure(error))
+                completion(.failure(NetworkError.jsonDecodingFailed))
             }
         }
     }
@@ -141,12 +146,15 @@ class NetworkManager {
         }
     }
     
-    func createIssue(issueCreationRequest: IssueCreationRequest, completion: @escaping (Bool, IssueDetailResponse?) -> Void) {
+    func createIssue(issueRequest: IssueCreationRequest, completion: @escaping (Result<Issue, Error>) -> Void) {
         guard let url = URL(string: URLDefines.issue) else {
-            completion(false, nil)
+            completion(.failure(NetworkError.invalidURL))
             return
         }
-        guard let token = token else { return }
+        guard let token = token else {
+            completion(.failure(NetworkError.unauthorized))
+            return
+        }
         
         var request = URLRequest(url: url)
         request.httpMethod = HTTPMethod.post.rawValue
@@ -154,29 +162,35 @@ class NetworkManager {
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
         do {
-            let jsonData = try JSONEncoder().encode(issueCreationRequest)
+            let jsonData = try JSONEncoder().encode(issueRequest)
             request.httpBody = jsonData
         } catch {
             os_log("[ createIssue ]: \(error)")
-            completion(false, nil)
+            completion(.failure(NetworkError.jsonEncodingFailed))
             return
         }
         
         httpManager.sendRequest(request) { data, response, error in
-            guard let data = data, error == nil,
-                  let response = response, (200..<300).contains(response.statusCode) else {
-                os_log("[ createIssue ] : \(String(describing: error?.localizedDescription))\n[ statusCode ]: \(String(describing: response?.statusCode))")
-                
-                completion(false, nil)
+            if let error = error {
+                completion(.failure(NetworkError.networkFailed(error)))
+                return
+            }
+            
+            guard let data = data, let httpResponse = response else {
+                completion(.failure(NetworkError.noData))
+                return
+            }
+            
+            guard (200..<300).contains(httpResponse.statusCode) else {
+                completion(.failure(NetworkError.invalidResponse(httpResponse.statusCode)))
                 return
             }
             
             do {
-                let decodedIssue = try JSONDecoder().decode(IssueDetailResponse.self, from: data)
-                completion(true, decodedIssue)
+                let decodedIssue = try JSONDecoder().decode(Issue.self, from: data)
+                completion(.success(decodedIssue))
             } catch {
-                os_log("[ createIssue ] : \(String(describing: error))")
-                completion(false, nil)
+                completion(.failure(NetworkError.jsonDecodingFailed))
             }
         }
     }

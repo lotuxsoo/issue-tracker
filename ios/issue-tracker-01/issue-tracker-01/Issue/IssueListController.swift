@@ -20,6 +20,19 @@ class IssueListController: UIViewController {
         
         fetchIssues()
         setupPlusButton()
+        registerForNotifications()
+    }
+    
+    private func registerForNotifications() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleIssueUpdated),
+                                               name: IssueModel.Notifications.issueCreated,
+                                               object: nil
+        )
+    }
+    
+    @objc private func handleIssueUpdated(notification: Notification) {
+        self.tableView.reloadData()
     }
     
     private func setupTableView() {

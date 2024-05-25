@@ -9,6 +9,11 @@ import Foundation
 import Combine
 
 class IssueModel: BaseModel<Issue> {
+    
+    enum Notifications {
+        static let issueCreated = Notification.Name("issueCreated")
+    }
+    
     @Published private(set) var issueDetail: IssueDetailResponse?
     var issueDetailPublisher: Published<IssueDetailResponse?>.Publisher { $issueDetail }
     
@@ -74,6 +79,19 @@ class IssueModel: BaseModel<Issue> {
                 self?.removeItem(at: index)
                 completion(true)
             } else {
+                completion(false)
+            }
+        }
+    }
+    
+    func createIsuue(issueRequest: IssueCreationRequest, completion: @escaping (Bool) -> Void) {
+        NetworkManager.shared.createIssue(issueRequest: issueRequest) { result in
+            switch result {
+            case .success(let issue):
+                self.appendItem(issue)
+                NotificationCenter.default.post(name: Self.Notifications.issueCreated, object: self)
+                completion(true)
+            case .failure(let error):
                 completion(false)
             }
         }

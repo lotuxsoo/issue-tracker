@@ -11,8 +11,10 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="IssueEditorViewController" customModule="issue_tracker_01" customModuleProvider="target">
             <connections>
+                <outlet property="descriptionField" destination="clM-0x-rPg" id="E0g-n1-p9Y"/>
                 <outlet property="optionInfoLabel" destination="nIi-k9-9Vs" id="rCe-BM-hXB"/>
                 <outlet property="tableView" destination="Orz-Tm-q2P" id="vfz-Rq-yA7"/>
+                <outlet property="titleField" destination="9kw-me-K5k" id="574-75-Hdt"/>
                 <outlet property="titleLabel" destination="chA-ZK-nK6" id="2uZ-qt-faG"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
