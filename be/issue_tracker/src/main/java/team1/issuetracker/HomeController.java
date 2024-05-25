@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class HomeController {
     @GetMapping
     public String home(){
-        return "home";
+        return "home222222222222222222 무중단무중단무중단";
     }
 }
