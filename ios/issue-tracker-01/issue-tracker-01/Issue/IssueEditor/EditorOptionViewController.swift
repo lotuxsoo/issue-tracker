@@ -58,7 +58,6 @@ class EditorOptionViewController: UIViewController {
         tableView.register(UINib(nibName: SelectedOptionCell.identifier, bundle: .main), forCellReuseIdentifier: SelectedOptionCell.identifier)
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.rowHeight = 44
     }
     
     private func configureNavigationBar() {
@@ -186,5 +185,9 @@ extension EditorOptionViewController: UITableViewDataSource, UITableViewDelegate
         
         selectedMilestone = newMilestone
         selectedOptions = [OptionType.milestone(newMilestone)]
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 44.0
     }
 }

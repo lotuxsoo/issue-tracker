@@ -92,7 +92,7 @@ extension EditorOptionCell: UICollectionViewDelegateFlowLayout {
         }
         
         let label = UILabel()
-        let padding: CGFloat = 20
+        let padding: CGFloat = 10
         label.applyStyle(fontManager: FontManager(weight: .bold, size: .medium), textColor: .gray50)
         label.text = option.displayText
         

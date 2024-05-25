@@ -31,7 +31,6 @@
                         <constraints>
                             <constraint firstItem="Ag2-Ab-nSC" firstAttribute="leading" secondItem="JBL-we-hAt" secondAttribute="leading" id="90N-W0-3si"/>
                             <constraint firstAttribute="bottom" secondItem="Ag2-Ab-nSC" secondAttribute="bottom" id="AU2-8r-ojh"/>
-                            <constraint firstAttribute="height" constant="30" id="akw-f3-Hn8"/>
                             <constraint firstItem="Ag2-Ab-nSC" firstAttribute="top" secondItem="JBL-we-hAt" secondAttribute="top" id="dzG-Oy-4s9"/>
                             <constraint firstAttribute="trailing" secondItem="Ag2-Ab-nSC" secondAttribute="trailing" id="pkS-gD-aCe"/>
                         </constraints>
