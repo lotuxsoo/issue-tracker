@@ -84,7 +84,6 @@ public class IssueService implements Authorizable<Issue, Long> {
     public Issue authorize(Long issueId, String userId) {
         Issue issue = getIssueById(issueId);
         if(!issue.getUserId().equals(userId)) throw new AuthorizeException(issueId + "번 이슈에 대한 권한이 없습니다");
-
         return issue;
     }
 }
