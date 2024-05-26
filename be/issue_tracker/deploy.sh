@@ -24,3 +24,4 @@ sed -i "s/proxy_pass http:\/\/blue;/proxy_pass http:\/\/$(if [ $TARGET_PORT == 8
 sudo systemctl reload nginx
 
 echo "Deployment to port $TARGET_PORT complete"
+
