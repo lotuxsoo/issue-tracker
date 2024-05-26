@@ -1,0 +1,7 @@
+spring:
+  config:
+    activate:
+      on-profile: blue
+    import: classpath:db-config.yml, classpath:jwt.yml
+  server:
+    port: 8081
