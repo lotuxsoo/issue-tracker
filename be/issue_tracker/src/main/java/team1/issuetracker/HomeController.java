@@ -1,14 +1,18 @@
 package team1.issuetracker;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/")
 public class HomeController {
+
     @GetMapping
-    public String home(){
-        return "home222222222222222222 무중단무중단무중단";
+    public void redirectToGithub(HttpServletResponse httpServletResponse) throws IOException {
+        httpServletResponse.sendRedirect("https://github.com/codesquad-masters2024-team01/issue-tracker");
     }
 }
