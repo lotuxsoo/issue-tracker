@@ -8,6 +8,25 @@ logging:
   level:
     org.springframework.jdbc.core: INFO
 
+management:
+  server:
+    port: 8088
+  endpoints:
+    enabled-by-default: false
+    jmx:
+      exposure:
+        exclude: "*"
+    web:
+      exposure:
+        include: info, health
+      base-path: "/ac"
+
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: true
+
 ---
 
 spring:

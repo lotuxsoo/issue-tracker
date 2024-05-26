@@ -11,7 +11,7 @@ import java.io.IOException;
 @RequestMapping("/")
 public class HomeController {
 
-    @GetMapping
+    @GetMapping("/github")
     public void redirectToGithub(HttpServletResponse httpServletResponse) throws IOException {
         httpServletResponse.sendRedirect("https://github.com/codesquad-masters2024-team01/issue-tracker");
     }
