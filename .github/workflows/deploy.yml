@@ -55,12 +55,14 @@ jobs:
             docker build -f ./Dockerfile -t ${{ secrets.DOCKER_REPO }}/issue_tracker:latest . 
             docker push ${{ secrets.DOCKER_REPO }}/issue_tracker:latest
 
-    
-    - name: Deploy to server
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USERNAME }}
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-            ./deploy.sh
+  deploy:
+      runs-on: ubuntu-latest
+      steps:
+       - name: Deploy to server
+         uses: appleboy/ssh-action@master
+         with:
+           host: ${{ secrets.EC2_HOST }}
+           username: ${{ secrets.EC2_USERNAME }}
+           key: ${{ secrets.EC2_SSH_KEY }}
+           script: |
+               ./deploy.sh
