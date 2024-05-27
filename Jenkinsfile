@@ -13,9 +13,9 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'Deploy',
-                    credentialsId: 'github-token',
-                    url: 'https://github.com/codesquad-masters2024-team01/issue-tracker'
+                git branch: 'deploy',
+                    credentialsId: 'github_token',
+                    url: 'https://github.com/lotuxsoo/issue-tracker'
             }
         }
 
