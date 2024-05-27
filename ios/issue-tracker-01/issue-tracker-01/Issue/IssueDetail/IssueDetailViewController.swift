@@ -24,7 +24,7 @@ class IssueDetailViewController: UIViewController {
 
         self.navigationItem.largeTitleDisplayMode = .never
         
-        configureNavigationBar()
+        setupNavigationBar()
         setupTableView()
         bindModel()
         
@@ -54,7 +54,7 @@ class IssueDetailViewController: UIViewController {
             .store(in: &cancellables)
     }
 
-    private func configureNavigationBar() {
+    private func setupNavigationBar() {
         let backButton = UIBarButtonItem(image: UIImage(systemName: "chevron.left"),
                                          style: .plain,
                                          target: self,
@@ -75,7 +75,19 @@ class IssueDetailViewController: UIViewController {
     }
     
     @objc private func moreButtonTapped() {
-        print("이슈에 대한moreButtonTapped!!")
+        let detailMoreVC = IssueDetailMoreViewController(nibName: IssueDetailMoreViewController.identifier, bundle: nil)
+        detailMoreVC.issueModel = self.issueModel
+        
+        let navigationController = UINavigationController(rootViewController: detailMoreVC)
+        
+        if let sheet = navigationController.sheetPresentationController {
+            sheet.detents = [.medium()]
+            sheet.prefersGrabberVisible = true
+            sheet.preferredCornerRadius = 12
+        }
+        
+        navigationController.modalPresentationStyle = .pageSheet
+        present(navigationController, animated: true)
     }
 }
 
