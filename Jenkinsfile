@@ -40,6 +40,7 @@ pipeline {
                         // Build the backend using Gradle
                         sh 'chmod +x ./gradlew'
                         sh './gradlew build'
+                        sh './gradlew assemble --exclude-task test'
                     }
                 }
             }
