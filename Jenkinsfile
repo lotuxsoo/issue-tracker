@@ -12,7 +12,6 @@ pipeline {
     stages {
         stage('GitHub Clone') {
             steps {
-                // GitHub에서 소스 코드를 가져옴
                 git branch: 'deploy', credentialsId: 'mytoken', url: 'https://github.com/lotuxsoo/issue-tracker'
             }
         }
