@@ -39,7 +39,6 @@ pipeline {
                     dir('be/issue_tracker') {
                         // Build the backend using Gradle
                         sh 'chmod +x ./gradlew'
-                        sh './gradlew build'
                         sh './gradlew assemble --exclude-task test'
                     }
                 }
