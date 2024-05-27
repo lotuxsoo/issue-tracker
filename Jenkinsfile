@@ -10,9 +10,11 @@ pipeline {
     }
 
     stages {
-        stage('GitHub Clone') {
+        stage('Clone Repository') {
             steps {
-                git branch: 'deploy', credentialsId: 'github_token', url: 'https://github.com/lotuxsoo/issue-tracker'
+                git branch: 'Deploy',
+                    credentialsId: 'github-token',
+                    url: 'https://github.com/codesquad-masters2024-team01/issue-tracker'
             }
         }
 
@@ -32,8 +34,13 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
+                    // Check if Docker is installed
+                    sh 'docker --version'
+
                     def commitId = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
-                    docker.build("${DOCKER_IMAGE}:${commitId}")
+
+                    // Explicitly using sh to build the Docker image
+                    sh "docker build -t ${DOCKER_IMAGE}:${commitId} ."
                 }
             }
         }
@@ -56,10 +63,12 @@ pipeline {
                     def newPort = newColor == 'blue' ? BLUE_PORT : GREEN_PORT
                     def commitId = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
 
+                    // Update Docker Compose file with new image
                     sh """
                     sed -i 's|tndus5383/docker_repository:latest|tndus5383/docker_repository:${commitId}|' docker-compose.yml
                     """
 
+                    // Stop the currently running container of the new color
                     sh "docker-compose stop ${newColor} || true"
                     sh "docker-compose rm -f ${newColor} || true"
 
