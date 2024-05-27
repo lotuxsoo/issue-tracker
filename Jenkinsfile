@@ -56,7 +56,6 @@ pipeline {
                     def newPort = newColor == 'blue' ? BLUE_PORT : GREEN_PORT
                     def commitId = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
 
-                    // Update Docker Compose file with new image
                     sh """
                     sed -i 's|tndus5383/docker_repository:latest|tndus5383/docker_repository:${commitId}|' docker-compose.yml
                     """
