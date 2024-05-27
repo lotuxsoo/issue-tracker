@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('GitHub Clone') {
             steps {
-                git branch: 'deploy', credentialsId: 'mytoken', url: 'https://github.com/lotuxsoo/issue-tracker'
+                git branch: 'deploy', credentialsId: 'github_token', url: 'https://github.com/lotuxsoo/issue-tracker'
             }
         }
 
