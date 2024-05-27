@@ -3,6 +3,7 @@ package team1.issuetracker.domain.user;
 import org.springframework.stereotype.Service;
 import team1.issuetracker.domain.Issue.Issue;
 import team1.issuetracker.domain.Issue.ref.AssigneeRef;
+import team1.issuetracker.domain.user.dto.AssigneeInfo;
 import team1.issuetracker.domain.user.dto.LoginInfo;
 import team1.issuetracker.domain.user.dto.RegisterInfo;
 import team1.issuetracker.domain.user.dto.UserInfoResponse;
@@ -57,6 +58,14 @@ public class UserService {
         return issueAssignees.stream()
                 .map(AssigneeRef::getUserId)
                 .map(this::getNameById).toList();
+    }
+
+    public List<AssigneeInfo> getAssigneeInfoAtIssue(Issue issue){
+        Set<AssigneeRef> issueAssignees = issue.getIssueAssignees();
+
+        return issueAssignees.stream()
+                .map(AssigneeRef::getUserId)
+                .map(id -> new AssigneeInfo(id, getNameById(id))).toList();
     }
 
     public List<User> getAssignees() {

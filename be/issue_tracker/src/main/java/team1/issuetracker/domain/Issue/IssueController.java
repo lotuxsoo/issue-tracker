@@ -3,10 +3,7 @@ package team1.issuetracker.domain.Issue;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import team1.issuetracker.domain.Issue.dto.IssueListResponse;
-import team1.issuetracker.domain.Issue.dto.IssueMakeRequest;
-import team1.issuetracker.domain.Issue.dto.IssueShowResponse;
-import team1.issuetracker.domain.Issue.dto.IssueUpdateRequest;
+import team1.issuetracker.domain.Issue.dto.*;
 import team1.issuetracker.domain.comment.CommentService;
 import team1.issuetracker.domain.comment.dto.CommentPostRequest;
 import team1.issuetracker.domain.label.LabelService;
@@ -71,12 +68,12 @@ public class IssueController {
 
     @Authenticate
     @PatchMapping("/{id}")
-    public IssueShowResponse updateIssue(@PathVariable Long id, @RequestBody IssueUpdateRequest issueUpdateRequest, @AuthenticatedUserId String userId) {
+    public IssueUpdateResponse updateIssue(@PathVariable Long id, @RequestBody IssueUpdateRequest issueUpdateRequest, @AuthenticatedUserId String userId) {
         log.debug("Update issue with \n{}", issueUpdateRequest);
 
         Issue updated = issueService.updateIssue(id, issueUpdateRequest, userId);
 
-        return showIssue(updated.getId());
+        return new IssueUpdateResponse(getPreviewOf(updated) , showIssue(updated.getId()));
     }
 
     @Authenticate
@@ -112,7 +109,7 @@ public class IssueController {
         return IssueShowResponse.of(
                 issue,
                 authorName,
-                userService.getAssigneeNameAtIssue(issue),
+                userService.getAssigneeInfoAtIssue(issue),
                 labelService.getLabelsAyIssue(issue),
                 milestoneService.getMilestoneAtIssue(issue),
                 commentService.getCommentsAtIssue(issue.getId()));
