@@ -38,6 +38,7 @@ pipeline {
                     // Change directory to the backend directory
                     dir('be/issue_tracker') {
                         // Build the backend using Gradle
+                        sh 'chmod +x ./gradlew'
                         sh './gradlew build'
                     }
                 }
