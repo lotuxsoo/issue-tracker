@@ -10,6 +10,13 @@ pipeline {
     }
 
     stages {
+        stage('GitHub Clone') {
+            steps {
+                // GitHub에서 소스 코드를 가져옴
+                git branch: 'deploy', credentialsId: 'mytoken', url: 'https://github.com/lotuxsoo/issue-tracker'
+            }
+        }
+
         stage('Determine Deployment Color') {
             steps {
                 script {
@@ -36,7 +43,7 @@ pipeline {
             steps {
                 script {
                     def commitId = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
-                   docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS) {
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS) {
                         docker.image("${DOCKER_IMAGE}:${commitId}").push()
                     }
                 }
@@ -80,3 +87,4 @@ pipeline {
             }
         }
     }
+}
