@@ -146,6 +146,54 @@ class NetworkManager {
         }
     }
     
+    func updateIssue(issueId: Int, issueRequest: IssueCreationRequest, completion: @escaping (Result<UpdateIssueResponse, Error>) -> Void) {
+        guard let url = URL(string: URLDefines.issue + "/\(issueId)") else {
+            completion(.failure(NetworkError.invalidURL))
+            return
+        }
+        guard let token = token else {
+            completion(.failure(NetworkError.unauthorized))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = HTTPMethod.patch.rawValue
+        request.addValue(token, forHTTPHeaderField: "Authorization")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            let jsonData = try JSONEncoder().encode(issueRequest)
+            request.httpBody = jsonData
+        } catch {
+            completion(.failure(NetworkError.jsonEncodingFailed))
+            return
+        }
+        
+        httpManager.sendRequest(request) { data, response, error in
+            if let error = error {
+                completion(.failure(NetworkError.networkFailed(error)))
+                return
+            }
+            
+            guard let data = data, let httpResponse = response else {
+                completion(.failure(NetworkError.noData))
+                return
+            }
+            
+            guard (200..<300).contains(httpResponse.statusCode) else {
+                completion(.failure(NetworkError.invalidResponse(httpResponse.statusCode)))
+                return
+            }
+            
+            do {
+                let decodedIssue = try JSONDecoder().decode(UpdateIssueResponse.self, from: data)
+                completion(.success(decodedIssue))
+            } catch {
+                completion(.failure(NetworkError.jsonDecodingFailed))
+            }
+        }
+    }
+    
     func createIssue(issueRequest: IssueCreationRequest, completion: @escaping (Result<Issue, Error>) -> Void) {
         guard let url = URL(string: URLDefines.issue) else {
             completion(.failure(NetworkError.invalidURL))

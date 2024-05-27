@@ -12,6 +12,7 @@ class IssueDetailMoreViewController: UIViewController {
     static let identifier: String = "IssueDetailMoreViewController"
     
     var issueModel: IssueModel!
+    var issueId: Int?
     private var selectedLabels: [LabelResponse] = []
     private var selectedMilestone: CurrentMilestone?
     
@@ -29,6 +30,25 @@ class IssueDetailMoreViewController: UIViewController {
         setupCollectionView()
         fetchIssueDetail()
         setupNavigationBar()
+        registerForNotifications()
+    }
+    
+    private func registerForNotifications() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleIssueUpdated),
+                                               name: IssueModel.Notifications.issueUpdated,
+                                               object: nil
+        )
+    }
+    
+    @objc private func handleIssueUpdated(notification: Notification) {
+        if let updatedIssueDetail = notification.object as? IssueDetailResponse {
+            selectedLabels = updatedIssueDetail.labels
+            selectedMilestone = updatedIssueDetail.milestone
+        }
+        
+        self.labelCollectionView.reloadData()
+        self.milestoneCollectionView.reloadData()
     }
     
     private func setupCollectionView() {
@@ -43,15 +63,14 @@ class IssueDetailMoreViewController: UIViewController {
     
     private func fetchIssueDetail() {
         if let issueDetail = issueModel.issueDetail {
-            guard let labels = issueDetail.labels, let milestone = issueDetail.milestone else {
+            selectedLabels = issueDetail.labels
+            labelCollectionView.reloadData()
+            guard let milestone = issueDetail.milestone else {
                 return
             }
-            
-            selectedLabels = labels
             selectedMilestone = milestone
+            milestoneCollectionView.reloadData()
         }
-        labelCollectionView.reloadData()
-        milestoneCollectionView.reloadData()
     }
     
     private func setupNavigationBar() {
@@ -81,6 +100,15 @@ class IssueDetailMoreViewController: UIViewController {
     }
 
     @IBAction func editButtonTapped(_ sender: Any) {
+        let issueEditorVC = IssueEditorViewController(nibName: IssueEditorViewController.identifier, bundle: nil)
+        issueEditorVC.issueModel = self.issueModel
+        issueEditorVC.issueId = self.issueId
+        issueEditorVC.isEditingMode = true
+        
+        let navigationController = UINavigationController(rootViewController: issueEditorVC)
+        navigationController.modalPresentationStyle = .fullScreen
+        
+        self.present(navigationController, animated: true)
     }
     
     @IBAction func closeButtonTapped(_ sender: Any) {
@@ -106,7 +134,7 @@ extension IssueDetailMoreViewController: UICollectionViewDataSource {
                 return UICollectionViewCell()
             }
             
-            cell.configure(with: selectedLabels[indexPath.row])
+            cell.configure(with: selectedLabels[indexPath.item])
             return cell
         } else if collectionView == milestoneCollectionView {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MilestoneCollectionViewCell.identifier, for: indexPath) as? MilestoneCollectionViewCell else {

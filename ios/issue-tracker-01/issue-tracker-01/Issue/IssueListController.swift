@@ -26,7 +26,7 @@ class IssueListController: UIViewController {
     private func registerForNotifications() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handleIssueUpdated),
-                                               name: IssueModel.Notifications.issueCreated,
+                                               name: IssueModel.Notifications.issueUpdated,
                                                object: nil
         )
     }
@@ -72,7 +72,10 @@ class IssueListController: UIViewController {
         let issueEditorVC = IssueEditorViewController(nibName: IssueEditorViewController.identifier, bundle: nil)
         issueEditorVC.issueModel = self.issueModel
         
-        navigationController?.pushViewController(issueEditorVC, animated: true)
+        let navigationController = UINavigationController(rootViewController: issueEditorVC)
+        navigationController.modalPresentationStyle = .fullScreen
+        
+        present(navigationController, animated: true)
     }
 }
 
@@ -128,7 +131,6 @@ extension IssueListController: UITableViewDataSource, UITableViewDelegate {
                 }
                 completionHandler(success)
             }
-            
         }
         
         let config = UISwipeActionsConfiguration(actions: [deleteAction, closeAction])

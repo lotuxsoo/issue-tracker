@@ -27,10 +27,23 @@ class IssueDetailViewController: UIViewController {
         setupNavigationBar()
         setupTableView()
         bindModel()
+        registerForNotifications()
         
         if let issueId = issueId {
             self.fetchIssueDetail(issueId: issueId)
         }
+    }
+    
+    private func registerForNotifications() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleIssueUpdated),
+                                               name: IssueModel.Notifications.issueUpdated,
+                                               object: nil
+        )
+    }
+    
+    @objc private func handleIssueUpdated(notification: Notification) {
+        self.tableView.reloadData()
     }
     
     private func setupTableView() {
@@ -77,6 +90,7 @@ class IssueDetailViewController: UIViewController {
     @objc private func moreButtonTapped() {
         let detailMoreVC = IssueDetailMoreViewController(nibName: IssueDetailMoreViewController.identifier, bundle: nil)
         detailMoreVC.issueModel = self.issueModel
+        detailMoreVC.issueId = self.issueId
         
         let navigationController = UINavigationController(rootViewController: detailMoreVC)
         navigationController.modalPresentationStyle = .pageSheet

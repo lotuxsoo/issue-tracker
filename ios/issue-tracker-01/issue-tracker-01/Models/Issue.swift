@@ -21,8 +21,8 @@ struct IssueDetailResponse: Codable {
     let author: String
     let lastModifiedAt: String
     let status: String
-    let assignees: [String]
-    let labels: [LabelResponse]?
+    let assignees: [AssigneeResponse]
+    let labels: [LabelResponse]
     let milestone: CurrentMilestone?
     let comments: [Comment]
 }
@@ -43,4 +43,9 @@ struct IssueCreationRequest: Codable {
     let assigneeIds: [String]
     let labelIds: [Int]
     let milestoneId: Int?
+}
+
+struct UpdateIssueResponse: Codable {
+    let preview: Issue
+    let detail: IssueDetailResponse
 }

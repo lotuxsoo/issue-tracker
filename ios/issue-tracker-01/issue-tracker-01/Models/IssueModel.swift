@@ -11,7 +11,7 @@ import Combine
 class IssueModel: BaseModel<Issue> {
     
     enum Notifications {
-        static let issueCreated = Notification.Name("issueCreated")
+        static let issueUpdated = Notification.Name("issueUpdated")
     }
     
     @Published private(set) var issueDetail: IssueDetailResponse?
@@ -89,9 +89,28 @@ class IssueModel: BaseModel<Issue> {
             switch result {
             case .success(let issue):
                 self.appendItem(issue)
-                NotificationCenter.default.post(name: Self.Notifications.issueCreated, object: self)
+                NotificationCenter.default.post(name: Self.Notifications.issueUpdated, object: self)
                 completion(true)
             case .failure(let error):
+                print("[ createIsuue ]: \(error)")
+                completion(false)
+            }
+        }
+    }
+    
+    func updateIssue(at issueId: Int?, issueRequest: IssueCreationRequest, completion: @escaping (Bool) -> Void) {
+        guard let issueId = issueId else { return }
+        NetworkManager.shared.updateIssue(issueId: issueId, issueRequest: issueRequest) { result in
+            switch result {
+            case .success(let updateResponse):
+                if let index = self.items.firstIndex(where: { $0.id == updateResponse.preview.id }) {
+                    self.updateItem(at: index, updateResponse.preview)
+                }
+                self.issueDetail = updateResponse.detail
+                NotificationCenter.default.post(name: Self.Notifications.issueUpdated, object: self.issueDetail)
+                completion(true)
+            case .failure(let error):
+                print("[ updateIssue ]: \(error)")
                 completion(false)
             }
         }

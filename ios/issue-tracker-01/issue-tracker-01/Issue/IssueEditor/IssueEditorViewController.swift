@@ -18,10 +18,15 @@ class IssueEditorViewController: UIViewController {
     @IBOutlet weak var descriptionField: UITextView!
     
     var issueModel: IssueModel!
+    var issueId: Int?
+    var isEditingMode: Bool = false
     
     private var selectedAssignees: [AssigneeResponse] = []
     private var selectedLabels: [LabelResponse] = []
     private var selectedMilestone: CurrentMilestone?
+    
+    private var originalTitle: String = ""
+    private var originalDescription: String = ""
     
     private let placeholderText = "설명을 입력해주세요"
     
@@ -35,6 +40,28 @@ class IssueEditorViewController: UIViewController {
         setupNavigationBar()
         setupTextFields()
         setupObservers()
+        
+        if isEditingMode {
+            populateEditingData()
+            descriptionField.isEditable = false
+        }
+    }
+    
+    private func populateEditingData() {
+        guard let issueDetail = issueModel.issueDetail else {
+            return
+        }
+        if let issue = issueModel.items.first(where: { $0.id == issueDetail.id }) {
+            originalTitle = issueDetail.title
+            originalDescription = issue.comment ?? ""
+            
+            titleField.text = originalTitle
+            descriptionField.text = "( 코멘트 변경불가 )" + originalDescription
+            selectedAssignees = issueDetail.assignees
+            selectedLabels = issueDetail.labels
+            selectedMilestone = issueDetail.milestone
+            tableView.reloadData()
+        }
     }
     
     private func setupTextFields() {
@@ -65,8 +92,8 @@ class IssueEditorViewController: UIViewController {
             }
             selectedAssignees = assignees
             tableView.reloadData()
+            updateSaveButtonState()
         }
-        
     }
     
     @objc private func handleUpdatedLabels(_ notification: Notification) {
@@ -79,6 +106,7 @@ class IssueEditorViewController: UIViewController {
             }
             selectedLabels = labels
             tableView.reloadData()
+            updateSaveButtonState()
         }
     }
     
@@ -86,6 +114,7 @@ class IssueEditorViewController: UIViewController {
         if let milestone = notification.object as? CurrentMilestone {
             selectedMilestone = milestone
             tableView.reloadData()
+            updateSaveButtonState()
         }
     }
     
@@ -129,7 +158,7 @@ class IssueEditorViewController: UIViewController {
     }
     
     @objc private func backButtonTapped() {
-        navigationController?.popViewController(animated: true)
+        navigationController?.dismiss(animated: true)
     }
     
     @objc private func saveButtonTapped() {
@@ -148,19 +177,29 @@ class IssueEditorViewController: UIViewController {
                                                 labelIds: labelIds,
                                                 milestoneId: milestoneId
         )
-        
-        issueModel.createIsuue(issueRequest: issueRequest) { [weak self] success in
-            if success {
-                self?.navigationController?.popViewController(animated: true)
-            } else {
-                self?.showCreationFailedAlert()
+
+        if isEditingMode {
+            issueModel.updateIssue(at: issueId, issueRequest: issueRequest) { [weak self] success in
+                if success {
+                    self?.navigationController?.dismiss(animated: true)
+                } else {
+                    self?.showCreationFailedAlert()
+                }
+            }
+        } else {
+            issueModel.createIsuue(issueRequest: issueRequest) { [weak self] success in
+                if success {
+                    self?.navigationController?.dismiss(animated: true)
+                } else {
+                    self?.showCreationFailedAlert()
+                }
             }
         }
     }
     
     private func showCreationFailedAlert() {
-        let alertController = UIAlertController(title: "이슈 생성 실패",
-                                                message: "이슈 생성에 문제가 발생하였습니다. 다시 시도해 주세요.", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "이슈 저장 실패",
+                                                message: "이슈 저장에 문제가 발생하였습니다. 다시 시도해 주세요.", preferredStyle: .alert)
         
         let retryAction = UIAlertAction(title: "재시도", style: .default) { _ in
             self.saveButtonTapped()
@@ -294,6 +333,15 @@ extension IssueEditorViewController: UITextViewDelegate {
         let descriptionText = descriptionField.text ?? ""
         let isDescriptionEmpty = descriptionText.isEmpty || descriptionText == placeholderText
         
-        navigationItem.rightBarButtonItem?.isEnabled = !titleText.isEmpty && !isDescriptionEmpty
+        if isEditingMode {
+            let isTitleChanged = titleText != originalTitle
+            let areAssigneesChanged = selectedAssignees != issueModel.issueDetail?.assignees
+            let areLabelsChanged = selectedLabels != issueModel.issueDetail?.labels
+            let isMilestoneChanged = selectedMilestone?.id != issueModel.issueDetail?.milestone?.id
+            
+            navigationItem.rightBarButtonItem?.isEnabled = isTitleChanged || areAssigneesChanged || areLabelsChanged || isMilestoneChanged
+        } else {
+            navigationItem.rightBarButtonItem?.isEnabled = !titleText.isEmpty && !isDescriptionEmpty
+        }
     }
 }

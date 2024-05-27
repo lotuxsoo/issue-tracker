@@ -95,7 +95,7 @@ extension IssueTableCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 
         let tmpLabel: UILabel = UILabel()
-        let padding: CGFloat = 40
+        let padding: CGFloat = 20
         tmpLabel.applyStyle(fontManager: FontManager(weight: .bold, size: .medium), textColor: .gray50)
         tmpLabel.text = lables?[indexPath.item].name
         return CGSize(width: tmpLabel.intrinsicContentSize.width + padding, height: 24)
