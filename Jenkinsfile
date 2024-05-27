@@ -60,7 +60,6 @@ pipeline {
                     sed -i 's|tndus5383/docker_repository:latest|tndus5383/docker_repository:${commitId}|' docker-compose.yml
                     """
 
-                    // Stop the currently running container of the new color
                     sh "docker-compose stop ${newColor} || true"
                     sh "docker-compose rm -f ${newColor} || true"
 
