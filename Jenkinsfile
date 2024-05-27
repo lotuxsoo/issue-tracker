@@ -7,6 +7,7 @@ pipeline {
         BLUE_PORT = 8081
         GREEN_PORT = 8082
         CURRENT_COLOR = ""
+        DOCKER_HOST = "unix:///var/run/docker.sock"
     }
 
     stages {
