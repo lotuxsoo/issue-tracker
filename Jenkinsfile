@@ -36,7 +36,7 @@ pipeline {
             steps {
                 script {
                     // Change directory to the backend directory
-                    dir('issue-tracker/be/issue_tracker') {
+                    dir('be/issue_tracker') {
                         // Build the backend using Gradle
                         sh './gradlew build'
                     }
