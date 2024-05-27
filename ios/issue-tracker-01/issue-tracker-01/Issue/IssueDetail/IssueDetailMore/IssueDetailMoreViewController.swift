@@ -36,7 +36,9 @@ class IssueDetailMoreViewController: UIViewController {
         milestoneCollectionView.register(UINib(nibName: MilestoneCollectionViewCell.identifier, bundle: .main), forCellWithReuseIdentifier: MilestoneCollectionViewCell.identifier)
         
         labelCollectionView.dataSource = self
+        labelCollectionView.delegate = self
         milestoneCollectionView.dataSource = self
+        milestoneCollectionView.delegate = self
     }
     
     private func fetchIssueDetail() {
@@ -117,5 +119,31 @@ extension IssueDetailMoreViewController: UICollectionViewDataSource {
             return cell
         }
         return UICollectionViewCell()
+    }
+}
+
+extension IssueDetailMoreViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let label: UILabel = {
+            let label = UILabel()
+            label.font = FontManager(weight: .medium, size: .small).font
+            return label
+        }()
+        
+        let padding: CGFloat = 20.0
+        
+        if collectionView == labelCollectionView {
+            let labelData = selectedLabels[indexPath.row]
+            label.text = labelData.name
+            let width = label.intrinsicContentSize.width + padding
+            return CGSize(width: width, height: 24)
+        } else if collectionView == milestoneCollectionView {
+            if let milestone = selectedMilestone {
+                label.text = milestone.title
+                let width = label.intrinsicContentSize.width + padding
+                return CGSize(width: width, height: 24)
+            }
+        }
+        return CGSize(width: 0, height: 0)
     }
 }
