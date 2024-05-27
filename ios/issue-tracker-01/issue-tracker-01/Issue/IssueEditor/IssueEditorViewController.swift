@@ -153,9 +153,23 @@ class IssueEditorViewController: UIViewController {
             if success {
                 self?.navigationController?.popViewController(animated: true)
             } else {
-                print("이슈 생성 실패")
+                self?.showCreationFailedAlert()
             }
         }
+    }
+    
+    private func showCreationFailedAlert() {
+        let alertController = UIAlertController(title: "이슈 생성 실패",
+                                                message: "이슈 생성에 문제가 발생하였습니다. 다시 시도해 주세요.", preferredStyle: .alert)
+        
+        let retryAction = UIAlertAction(title: "재시도", style: .default) { _ in
+            self.saveButtonTapped()
+        }
+        let cancelAction = UIAlertAction(title: "취소", style: .destructive)
+        
+        alertController.addAction(retryAction)
+        alertController.addAction(cancelAction)
+        present(alertController, animated: true)
     }
     
     @objc private func segmentChanged(_ sender: UISegmentedControl) {
