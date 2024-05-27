@@ -76,6 +76,7 @@
 		D6A632272BF5E045000E9C30 /* IssueDetailHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6A632262BF5E045000E9C30 /* IssueDetailHeaderView.swift */; };
 		D6B0825F2C043A2F00166890 /* MilestoneCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6B0825D2C043A2F00166890 /* MilestoneCollectionViewCell.swift */; };
 		D6B082602C043A2F00166890 /* MilestoneCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6B0825E2C043A2F00166890 /* MilestoneCollectionViewCell.xib */; };
+		D6B082632C045AE000166890 /* EditorOptionDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6B082622C045AE000166890 /* EditorOptionDataSource.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -168,6 +169,7 @@
 		D6A632262BF5E045000E9C30 /* IssueDetailHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssueDetailHeaderView.swift; sourceTree = "<group>"; };
 		D6B0825D2C043A2F00166890 /* MilestoneCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestoneCollectionViewCell.swift; sourceTree = "<group>"; };
 		D6B0825E2C043A2F00166890 /* MilestoneCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MilestoneCollectionViewCell.xib; sourceTree = "<group>"; };
+		D6B082622C045AE000166890 /* EditorOptionDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorOptionDataSource.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -388,12 +390,10 @@
 				D642E2652BF6182B00ACAE45 /* IssueEditorViewController.xib */,
 				D642E2682BF6EFD000ACAE45 /* EditorOptionCell.swift */,
 				D642E2692BF6EFD000ACAE45 /* EditorOptionCell.xib */,
+				D6B082622C045AE000166890 /* EditorOptionDataSource.swift */,
 				D61AACB02C00497700D35399 /* EditorOptionLabelCell.swift */,
 				D61AACB12C00497700D35399 /* EditorOptionLabelCell.xib */,
-				D642E26C2BF717BB00ACAE45 /* EditorOptionViewController.swift */,
-				D642E26D2BF717BB00ACAE45 /* EditorOptionViewController.xib */,
-				D61AACAA2BFF3A9400D35399 /* SelectedOptionCell.swift */,
-				D61AACAB2BFF3A9400D35399 /* SelectedOptionCell.xib */,
+				D6B082612C045AC400166890 /* OptionEditor */,
 			);
 			path = IssueEditor;
 			sourceTree = "<group>";
@@ -407,6 +407,17 @@
 				D6B0825E2C043A2F00166890 /* MilestoneCollectionViewCell.xib */,
 			);
 			path = IssueDetailMore;
+			sourceTree = "<group>";
+		};
+		D6B082612C045AC400166890 /* OptionEditor */ = {
+			isa = PBXGroup;
+			children = (
+				D642E26C2BF717BB00ACAE45 /* EditorOptionViewController.swift */,
+				D642E26D2BF717BB00ACAE45 /* EditorOptionViewController.xib */,
+				D61AACAA2BFF3A9400D35399 /* SelectedOptionCell.swift */,
+				D61AACAB2BFF3A9400D35399 /* SelectedOptionCell.xib */,
+			);
+			path = OptionEditor;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -625,6 +636,7 @@
 				D611795A2BEC62F100E7C267 /* MilestoneListController.swift in Sources */,
 				D6B0825F2C043A2F00166890 /* MilestoneCollectionViewCell.swift in Sources */,
 				D611795C2BEC630300E7C267 /* ProfileController.swift in Sources */,
+				D6B082632C045AE000166890 /* EditorOptionDataSource.swift in Sources */,
 				D61AACA32BFDE9E200D35399 /* MilestoneModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

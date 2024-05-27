@@ -79,6 +79,7 @@ class IssueDetailViewController: UIViewController {
         detailMoreVC.issueModel = self.issueModel
         
         let navigationController = UINavigationController(rootViewController: detailMoreVC)
+        navigationController.modalPresentationStyle = .pageSheet
         
         if let sheet = navigationController.sheetPresentationController {
             sheet.detents = [.medium()]
@@ -86,7 +87,6 @@ class IssueDetailViewController: UIViewController {
             sheet.preferredCornerRadius = 12
         }
         
-        navigationController.modalPresentationStyle = .pageSheet
         present(navigationController, animated: true)
     }
 }
