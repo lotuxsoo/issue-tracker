@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('docker-hub-credentials')
+        DOCKERHUB_CREDENTIALS = credentials('docker_token')
         DOCKER_IMAGE = "tndus5383/docker_repository"
         BLUE_PORT = 8081
         GREEN_PORT = 8082
