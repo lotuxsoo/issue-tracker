@@ -34,10 +34,10 @@ class LabelCell: UICollectionViewCell {
         self.titleLabel.backgroundColor = .clear
     }
     
-    func setLabel(_ data: LabelResponse) {
-        let color = UIColor(hex: data.color)
+    func configure(with label: LabelResponse) {
+        let color = UIColor(hex: label.color)
         
-        self.titleLabel.text = data.name
+        self.titleLabel.text = label.name
         self.titleLabel.backgroundColor = color
         self.titleLabel.textColor = color.isDarkColor ? .gray50 : .gray900
     }

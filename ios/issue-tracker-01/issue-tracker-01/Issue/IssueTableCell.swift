@@ -84,8 +84,7 @@ extension IssueTableCell: UICollectionViewDataSource, UICollectionViewDelegate {
             return UICollectionViewCell() }
         
         if let data = self.lables?[indexPath.item] {
-            
-            cell.setLabel(data)
+            cell.configure(with: data)
         }
         
         return cell

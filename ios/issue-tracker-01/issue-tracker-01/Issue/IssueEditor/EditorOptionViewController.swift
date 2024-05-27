@@ -35,7 +35,7 @@ class EditorOptionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureNavigationBar()
+        setupNavigationBar()
         setupTableView()
     }
     
@@ -60,7 +60,7 @@ class EditorOptionViewController: UIViewController {
         tableView.delegate = self
     }
     
-    private func configureNavigationBar() {
+    private func setupNavigationBar() {
         let backButton = UIBarButtonItem(image: UIImage(systemName: "chevron.left"),
                                          style: .plain,
                                          target: self,

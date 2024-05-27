@@ -32,7 +32,7 @@ class IssueEditorViewController: UIViewController {
         
         setupTableView()
         configureFont()
-        configureNavigationBar()
+        setupNavigationBar()
         setupTextFields()
         setupObservers()
     }
@@ -100,7 +100,7 @@ class IssueEditorViewController: UIViewController {
         self.optionInfoLabel.applyStyle(fontManager: FontManager(weight: .semibold, size: .medium), textColor: .gray800)
     }
 
-    private func configureNavigationBar() {
+    private func setupNavigationBar() {
         let backButton = UIBarButtonItem(image: UIImage(systemName: "chevron.left"),
                                          style: .plain,
                                          target: self,

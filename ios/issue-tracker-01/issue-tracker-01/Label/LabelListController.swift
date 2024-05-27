@@ -77,7 +77,7 @@ extension LabelListController: UITableViewDataSource, UITableViewDelegate {
         }
         
         if let label = labelModel.item(at: indexPath.row) {
-            cell.setLabel(label)
+            cell.configure(with: label)
         }
         
         return cell
