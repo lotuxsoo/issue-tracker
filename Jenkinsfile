@@ -12,7 +12,7 @@ pipeline {
         stage('Determine Deployment Color') {
             steps {
                 script {
-                    def response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://localhost", returnStdout: true).trim()
+                    def response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:8080", returnStdout: true).trim()
                     if (response == '200') {
                         CURRENT_COLOR = 'blue'
                     } else {
@@ -47,6 +47,7 @@ pipeline {
                 script {
                     def newColor = CURRENT_COLOR == 'blue' ? 'green' : 'blue'
                     def newPort = newColor == 'blue' ? BLUE_PORT : GREEN_PORT
+                    def commitId = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
 
                     // Update Docker Compose file with new image
                     sh """
