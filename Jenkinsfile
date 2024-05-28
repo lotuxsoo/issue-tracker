@@ -8,6 +8,9 @@ pipeline {
         GREEN_PORT = 8082
         CURRENT_COLOR = ""
         DOCKER_HOST = "unix:///var/run/docker.sock"
+        SSH_USER = "ubuntu" // SSH로 인스턴스에 접속할 사용자명
+        SSH_KEY_ID = "my-keypair" // Jenkins 자격 증명에 등록된 SSH 키의 ID
+        EC2_INSTANCE_IP = "3.36.70.238" // EC2 인스턴스의 IP 주소
     }
 
     stages {
@@ -68,8 +71,8 @@ pipeline {
        stage('Deploy to New Color') {
            steps {
                script {
-                   // 환경 변수 설정
-                   env.PATH = "/usr/local/bin:${env.PATH}"
+                   // SSH 키를 사용하여 인스턴스에 접속
+                   sshCommand remote: "${env.SSH_USER}@${env.EC2_INSTANCE_IP}", command: "ls -al", sshKey: env.SSH_KEY_ID
 
                    def newColor = CURRENT_COLOR == 'blue' ? 'green' : 'blue'
                    def newPort = newColor == 'blue' ? BLUE_PORT : GREEN_PORT
