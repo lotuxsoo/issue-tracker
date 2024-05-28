@@ -21,6 +21,12 @@ class IssueModel: BaseModel<Issue> {
         return self.issueDetail?.comments
     }
     
+    private func removeItem(withID issueId: Int) {
+        if let index = items.firstIndex(where: { $0.id == issueId }) {
+            self.removeItem(at: index)
+        }
+    }
+    
     func fetchIssueDetail(issueId: Int) {
         NetworkManager.shared.fetchIssueDetail(issueId: issueId) { [weak self] issueDetail in
             DispatchQueue.main.async {
@@ -50,16 +56,10 @@ class IssueModel: BaseModel<Issue> {
         NetworkManager.shared.fetchSelectedOption(from: .milestone, decodingType: [CurrentMilestone].self, completion: completion)
     }
     
-    func deleteIssue(at index: Int, completion: @escaping (Bool) -> Void) {
-        guard let issue = item(at: index) else {
-            completion(false)
-            return
-        }
-        
-        NetworkManager.shared.deleteIssue(issueId: issue.id) { [weak self] success in
-            
+    func deleteIssue(issueId: Int, completion: @escaping (Bool) -> Void) {
+        NetworkManager.shared.deleteIssue(issueId: issueId) { [weak self] success in
             if success {
-                self?.removeItem(at: index)
+                self?.removeItem(withID: issueId)
                 completion(true)
             } else {
                 completion(false)
@@ -67,16 +67,10 @@ class IssueModel: BaseModel<Issue> {
         }
     }
     
-    func closeIssue(at index: Int, completion: @escaping (Bool) -> Void) {
-        guard let issue = item(at: index) else {
-            completion(false)
-            return
-        }
-        
-        NetworkManager.shared.closeIssue(issueId: issue.id) { [weak self] success in
-            
+    func closeIssue(issueId: Int, completion: @escaping (Bool) -> Void) {
+        NetworkManager.shared.closeIssue(issueId: issueId) { [weak self] success in
             if success {
-                self?.removeItem(at: index)
+                self?.removeItem(withID: issueId)
                 completion(true)
             } else {
                 completion(false)

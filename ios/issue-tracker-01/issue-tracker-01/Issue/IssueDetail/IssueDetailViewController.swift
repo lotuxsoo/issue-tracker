@@ -91,6 +91,7 @@ class IssueDetailViewController: UIViewController {
         let detailMoreVC = IssueDetailMoreViewController(nibName: IssueDetailMoreViewController.identifier, bundle: nil)
         detailMoreVC.issueModel = self.issueModel
         detailMoreVC.issueId = self.issueId
+        detailMoreVC.delegate = self
         
         let navigationController = UINavigationController(rootViewController: detailMoreVC)
         navigationController.modalPresentationStyle = .pageSheet
@@ -135,5 +136,11 @@ extension IssueDetailViewController: UITableViewDataSource, UITableViewDelegate 
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 96
+    }
+}
+
+extension IssueDetailViewController: IssueDetailViewControllerDelegate {
+    func didCompleteTask() {
+        navigationController?.popViewController(animated: true)
     }
 }

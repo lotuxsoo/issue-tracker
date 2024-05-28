@@ -106,7 +106,7 @@ extension IssueListController: UITableViewDataSource, UITableViewDelegate {
                 return
             }
             
-            self.issueModel.deleteIssue(at: indexPath.row) { success in
+            self.issueModel.deleteIssue(issueId: issue.id) { success in
                 if success {
                     tableView.deleteRows(at: [indexPath], with: .automatic)
                     print("\(issue.id) 삭제")
@@ -124,7 +124,7 @@ extension IssueListController: UITableViewDataSource, UITableViewDelegate {
                 return
             }
             
-            self.issueModel.closeIssue(at: indexPath.row) { success in
+            self.issueModel.closeIssue(issueId: issue.id) { success in
                 if success {
                     tableView.deleteRows(at: [indexPath], with: .automatic)
                     print("\(issue.id) 닫기")

@@ -7,9 +7,15 @@
 
 import UIKit
 
+protocol IssueDetailViewControllerDelegate: AnyObject {
+    func didCompleteTask()
+}
+
 class IssueDetailMoreViewController: UIViewController {
     
     static let identifier: String = "IssueDetailMoreViewController"
+    
+    weak var delegate: IssueDetailViewControllerDelegate?
     
     var issueModel: IssueModel!
     var issueId: Int?
@@ -112,9 +118,40 @@ class IssueDetailMoreViewController: UIViewController {
     }
     
     @IBAction func closeButtonTapped(_ sender: Any) {
+        guard let issueId = issueId else { return }
+        self.issueModel.closeIssue(issueId: issueId) { [weak self] success in
+            if success {
+                NotificationCenter.default.post(name: IssueModel.Notifications.issueUpdated, object: self)
+                self?.dismiss(animated: true, completion: {
+                    self?.delegate?.didCompleteTask()
+                })
+            } else {
+                self?.showAlertWith(message: "이슈 닫기에 실패하였습니다.", actionTitle: "확인")
+            }
+        }
     }
     
     @IBAction func deleteButtonTapped(_ sender: Any) {
+        guard let issueId = issueId else { return }
+        self.issueModel.deleteIssue(issueId: issueId) { [weak self] success in
+            if success {
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: IssueModel.Notifications.issueUpdated, object: self)
+                    self?.dismiss(animated: true, completion: {
+                        self?.delegate?.didCompleteTask()
+                    })
+                }
+            } else {
+                self?.showAlertWith(message: "이슈 삭제에 실패하였습니다.", actionTitle: "확인")
+            }
+        }
+    }
+    
+    private func showAlertWith(message: String, actionTitle: String) {
+        let alertController = UIAlertController(title: "알림", message: message, preferredStyle: .alert)
+        let action = UIAlertAction(title: actionTitle, style: .default)
+        alertController.addAction(action)
+        present(alertController, animated: true)
     }
 }
 
