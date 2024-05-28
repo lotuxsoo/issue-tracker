@@ -72,7 +72,6 @@ public class IssueController {
         log.debug("Update issue with \n{}", issueUpdateRequest);
 
         Issue updated = issueService.updateIssue(id, issueUpdateRequest, userId);
-
         return new IssueUpdateResponse(getPreviewOf(updated) , showIssue(updated.getId()));
     }
 

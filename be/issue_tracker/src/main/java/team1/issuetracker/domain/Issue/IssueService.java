@@ -4,12 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.StringJoiner;
+import java.util.*;
 
 import team1.issuetracker.domain.Issue.dto.IssueUpdateRequest;
+import team1.issuetracker.domain.ResultWithError;
 import team1.issuetracker.domain.user.auth.Authorizable;
 import team1.issuetracker.domain.user.auth.exception.AuthorizeException;
 
@@ -72,19 +70,18 @@ public class IssueService implements Authorizable<Issue, Long> {
         return optionalIssue.get();
     }
 
-    public void closeIssues(List<Long> issueIds, String userId) {
+    public ResultWithError<List<Long>> closeIssues(List<Long> issueIds, String userId) {
+        List<Long> result = new ArrayList<>();
         StringJoiner exceptionMessages = new StringJoiner("\n");
         issueIds.forEach(id -> {
             try {
                 closeIssue(id, userId);
+                result.add(id);
             } catch (RuntimeException exception) {
                 exceptionMessages.add(exception.getMessage());
             }
         });
-
-        if (exceptionMessages.length() != 0) {
-            throw new RuntimeException(exceptionMessages.toString());
-        }
+        return new ResultWithError<>(result, exceptionMessages.toString());
     }
 
     @Override

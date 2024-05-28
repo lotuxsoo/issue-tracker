@@ -13,7 +13,6 @@ import team1.issuetracker.domain.user.auth.annotation.AuthenticatedUserId;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.NoSuchElementException;
-
 @Aspect
 @Component
 public class AuthenticatorAspect {

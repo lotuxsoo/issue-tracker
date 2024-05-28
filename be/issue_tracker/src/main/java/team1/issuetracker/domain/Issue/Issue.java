@@ -1,9 +1,8 @@
 package team1.issuetracker.domain.Issue;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,9 +13,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
-import team1.issuetracker.domain.Issue.dto.IssueMakeRequest;
-import team1.issuetracker.domain.Issue.ref.AssigneeRef;
-import team1.issuetracker.domain.Issue.ref.LabelRef;
+import team1.issuetracker.domain.Issue.ref.UserRefId;
+import team1.issuetracker.domain.Issue.ref.LabelRefId;
 
 @Table("ISSUE")
 @Getter
@@ -31,9 +29,9 @@ public class Issue {
     private Long milestoneId;
     private String title;
     @MappedCollection(idColumn = "ISSUE_ID")
-    private Set<LabelRef> issueHasLabel;
+    private Set<LabelRefId> issueHasLabel;
     @MappedCollection(idColumn = "ISSUE_ID")
-    private Set<AssigneeRef> issueAssignees;
+    private Set<UserRefId> issueAssignees;
     private IssueStatus status;
 
     @LastModifiedDate

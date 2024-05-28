@@ -2,16 +2,13 @@ package team1.issuetracker.domain.user;
 
 import org.springframework.stereotype.Service;
 import team1.issuetracker.domain.Issue.Issue;
-import team1.issuetracker.domain.Issue.ref.AssigneeRef;
+import team1.issuetracker.domain.Issue.ref.UserRefId;
 import team1.issuetracker.domain.user.dto.AssigneeInfo;
 import team1.issuetracker.domain.user.dto.LoginInfo;
 import team1.issuetracker.domain.user.dto.RegisterInfo;
 import team1.issuetracker.domain.user.dto.UserInfoResponse;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -53,18 +50,19 @@ public class UserService {
     }
 
     public List<String> getAssigneeNameAtIssue(Issue issue) {
-        Set<AssigneeRef> issueAssignees = issue.getIssueAssignees();
+        Set<UserRefId> issueAssignees = issue.getIssueAssignees();
 
         return issueAssignees.stream()
-                .map(AssigneeRef::getUserId)
+                .map(UserRefId::getUserId)
                 .map(this::getNameById).toList();
     }
 
     public List<AssigneeInfo> getAssigneeInfoAtIssue(Issue issue){
-        Set<AssigneeRef> issueAssignees = issue.getIssueAssignees();
+        Set<UserRefId> issueAssignees = issue.getIssueAssignees();
 
         return issueAssignees.stream()
-                .map(AssigneeRef::getUserId)
+                .sorted(Comparator.comparingInt(UserRefId::getSequence))
+                .map(UserRefId::getUserId)
                 .map(id -> new AssigneeInfo(id, getNameById(id))).toList();
     }
 
