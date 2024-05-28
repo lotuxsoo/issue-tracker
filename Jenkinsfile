@@ -11,6 +11,8 @@ pipeline {
         SSH_USER = "ubuntu" // SSH로 인스턴스에 접속할 사용자명
         SSH_KEY_ID = "my-keypair" // Jenkins 자격 증명에 등록된 SSH 키의 ID
         EC2_INSTANCE_IP = "3.36.70.238" // EC2 인스턴스의 IP 주소
+        ENCODED_DB_CONFIG = credentials('db-config.yml')
+        ENCODED_JWT = credentials('jwt.yml')
     }
 
     stages {
@@ -19,6 +21,22 @@ pipeline {
                 git branch: 'deploy',
                     credentialsId: 'github_token',
                     url: 'https://github.com/lotuxsoo/issue-tracker.git'
+            }
+        }
+
+         stage('Read Encoded Files') {
+            steps {
+                script {
+                    // db-config.yml 디코딩
+                    def encodedDbConfig = sh(script: "echo \${ENCODED_DB_CONFIG}", returnStdout: true).trim()
+                    def decodedDbConfig = sh(script: "echo \${encodedDbConfig} | base64 -d", returnStdout: true).trim()
+                    writeFile file: 'db_config.yml', text: decodedDbConfig
+
+                    // jwt.yml 디코딩
+                    def encodedJwt = sh(script: "echo \${ENCODED_JWT}", returnStdout: true).trim()
+                    def decodedJwt = sh(script: "echo \${encodedJwt} | base64 -d", returnStdout: true).trim()
+                    writeFile file: 'jwt.yml', text: decodedJwt
+                }
             }
         }
 
