@@ -50,8 +50,7 @@ pipeline {
             steps {
                 script {
                     sh 'docker --version'
-                    def commitId = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
-                    sh "docker build -t ${DOCKER_IMAGE}:${commitId} ."
+                    sh "docker build -t ${DOCKER_IMAGE}:latest ."
                 }
             }
         }
@@ -59,9 +58,8 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    def commitId = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
                     withDockerRegistry([url: 'https://index.docker.io/v1/', credentialsId: DOCKERHUB_CREDENTIALS]) {
-                        def dockerImage = docker.image("${DOCKER_IMAGE}:${commitId}")
+                        def dockerImage = docker.image("${DOCKER_IMAGE}:latest")
                         dockerImage.push()
                     }
                 }
@@ -75,23 +73,22 @@ pipeline {
                    sshagent(credentials: ['my-keypair']) {
                        sh '''
                        ssh -o StrictHostKeyChecking=no ubuntu@3.36.70.238 << 'EOF'
+                       cd /path/to/your/project # 실제 프로젝트 디렉토리로 변경
                        newColor=$(test "$CURRENT_COLOR" == 'blue' && echo 'green' || echo 'blue')
                        echo "New Color: $newColor"
-                       commitId=$(git rev-parse --short HEAD)
-                       echo "Commit ID: $commitId"
 
-                       # Start the new color container
+                       # Docker Compose 명령어 실행
+                       sed -i "s|tndus5383/docker_repository:latest|tndus5383/docker_repository:latest|" docker-compose.yml
+
+                       docker-compose stop $newColor || true
+                       docker-compose rm -f $newColor || true
+
                        docker-compose up -d $newColor
 
-                       # Update load balancer or proxy configuration
-                       # 이 부분은 실제 사용 중인 로드 밸런서나 프록시에 따라 달라질 수 있습니다.
-                       # 예를 들어, Nginx의 경우 다음과 같이 업데이트할 수 있습니다:
-                       # sudo sed -i "s|proxy_pass http://.*;|proxy_pass http://$newColor;|" /etc/nginx/sites-available/default
-                       # sudo nginx -t && sudo systemctl reload nginx
-
-                       # Stop and remove the old color container
-                       docker-compose stop $CURRENT_COLOR || true
-                       docker-compose rm -f $CURRENT_COLOR || true
+                       # Nginx 설정 업데이트
+                       sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
+                       sudo sed -i "s|proxy_pass http://.*;|proxy_pass http://$newColor;|" /etc/nginx/sites-available/default
+                       sudo nginx -t && sudo systemctl reload nginx
 
                        exit
                        EOF
