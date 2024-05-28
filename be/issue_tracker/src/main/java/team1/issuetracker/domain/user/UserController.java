@@ -1,6 +1,8 @@
 package team1.issuetracker.domain.user;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import team1.issuetracker.domain.user.auth.GithubLoginUtil;
 import team1.issuetracker.domain.user.dto.CheckDuplicateRequest;
 import team1.issuetracker.domain.user.dto.LoginInfo;
 import team1.issuetracker.domain.user.dto.RegisterInfo;
@@ -11,15 +13,12 @@ import java.util.NoSuchElementException;
 
 @RequestMapping("/user")
 @RestController
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
-
-    public UserController(UserService userService, JwtUtil jwtUtil) {
-        this.userService = userService;
-        this.jwtUtil = jwtUtil;
-    }
+    private final GithubLoginUtil githubLoginUtil;
 
     @PostMapping
     public void register(@RequestBody RegisterInfo registerInfo) throws IllegalArgumentException {
@@ -38,6 +37,12 @@ public class UserController {
     public String login(@RequestBody LoginInfo loginInfo) {
         if (!userService.authentication(loginInfo)) throw new IllegalArgumentException("로그인 정보가 유효하지 않습니다! ID와 비밀번호를 다시 확인해주세요!");
         return jwtUtil.generateToken(loginInfo.id());
+    }
+
+    @GetMapping("/login/github")
+    public String githubLogin(@RequestParam String code){
+        String id = githubLoginUtil.validateCode(code);
+        return id;
     }
 
     @GetMapping("/{id}")
