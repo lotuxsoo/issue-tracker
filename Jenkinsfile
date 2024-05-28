@@ -57,8 +57,11 @@ pipeline {
             steps {
                 script {
                     def commitId = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
+                    echo "Commit ID: ${commitId}"
                     docker.withRegistry('https://index.docker.io/v1/', 'docker_token') {
-                        docker.image("${DOCKER_IMAGE}:${commitId}").push()
+                        def image = docker.image("${DOCKER_IMAGE}:${commitId}")
+                        echo "Pushing image: ${image}"
+                        image.push()
                     }
                 }
             }
