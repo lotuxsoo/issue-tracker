@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('docker_token')
+        DOCKERHUB_CREDENTIALS = 'docker_token'
         DOCKER_IMAGE = "tndus5383/docker_repository"
         BLUE_PORT = 8081
         GREEN_PORT = 8082
@@ -63,8 +63,9 @@ pipeline {
             steps {
                 script {
                     def commitId = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
-                    docker.withRegistry('https://index.docker.io/v1/', 'docker_token') {
-                        docker.image("${DOCKER_IMAGE}:${commitId}").push()
+                    withDockerRegistry([credentialsId: DOCKERHUB_CREDENTIALS]) {
+                        def dockerImage = docker.image("${DOCKER_IMAGE}:${commitId}")
+                        dockerImage.push()
                     }
                 }
             }
