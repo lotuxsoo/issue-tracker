@@ -72,24 +72,28 @@ pipeline {
                    // SSH 키를 사용하여 인스턴스에 접속
                    sshagent(credentials: ['my-keypair']) {
                        sh '''
-                       ssh -o StrictHostKeyChecking=no ubuntu@3.36.70.238 << 'EOF'
-                       # 현재 디렉토리에서 작업 수행
-                       newColor=$(test "$CURRENT_COLOR" == 'blue' && echo 'green' || echo 'blue')
-                       echo "New Color: $newColor"
-                       commitId=$(git rev-parse --short HEAD)
-                       echo "Commit ID: $commitId"
+                       # Copy docker-compose.yml to the remote server's home directory
+                       scp -o StrictHostKeyChecking=no docker-compose.yml ${SSH_USER}@${EC2_INSTANCE_IP}:/home/${SSH_USER}/docker-compose.yml
 
-                       # Docker Compose 명령어 실행
-                       sed -i "s|tndus5383/docker_repository:latest|tndus5383/docker_repository:${commitId}|" docker-compose.yml
+                       # SSH into the remote server and execute deployment commands
+                       ssh -o StrictHostKeyChecking=no ${SSH_USER}@${EC2_INSTANCE_IP} << EOF
+                       cd /home/${SSH_USER}
+                       newColor=\$(test "$CURRENT_COLOR" == 'blue' && echo 'green' || echo 'blue')
+                       echo "New Color: \$newColor"
 
-                       docker-compose stop $newColor || true
-                       docker-compose rm -f $newColor || true
+                       # Update Docker Compose file with new image
+                       sed -i 's|tndus5383/docker_repository:.*|tndus5383/docker_repository:latest|' docker-compose.yml
 
-                       docker-compose up -d $newColor
+                       # Stop the currently running container of the new color
+                       docker-compose stop \$newColor || true
+                       docker-compose rm -f \$newColor || true
 
-                       # Nginx 설정 업데이트
+                       # Run the new container
+                       docker-compose up -d \$newColor
+
+                       # Update Nginx configuration
                        sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
-                       sudo sed -i "s|proxy_pass http://.*;|proxy_pass http://$newColor;|" /etc/nginx/sites-available/default
+                       sudo sed -i 's|proxy_pass http://.*;|proxy_pass http://\$newColor;|' /etc/nginx/sites-available/default
                        sudo nginx -t && sudo systemctl reload nginx
 
                        exit
