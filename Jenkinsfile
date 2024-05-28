@@ -81,7 +81,8 @@ pipeline {
                      echo "Commit ID: ${commitId}"
                      exit
                      EOF
-                     """
+                    """
+                    }
 
                    // Update Docker Compose file with new image
                    sh """
