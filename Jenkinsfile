@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     environment {
+        DOCKERHUB_CREDENTIALS = credentials('docker_token')
         DOCKER_IMAGE = "tndus5383/docker_repository"
         BLUE_PORT = 8081
         GREEN_PORT = 8082
@@ -18,6 +19,17 @@ pipeline {
             }
         }
 
+        stage('Build Backend') {
+            steps {
+                script {
+                    dir('be/issue_tracker') {
+                        sh 'chmod +x ./gradlew'
+                        sh './gradlew assemble --exclude-task test'
+                    }
+                }
+            }
+        }
+
         stage('Determine Deployment Color') {
             steps {
                 script {
@@ -31,28 +43,11 @@ pipeline {
             }
         }
 
-         stage('Build Backend') {
-            steps {
-                script {
-                    // Change directory to the backend directory
-                    dir('be/issue_tracker') {
-                        // Build the backend using Gradle
-                        sh 'chmod +x ./gradlew'
-                        sh './gradlew assemble --exclude-task test'
-                    }
-                }
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Check if Docker is installed
                     sh 'docker --version'
-
                     def commitId = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
-
-                    // Explicitly using sh to build the Docker image
                     sh "docker build -t ${DOCKER_IMAGE}:${commitId} ."
                 }
             }
@@ -62,7 +57,7 @@ pipeline {
             steps {
                 script {
                     def commitId = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
-                    docker.withRegistry([credentialsId: 'docker_token']) {
+                    docker.withRegistry('https://index.docker.io/v1/', 'docker_token') {
                         docker.image("${DOCKER_IMAGE}:${commitId}").push()
                     }
                 }
@@ -76,19 +71,12 @@ pipeline {
                     def newPort = newColor == 'blue' ? BLUE_PORT : GREEN_PORT
                     def commitId = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
 
-                    // Update Docker Compose file with new image
                     sh """
                     sed -i 's|tndus5383/docker_repository:latest|tndus5383/docker_repository:${commitId}|' docker-compose.yml
                     """
-
-                    // Stop the currently running container of the new color
                     sh "docker-compose stop ${newColor} || true"
                     sh "docker-compose rm -f ${newColor} || true"
-
-                    // Run the new container
                     sh "docker-compose up -d ${newColor}"
-
-                    // Update Nginx configuration
                     sh "sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak"
                     sh """
                         sudo sed -i 's|proxy_pass http://.*;|proxy_pass http://${newColor};|' /etc/nginx/sites-available/default
