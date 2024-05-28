@@ -73,15 +73,15 @@ pipeline {
                script {
                    // SSH 키를 사용하여 인스턴스에 접속
                    sshagent(credentials: ['my-keypair']) {
-                       sh """
-                       ssh -o StrictHostKeyChecking=no ubuntu@3.36.70.238 << 'EOF'
+                       sh '''
+                       ssh -o StrictHostKeyChecking=no ubuntu@3.36.70.238 << EOF
                        newColor=$(test "$CURRENT_COLOR" == 'blue' && echo 'green' || echo 'blue')
                        echo "New Color: $newColor"
                        commitId=$(git rev-parse --short HEAD)
                        echo "Commit ID: $commitId"
                        exit
-                       EOF
-                       """
+                        EOF
+                       '''
                    }
                }
            }
