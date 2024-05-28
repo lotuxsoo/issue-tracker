@@ -74,13 +74,27 @@ pipeline {
                    // SSH 키를 사용하여 인스턴스에 접속
                    sshagent(credentials: ['my-keypair']) {
                        sh '''
-                       ssh -o StrictHostKeyChecking=no ubuntu@3.36.70.238 << EOF
+                       ssh -o StrictHostKeyChecking=no ubuntu@3.36.70.238 << 'EOF'
                        newColor=$(test "$CURRENT_COLOR" == 'blue' && echo 'green' || echo 'blue')
                        echo "New Color: $newColor"
                        commitId=$(git rev-parse --short HEAD)
                        echo "Commit ID: $commitId"
+
+                       # Start the new color container
+                       docker-compose up -d $newColor
+
+                       # Update load balancer or proxy configuration
+                       # 이 부분은 실제 사용 중인 로드 밸런서나 프록시에 따라 달라질 수 있습니다.
+                       # 예를 들어, Nginx의 경우 다음과 같이 업데이트할 수 있습니다:
+                       # sudo sed -i "s|proxy_pass http://.*;|proxy_pass http://$newColor;|" /etc/nginx/sites-available/default
+                       # sudo nginx -t && sudo systemctl reload nginx
+
+                       # Stop and remove the old color container
+                       docker-compose stop $CURRENT_COLOR || true
+                       docker-compose rm -f $CURRENT_COLOR || true
+
                        exit
-                        EOF
+                       EOF
                        '''
                    }
                }
