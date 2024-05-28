@@ -35,9 +35,7 @@ pipeline {
         stage('Build Backend') {
             steps {
                 script {
-                    // Change directory to the backend directory
                     dir('be/issue_tracker') {
-                        // Build the backend using Gradle
                         sh 'chmod +x ./gradlew'
                         sh './gradlew assemble --exclude-task test'
                     }
@@ -48,12 +46,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Check if Docker is installed
                     sh 'docker --version'
-
                     def commitId = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
-
-                    // Explicitly using sh to build the Docker image
                     sh "docker build -t ${DOCKER_IMAGE}:${commitId} ."
                 }
             }
@@ -63,7 +57,7 @@ pipeline {
             steps {
                 script {
                     def commitId = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
-                    withDockerRegistry([credentialsId: DOCKERHUB_CREDENTIALS]) {
+                    withDockerRegistry([url: 'https://index.docker.io/v1/', credentialsId: DOCKERHUB_CREDENTIALS]) {
                         def dockerImage = docker.image("${DOCKER_IMAGE}:${commitId}")
                         dockerImage.push()
                     }
@@ -74,6 +68,9 @@ pipeline {
         stage('Deploy to New Color') {
             steps {
                 script {
+                    // Ensure docker-compose is installed and available
+                    sh 'docker-compose --version'
+
                     def newColor = CURRENT_COLOR == 'blue' ? 'green' : 'blue'
                     def newPort = newColor == 'blue' ? BLUE_PORT : GREEN_PORT
                     def commitId = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
