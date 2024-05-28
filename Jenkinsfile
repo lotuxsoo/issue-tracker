@@ -73,12 +73,14 @@ pipeline {
                    sshagent(credentials: ['my-keypair']) {
                        sh '''
                        ssh -o StrictHostKeyChecking=no ubuntu@3.36.70.238 << 'EOF'
-                       cd /path/to/your/project # 실제 프로젝트 디렉토리로 변경
+                       # 현재 디렉토리에서 작업 수행
                        newColor=$(test "$CURRENT_COLOR" == 'blue' && echo 'green' || echo 'blue')
                        echo "New Color: $newColor"
+                       commitId=$(git rev-parse --short HEAD)
+                       echo "Commit ID: $commitId"
 
                        # Docker Compose 명령어 실행
-                       sed -i "s|tndus5383/docker_repository:latest|tndus5383/docker_repository:latest|" docker-compose.yml
+                       sed -i "s|tndus5383/docker_repository:latest|tndus5383/docker_repository:${commitId}|" docker-compose.yml
 
                        docker-compose stop $newColor || true
                        docker-compose rm -f $newColor || true
