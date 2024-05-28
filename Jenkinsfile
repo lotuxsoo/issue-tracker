@@ -82,26 +82,7 @@ pipeline {
                      exit
                      EOF
                     """
-                   }
-
-                   // Update Docker Compose file with new image
-                   sh """
-                   sed -i 's|tndus5383/docker_repository:latest|tndus5383/docker_repository:${commitId}|' docker-compose.yml
-                   """
-
-                   // Stop the currently running container of the new color
-                   sh "docker-compose stop ${newColor} || true"
-                   sh "docker-compose rm -f ${newColor} || true"
-
-                   // Run the new container
-                   sh "docker-compose up -d ${newColor}"
-
-                   // Update Nginx configuration
-                   sh "sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak"
-                   sh """
-                   sudo sed -i 's|proxy_pass http://.*;|proxy_pass http://${newColor};|' /etc/nginx/sites-available/default
-                   """
-                   sh "sudo nginx -t && sudo systemctl reload nginx"
+                  }
                }
            }
        }
