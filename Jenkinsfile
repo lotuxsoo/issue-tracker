@@ -72,13 +72,16 @@ pipeline {
            steps {
                script {
                    // SSH 키를 사용하여 인스턴스에 접속
-                   sshCommand remote: "${SSH_USER}@${EC2_INSTANCE_IP}", command: "ls -al", sshKey: "${SSH_KEY_ID}"
-
-                   def newColor = CURRENT_COLOR == 'blue' ? 'green' : 'blue'
-                   echo "New Color: ${newColor}"
-
-                   def commitId = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
-                   echo "Commit ID: ${commitId}"
+                   sshagent (credentials : 'my-keypair') {
+                     sh """
+                     ssh-o StrictHostKeyChecking=no ${SSH_USER}@${EC2_INSTANCE_IP}" << EOF
+                     def newColor = CURRENT_COLOR == 'blue' ? 'green' : 'blue'
+                     echo "New Color: ${newColor}"
+                     def commitId = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
+                     echo "Commit ID: ${commitId}"
+                     exit
+                     EOF
+                     """
 
                    // Update Docker Compose file with new image
                    sh """
