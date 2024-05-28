@@ -71,31 +71,38 @@ pipeline {
        stage('Deploy to New Color') {
            steps {
                script {
-                   // SSH 키를 사용하여 인스턴스에 접속
-                   sshCommand remote: "${SSH_USER}@${EC2_INSTANCE_IP}", command: "ls -al", sshKey: "${SSH_KEY_ID}"
+                   try {
+                       // SSH 키를 사용하여 인스턴스에 접속
+                       sshCommand remote: "${SSH_USER}@${EC2_INSTANCE_IP}", command: "ls -al", sshKey: "${SSH_KEY_ID}"
 
-                   def newColor = CURRENT_COLOR == 'blue' ? 'green' : 'blue'
-                   def newPort = newColor == 'blue' ? BLUE_PORT : GREEN_PORT
-                   def commitId = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
+                       def newColor = CURRENT_COLOR == 'blue' ? 'green' : 'blue'
+                       echo "New Color: ${newColor}"
 
-                   // Update Docker Compose file with new image
-                   sh """
-                   sed -i 's|tndus5383/docker_repository:latest|tndus5383/docker_repository:${commitId}|' docker-compose.yml
-                   """
+                       def commitId = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
+                       echo "Commit ID: ${commitId}"
 
-                   // Stop the currently running container of the new color
-                   sh "docker-compose stop ${newColor} || true"
-                   sh "docker-compose rm -f ${newColor} || true"
+                       // Update Docker Compose file with new image
+                       sh """
+                       sed -i 's|tndus5383/docker_repository:latest|tndus5383/docker_repository:${commitId}|' docker-compose.yml
+                       """
 
-                   // Run the new container
-                   sh "docker-compose up -d ${newColor}"
+                       // Stop the currently running container of the new color
+                       sh "docker-compose stop ${newColor} || true"
+                       sh "docker-compose rm -f ${newColor} || true"
 
-                   // Update Nginx configuration
-                   sh "sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak"
-                   sh """
+                       // Run the new container
+                       sh "docker-compose up -d ${newColor}"
+
+                       // Update Nginx configuration
+                       sh "sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak"
+                       sh """
                        sudo sed -i 's|proxy_pass http://.*;|proxy_pass http://${newColor};|' /etc/nginx/sites-available/default
-                   """
-                   sh "sudo nginx -t && sudo systemctl reload nginx"
+                       """
+                       sh "sudo nginx -t && sudo systemctl reload nginx"
+                   } catch (Exception e) {
+                       echo "Error occurred: ${e.message}"
+                       throw e
+                   }
                }
            }
        }
