@@ -72,7 +72,7 @@ pipeline {
            steps {
                script {
                    // SSH 키를 사용하여 인스턴스에 접속
-                   sshCommand remote: "${env.SSH_USER}@${env.EC2_INSTANCE_IP}", command: "ls -al", sshKey: env.SSH_KEY_ID
+                   sshCommand remote: "${SSH_USER}@${EC2_INSTANCE_IP}", command: "ls -al", sshKey: ${SSH_KEY_ID}
 
                    def newColor = CURRENT_COLOR == 'blue' ? 'green' : 'blue'
                    def newPort = newColor == 'blue' ? BLUE_PORT : GREEN_PORT
