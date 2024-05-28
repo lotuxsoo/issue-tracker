@@ -82,7 +82,7 @@ pipeline {
                      exit
                      EOF
                     """
-                    }
+                   }
 
                    // Update Docker Compose file with new image
                    sh """
