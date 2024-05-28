@@ -68,6 +68,9 @@ pipeline {
         stage('Deploy to New Color') {
             steps {
                 script {
+                    // 환경 변수 설정
+                    env.PATH = "/usr/local/bin:${env.PATH}"
+
                     def newColor = CURRENT_COLOR == 'blue' ? 'green' : 'blue'
                     def newPort = newColor == 'blue' ? BLUE_PORT : GREEN_PORT
                     def commitId = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
@@ -78,11 +81,11 @@ pipeline {
                     """
 
                     // Stop the currently running container of the new color
-                    sh "/usr/local/bin/docker-compose stop ${newColor} || true"
-                    sh "/usr/local/bin/docker-compose rm -f ${newColor} || true"
+                    sh "docker-compose stop ${newColor} || true"
+                    sh "docker-compose rm -f ${newColor} || true"
 
                     // Run the new container
-                    sh "/usr/local/bin/docker-compose up -d ${newColor}"
+                    sh "docker-compose up -d ${newColor}"
 
                     // Update Nginx configuration
                     sh "sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak"
