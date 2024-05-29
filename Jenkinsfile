@@ -79,18 +79,21 @@ pipeline {
                     sshagent(credentials: ['my-keypair']) {
                         sh '''
                             ssh -o StrictHostKeyChecking=no ${SSH_USER}@${EC2_INSTANCE_IP}
-                            docker run -d -p 80:8080 ${DOCKER_IMAGE}:${BUILD_ID}
+                            # 새로운 컨테이너 실행
+                            docker run -d --name new_issue_tracker -p 80:8080 ${DOCKER_IMAGE}:${BUILD_ID}
+
+                            # 기존 컨테이너 중지 및 삭제 (기존 컨테이너가 있는 경우)
+                            if [ \$(docker ps -q -f name=issue_tracker) ]; then
+                                docker stop issue_tracker
+                                docker rm issue_tracker
+                            fi
+
+                            # 새 컨테이너를 issue_tracker로 이름 변경
+                            docker rename new_issue_tracker issue_tracker
                         '''
                     }
                 }
             }
-        }
-    }
-
-    post {
-        always {
-            // Clean up Docker images after the build
-            sh 'docker rmi ${DOCKER_IMAGE}:${BUILD_ID}'
         }
     }
 }
