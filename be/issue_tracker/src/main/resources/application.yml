@@ -14,4 +14,4 @@ spring:
     config:
       activate:
             on-profile: dev
-      import: file:jwt.yml, file:db-config.yml
+      import: classpath:db-config.yml, classpath:jwt.yml
