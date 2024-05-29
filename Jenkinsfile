@@ -80,16 +80,16 @@ pipeline {
                         sh '''
                             ssh -o StrictHostKeyChecking=no ${SSH_USER}@${EC2_INSTANCE_IP}
                             # 새로운 컨테이너 실행
-                            docker run -d --name new_issue_tracker -p 80:8080 ${DOCKER_IMAGE}:${BUILD_ID}
+                            docker run -d --name new_issue -p 80:8080 ${DOCKER_IMAGE}:${BUILD_ID}
 
                             # 기존 컨테이너 중지 및 삭제 (기존 컨테이너가 있는 경우)
-                            if [ \$(docker ps -q -f name=issue_tracker) ]; then
-                                docker stop issue_tracker
-                                docker rm issue_tracker
+                            if [ \$(docker ps -q -f name=issue) ]; then
+                                docker stop issue
+                                docker rm issue
                             fi
 
                             # 새 컨테이너를 issue_tracker로 이름 변경
-                            docker rename new_issue_tracker issue_tracker
+                            docker rename new_issue issue
                         '''
                     }
                 }
