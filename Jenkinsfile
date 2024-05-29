@@ -86,31 +86,33 @@ pipeline {
                 script {
                     sshagent(credentials: ['my-keypair']) {
                         sh '''
-                ssh -o StrictHostKeyChecking=no -tt ${SSH_USER}@${EC2_INSTANCE_IP} << 'EOF'
-                # 변수에 컨테이너 ID를 저장
-                NEW_ISSUE_ID=$(docker ps -a -q -f name=new_issue)
-                ISSUE_ID=$(docker ps -a -q -f name=issue)
-                
-                # new_issue 컨테이너 처리
-                if [ -n "$NEW_ISSUE_ID" ]; then
-                    for id in $NEW_ISSUE_ID; do
-                        docker stop $id
-                        docker rm $id
-                    done
-                fi
+                    ssh -o StrictHostKeyChecking=no -tt ${SSH_USER}@${EC2_INSTANCE_IP} << 'EOF'
+                    # 변수에 컨테이너 ID를 저장
+                    NEW_ISSUE_ID=$(docker ps -a -q -f name=new_issue)
+                    ISSUE_ID=$(docker ps -a -q -f name=issue)
+                    
+                    # new_issue 컨테이너 처리
+                    if [ -n "$NEW_ISSUE_ID" ]; then
+                        for id in $NEW_ISSUE_ID; do
+                            docker stop $id
+                            docker rm $id
+                        done
+                    fi
 
-                # issue 컨테이너 처리
-                if [ -n "$ISSUE_ID" ]; then
-                    for id in $ISSUE_ID; do
-                        docker stop $id
-                        docker rm $id
-                    done
-                fi
+                    # issue 컨테이너 처리
+                    if [ -n "$ISSUE_ID" ]; then
+                        for id in $ISSUE_ID; do
+                            docker stop $id
+                            docker rm $id
+                        done
+                    fi
 
-                # 새로운 컨테이너 실행 및 이름 변경
-                docker run -d --name new_issue -p 80:8080 ${DOCKER_IMAGE}:${BUILD_ID}
-                docker rename new_issue issue
-                EOF
+                    # 새로운 컨테이너 실행
+                    docker run -d --name new_issue -p 80:8080 ${DOCKER_IMAGE}:${BUILD_ID}
+                    
+                    # 이름 변경
+                    docker rename new_issue issue
+                    EOF
                 '''
                     }
                 }
