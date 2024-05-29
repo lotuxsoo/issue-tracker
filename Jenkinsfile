@@ -48,6 +48,7 @@ pipeline {
                         // 디렉토리 밑의 .yml 파일들 리스트 확인
                         sh "ls -l ${directory}/*.yml"
                     }
+                }
             }
         }
 
