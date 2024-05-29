@@ -31,18 +31,22 @@ pipeline {
                         // 복사할 디렉토리 경로
                         def directory = 'be/issue_tracker/src/main/resources'
 
-                        sh 'chown -R ${jenkinsUser}:${jenkinsUser} ${directory}'
-                        sh 'chmod 775 ${directory}'
+                        // 디렉토리 소유자와 권한 설정
+                        sh "chown -R ${jenkinsUser}:${jenkinsUser} ${directory}"
+                        sh "chmod 775 ${directory}"
 
-                        sh 'cp ${jwtFile} ${directory}/jwt.yml'
-                        sh 'cp ${dbConfigFile} ${directory}/db-config.yml'
+                        // 파일 복사
+                        sh "cp ${jwtFile} ${directory}/jwt.yml"
+                        sh "cp ${dbConfigFile} ${directory}/db-config.yml"
 
-                        sh 'chown ${jenkinsUser}:${jenkinsUser} ${directory}/jwt.yml'
-                        sh 'chown ${jenkinsUser}:${jenkinsUser} ${directory}/db-config.yml'
-                        sh 'chmod 664 ${directory}/jwt.yml'
-                        sh 'chmod 664 ${directory}/db-config.yml'
+                        // 파일 소유자 및 권한 설정
+                        sh "chown ${jenkinsUser}:${jenkinsUser} ${directory}/jwt.yml"
+                        sh "chown ${jenkinsUser}:${jenkinsUser} ${directory}/db-config.yml"
+                        sh "chmod 664 ${directory}/jwt.yml"
+                        sh "chmod 664 ${directory}/db-config.yml"
 
-                        sh 'ls -l ${directory}/*.yml'
+                        // 디렉토리 밑의 .yml 파일들 리스트 확인
+                        sh "ls -l ${directory}/*.yml"
                     }
             }
         }
