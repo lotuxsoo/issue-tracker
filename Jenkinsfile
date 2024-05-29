@@ -24,13 +24,13 @@ pipeline {
         stage('Read Credentials') {
             steps {
                 script {
-                    // JWT 파일 읽기 및 저장
-                    def jwtYml = credentials('JWT-YML')
+                    // JWT 파일 읽어오기
+                    def jwtYml = credentials('JWT-YML').readFile()
                     writeFile file: 'src/main/resources/jwt.yml', text: jwtYml
 
-                    // DB Config 파일 읽기 및 저장
-                    def dbYml = credentials('DBCONFIG-YML')
-                    writeFile file: 'src/main/resources/db-config.yml', text: dbYml
+                    // DB Config 파일 읽어오기
+                    def dbConfigYml = credentials('DBCONFIG-YML').readFile()
+                    writeFile file: 'src/main/resources/db-config.yml', text: dbConfigYml
                 }
             }
         }
