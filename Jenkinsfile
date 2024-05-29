@@ -4,6 +4,8 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('docker_token')
         DOCKER_IMAGE = 'tndus5383/issue-tracker'
+        EC2_HOST = '3.36.70.238'
+        EC2_CREDENTIALS = credentials('my-keypair')
     }
 
     stages {
@@ -66,6 +68,16 @@ pipeline {
                 script {
                     // Docker 이미지 푸시
                     sh 'docker push ${DOCKER_IMAGE}:${BUILD_ID}'
+                }
+            }
+        }
+
+        stage('SSH to EC2 and Docker run') {
+            steps {
+                script {
+                    sshagent([${EC2_CREDENTIALS}]) {
+                        sh "ssh ${EC2_HOST} 'docker run -d -p 8081:8080 ${DOCKER_IMAGE}:${BUILD_ID}'"
+                    }
                 }
             }
         }
