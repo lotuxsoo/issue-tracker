@@ -24,12 +24,26 @@ pipeline {
         stage('Read Credentials') {
             steps {
                 script {
-                    // JWT 파일 읽기 및 저장
-                    def jwtContent = readFile(file: JWT_FILE)
+                    // JWT 파일 읽기
+                    def jwtContent = credentials('JWT-YML')
+
+                    // 파일 내용이 비어 있는지 확인
+                    if (jwtContent.size() == 0) {
+                        error("JWT 파일 내용이 비어 있습니다.")
+                    }
+
+                    // JWT 파일 저장
                     writeFile file: 'src/main/resources/jwt.yml', text: jwtContent
 
-                    // DB Config 파일 읽기 및 저장
-                    def dbConfigContent = readFile(file: DB_CONFIG_FILE)
+                    // DB Config 파일 읽기
+                    def dbConfigContent = credentials('DBCONFIG-YML')
+
+                    // 파일 내용이 비어 있는지 확인
+                    if (dbConfigContent.size() == 0) {
+                        error("DB Config 파일 내용이 비어 있습니다.")
+                    }
+
+                    // DB Config 파일 저장
                     writeFile file: 'src/main/resources/db-config.yml', text: dbConfigContent
                 }
             }
