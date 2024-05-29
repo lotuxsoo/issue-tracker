@@ -7,8 +7,8 @@ pipeline {
         EC2_CREDENTIALS = credentials('my-keypair')
         SSH_USER = 'ubuntu'
         EC2_INSTANCE_IP = '3.36.70.238'
-        ENCODED_DB_CONFIG = credentials('DBCONFIG-YML')
-        ENCODED_JWT = credentials('JWT-YML')
+        JWT_FILE = credentials('JWT-YML')
+        DB_CONFIG_FILE = credentials('DBCONFIG-YML')
     }
 
     stages {
@@ -21,16 +21,16 @@ pipeline {
             }
         }
 
-        stage('Read Encoded Files') {
+        stage('Read Credentials') {
             steps {
                 script {
-                    def encodedDbConfig = sh(script: "echo \${ENCODED_DB_CONFIG}", returnStdout: true).trim()
-                    def decodedDbConfig = sh(script: "echo \${encodedDbConfig} | base64 -d", returnStdout: true).trim()
-                    writeFile file: 'db_config.yml', text: decodedDbConfig
+                    // JWT 파일 읽기
+                    def jwtContent = readFile(file: JWT_FILE)
+                    echo "JWT File Content: ${jwtContent}"
 
-                    def encodedJwt = sh(script: "echo \${ENCODED_JWT}", returnStdout: true).trim()
-                    def decodedJwt = sh(script: "echo \${encodedJwt} | base64 -d", returnStdout: true).trim()
-                    writeFile file: 'jwt.yml', text: decodedJwt
+                    // DB Config 파일 읽기
+                    def dbConfigContent = readFile(file: DB_CONFIG_FILE)
+                    echo "DB Config File Content: ${dbConfigContent}"
                 }
             }
         }
