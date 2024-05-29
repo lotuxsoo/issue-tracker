@@ -25,7 +25,7 @@ public class UserController {
         userService.createUser(registerInfo);
     }
 
-    @GetMapping("/duplicate")
+    @PostMapping("/duplicate")
     public boolean isDuplicate(@RequestBody CheckDuplicateRequest request) {
         if (request.id() != null) return userService.isDuplicateId(request.id());
         if (request.nickname() != null) return userService.isDuplicateNickName(request.nickname());
@@ -42,7 +42,7 @@ public class UserController {
     @GetMapping("/login/github")
     public String githubLogin(@RequestParam String code){
         String id = githubLoginUtil.validateCode(code);
-        return id;
+        return jwtUtil.generateToken(id);
     }
 
     @GetMapping("/{id}")

@@ -33,6 +33,46 @@
             object-fit: cover;
             border: 2px solid #000;
         }
+
+        .upload-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            text-align: center;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+
+        .upload-btn:hover {
+            background-color: #45a049;
+        }
+
+        .upload-image-container {
+            margin-top: 20px;
+            width: 300px;
+            height: 300px;
+            border: 2px solid #000;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -48,6 +88,7 @@
     >
         로그인
     </a>
+
     <a href="https://github.com/codesquad-masters2024-team01/issue-tracker/tree/Deploy" target="_blank">
         <img src="https://soapbucket51.s3.ap-northeast-2.amazonaws.com/issue_tracker/github.png" alt="Image 1">
     </a>
@@ -59,5 +100,42 @@
         <img src="https://soapbucket51.s3.ap-northeast-2.amazonaws.com/issue_tracker/poo.jpg" alt="Image 3">
     </a>
 </div>
+
+<div style="padding-left: 100px">
+    <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="image" accept="image/*">
+        <div class="upload-image-container" id="imagePreview">
+            <p>No image chosen</p>
+        </div>
+        <button type="button" class="upload-btn" id="chooseImageBtn">Choose Image</button>
+        <button type="submit" class="upload-btn">Upload Image</button>
+    </form>
+</div>
+
+<script>
+        const fileInput = document.getElementById('fileInput');
+        const chooseImageBtn = document.getElementById('chooseImageBtn');
+        const imagePreview = document.getElementById('imagePreview');
+
+        chooseImageBtn.addEventListener('click', function() {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    imagePreview.innerHTML = '';
+                    imagePreview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.innerHTML = '<p>No image chosen</p>';
+            }
+        });
+    </script>
 </body>
 </html>
