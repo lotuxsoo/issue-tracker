@@ -30,6 +30,10 @@ pipeline {
                         def directory = 'be/issue_tracker/src/main/resources'
 
                         // 디렉토리 소유자와 권한 설정
+                        sh "ls -ld be/issue_tracker/src/main/resources"
+                        sh "chmod g+w be/issue_tracker/src/main/resources"
+                        sh "ls -ld be/issue_tracker/src/main/resources"
+
                         sh "chmod 777 ${directory}"
 
                         // 파일 복사
