@@ -29,6 +29,9 @@ pipeline {
                         // 복사할 디렉토리 경로
                         def directory = 'be/issue_tracker/src/main/resources'
 
+                        // 디렉토리의 권한 설정
+                        sh "chmod 755 ${directory}"
+
                         // 파일 복사
                         sh "cp ${jwtFile} ${directory}/jwt.yml"
                         sh "cp ${dbConfigFile} ${directory}/db-config.yml"
