@@ -30,8 +30,8 @@ class LoginController: UIViewController {
     }
 
     @IBAction func loginButtonTapped(_ sender: Any) {
-        guard let id = idTextField.text, !id.isEmpty,
-              let password = passwordTextField.text, !password.isEmpty else {
+        guard let id = idTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !id.isEmpty,
+              let password = passwordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !password.isEmpty else {
             self.showAlert(message: "ID와 비밀번호를 입력해주세요")
             return
         }
