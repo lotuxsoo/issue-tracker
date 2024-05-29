@@ -45,7 +45,7 @@ pipeline {
             steps {
                 script {
                     dir('be/issue_tracker') {
-                        // Bash 사용하여 Docker 이미지 빌드
+                        // Dockerfile 읽음
                         sh 'docker build -t ${DOCKER_IMAGE}:${BUILD_ID} . '
                     }
                 }
@@ -65,7 +65,7 @@ pipeline {
             steps {
                 script {
                     // Docker 이미지 푸시
-                    sh 'docker push ${DOCKER_IMAGE}:${env.BUILD_ID}'
+                    sh 'docker push ${DOCKER_IMAGE}:${BUILD_ID}'
                 }
             }
         }
@@ -74,7 +74,7 @@ pipeline {
     post {
         always {
             // Clean up Docker images after the build
-            sh 'docker rmi ${DOCKER_IMAGE}:${env.BUILD_ID}'
+            sh 'docker rmi ${DOCKER_IMAGE}:${BUILD_ID}'
         }
     }
 }
