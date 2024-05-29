@@ -26,24 +26,19 @@ pipeline {
                 // Credentials에서 파일을 읽어오고 해당 디렉토리에 복사
                 withCredentials([file(credentialsId: 'JWT-YML', variable: 'jwtFile'), file(credentialsId: 'DBCONFIG-YML', variable: 'dbConfigFile')]) {
                     script {
-                        def jenkinsUser = sh(script: 'whoami', returnStdout: true).trim()
-
                         // 복사할 디렉토리 경로
                         def directory = 'be/issue_tracker/src/main/resources'
 
                         // 디렉토리 소유자와 권한 설정
-                        sh "chown -R ${jenkinsUser}:${jenkinsUser} ${directory}"
-                        sh "chmod 775 ${directory}"
+                        sh "chmod 777 ${directory}"
 
                         // 파일 복사
                         sh "cp ${jwtFile} ${directory}/jwt.yml"
                         sh "cp ${dbConfigFile} ${directory}/db-config.yml"
 
                         // 파일 소유자 및 권한 설정
-                        sh "chown ${jenkinsUser}:${jenkinsUser} ${directory}/jwt.yml"
-                        sh "chown ${jenkinsUser}:${jenkinsUser} ${directory}/db-config.yml"
-                        sh "chmod 664 ${directory}/jwt.yml"
-                        sh "chmod 664 ${directory}/db-config.yml"
+                        sh "chmod 777 ${directory}/jwt.yml"
+                        sh "chmod 777 ${directory}/db-config.yml"
 
                         // 디렉토리 밑의 .yml 파일들 리스트 확인
                         sh "ls -l ${directory}/*.yml"
