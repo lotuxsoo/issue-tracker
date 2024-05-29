@@ -56,7 +56,7 @@ pipeline {
             steps {
                 script {
                     dir('be/issue_tracker') {
-                        // Dockerfile 읽음
+                        // Dockerfile 읽어서 Docker 이미지 생성
                         sh 'docker build -t ${DOCKER_IMAGE}:${BUILD_ID} . '
                     }
                 }
@@ -88,23 +88,22 @@ pipeline {
                         sh '''
                         ssh -o StrictHostKeyChecking=no -tt ${SSH_USER}@${EC2_INSTANCE_IP} << 'EOF'
                         
-                        # 기존에 new_issue 컨테이너가 존재하는지 확인 후 중지 및 삭제
-                        if [ "$(docker ps -a -q -f name=new_issue)" ]; then
-                            docker stop new_issue
-                            docker rm new_issue
-                        fi
-        
                         # 기존에 issue 컨테이너가 존재하는지 확인 후 중지 및 삭제
                         if [ "$(docker ps -a -q -f name=issue)" ]; then
                             docker stop issue
                             docker rm issue
                         fi
-        
-                        # 새로운 컨테이너 실행
-                        docker run -d --name new_issue -p 80:8080 ${DOCKER_IMAGE}:${BUILD_ID}
                         
-                        # 이름 변경
-                        docker rename new_issue issue
+                        # 기존에 new_issue 컨테이너가 존재하는지 확인 후 중지 및 삭제
+                        if [ "$(docker ps -a -q -f name=new_issue)" ]; then
+                            docker stop new_issue
+                            docker rm new_issue
+                        fi
+                        
+                        # 이미지 다운로드 및 컨테이너 실행
+                        docker pull ${DOCKER_IMAGE}:${BUILD_ID}
+                        docker run -d --name issue -p 80:8080 ${DOCKER_IMAGE}:${BUILD_ID}
+                        
                         EOF
                         '''
                     }
