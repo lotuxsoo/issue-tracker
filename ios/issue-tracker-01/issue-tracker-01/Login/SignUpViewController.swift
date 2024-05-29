@@ -26,6 +26,7 @@ class SignUpViewController: UIViewController {
 
         self.title = "회원가입"
         configureFont()
+        configureNavigationBar()
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -69,7 +70,7 @@ class SignUpViewController: UIViewController {
                         self?.isAvailable = true
                     }
                 case .failure(let error):
-                    self?.showAlert(message: "중복확인 실패입니다: \(error.localizedDescription)")
+                    self?.showErrorAlert(for: error)
                     self?.isAvailable = false
                 }
             }
@@ -105,7 +106,7 @@ class SignUpViewController: UIViewController {
                             self?.dismiss(animated: true)
                         }
                     case .failure(let error):
-                        self?.showAlert(message: "회원가입이 실패하였습니다: \(error)")
+                        self?.showErrorAlert(for: error)
                     }
                 }
             }

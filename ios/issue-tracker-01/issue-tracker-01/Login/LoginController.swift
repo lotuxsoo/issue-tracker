@@ -43,7 +43,7 @@ class LoginController: UIViewController {
                 case .success(_):
                     self?.navigateToMainInterface()
                 case .failure(let error):
-                    self?.showAlert(message: "로그인 실패: \(error.localizedDescription)")
+                    self?.showErrorAlert(for: error)
                 }
             }
         }

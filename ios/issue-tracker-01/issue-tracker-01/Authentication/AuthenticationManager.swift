@@ -10,7 +10,7 @@ import Foundation
 class AuthenticationManager {
     static let shared = AuthenticationManager()
     
-    func loginUser(with userRequest: UserRequest, completion: @escaping (Result<Void, Error>) -> Void) {
+    func loginUser(with userRequest: UserRequest, completion: @escaping (Result<Void, NetworkError>) -> Void) {
         NetworkManager.shared.loginUser(userRequest: userRequest) { result in
             switch result {
             case .success(let token):
@@ -22,11 +22,11 @@ class AuthenticationManager {
         }
     }
     
-    func registerUser(with userRequest: UserRequest, completion: @escaping (Result<Void, Error>) -> Void) {
+    func registerUser(with userRequest: UserRequest, completion: @escaping (Result<Void, NetworkError>) -> Void) {
         NetworkManager.shared.registerUser(userRequest: userRequest, completion: completion)
     }
     
-    func verifyUserId(_ id: String, completion: @escaping (Result<Bool, Error>) -> Void) {
+    func verifyUserId(_ id: String, completion: @escaping (Result<Bool, NetworkError>) -> Void) {
         let request = UserRequest(id: id, nickname: nil, password: nil)
         NetworkManager.shared.verifyUserId(idRequest: request, completion: completion)
     }

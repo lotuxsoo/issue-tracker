@@ -8,17 +8,18 @@
 import Foundation
 import os
 
+enum NetworkError: Error {
+    case invalidURL
+    case jsonEncodingFailed
+    case jsonDecodingFailed
+    case noData
+    case invalidResponse(Int)
+    case unauthorized
+    case networkFailed(Error)
+    case serverError(String)
+}
+
 class NetworkManager {
-    
-    enum NetworkError: Error {
-        case invalidURL
-        case jsonEncodingFailed
-        case jsonDecodingFailed
-        case noData
-        case invalidResponse(Int)
-        case unauthorized
-        case networkFailed(Error)
-    }
     
     static let shared = NetworkManager()
     private let httpManager: HTTPManagerProtocol
@@ -165,7 +166,6 @@ class NetworkManager {
             completion(.failure(NetworkError.unauthorized))
             return
         }
-        
         
         var request = URLRequest(url: url)
         request.httpMethod = HTTPMethod.patch.rawValue
@@ -527,9 +527,9 @@ class NetworkManager {
     
     // MARK: - User
     
-    func registerUser(userRequest: UserRequest, completion: @escaping (Result<Void, Error>) -> Void) {
+    func registerUser(userRequest: UserRequest, completion: @escaping (Result<Void, NetworkError>) -> Void) {
         guard let url = URL(string: URLDefines.user) else {
-            completion(.failure(NetworkError.invalidURL))
+            completion(.failure(.invalidURL))
             return
         }
         
@@ -541,18 +541,18 @@ class NetworkManager {
             let jsonData = try JSONEncoder().encode(userRequest)
             request.httpBody = jsonData
         } catch {
-            completion(.failure(NetworkError.jsonEncodingFailed))
+            completion(.failure(.jsonEncodingFailed))
             return
         }
         
         httpManager.sendRequest(request) { data, response, error in
             if let error = error {
-                completion(.failure(NetworkError.networkFailed(error)))
+                completion(.failure(.networkFailed(error)))
                 return
             }
             
             guard let data = data, let httpResponse = response else {
-                completion(.failure(NetworkError.noData))
+                completion(.failure(.noData))
                 return
             }
             
@@ -560,7 +560,7 @@ class NetworkManager {
                 if let responseBody = String(data: data, encoding: .utf8) {
                     os_log("[ registerUser ] : \(responseBody)")
                 }
-                completion(.failure(NetworkError.invalidResponse(httpResponse.statusCode)))
+                completion(.failure(.invalidResponse(httpResponse.statusCode)))
                 return
             }
             
@@ -568,9 +568,9 @@ class NetworkManager {
         }
     }
     
-    func loginUser(userRequest: UserRequest, completion: @escaping (Result<String, Error>) -> Void) {
+    func loginUser(userRequest: UserRequest, completion: @escaping (Result<String, NetworkError>) -> Void) {
         guard let url = URL(string: URLDefines.login) else {
-            completion(.failure(NetworkError.invalidURL))
+            completion(.failure(.invalidURL))
             return
         }
         
@@ -582,40 +582,41 @@ class NetworkManager {
             let jsonData = try JSONEncoder().encode(userRequest)
             request.httpBody = jsonData
         } catch {
-            completion(.failure(NetworkError.jsonEncodingFailed))
+            completion(.failure(.jsonEncodingFailed))
             return
         }
         
         httpManager.sendRequest(request) { data, response, error in
             if let error = error {
-                completion(.failure(NetworkError.networkFailed(error)))
+                completion(.failure(.networkFailed(error)))
                 return
             }
             
             guard let data = data, let httpResponse = response else {
-                completion(.failure(NetworkError.noData))
+                completion(.failure(.noData))
                 return
             }
             
             guard (200..<300).contains(httpResponse.statusCode) else {
                 if let responseBody = String(data: data, encoding: .utf8) {
                     os_log("[ loginUser ] : \(responseBody)")
+                    completion(.failure(.serverError(responseBody)))
                 }
-                completion(.failure(NetworkError.invalidResponse(httpResponse.statusCode)))
+                completion(.failure(.invalidResponse(httpResponse.statusCode)))
                 return
             }
             
-            if let token = String(data: data, encoding:  .utf8) {
+            if let token = String(data: data, encoding: .utf8) {
                 completion(.success(token))
             } else {
-                completion(.failure(NetworkError.jsonDecodingFailed))
+                completion(.failure(.jsonDecodingFailed))
             }
         }
     }
     
-    func verifyUserId(idRequest: UserRequest, completion: @escaping (Result<Bool, Error>) -> Void) {
+    func verifyUserId(idRequest: UserRequest, completion: @escaping (Result<Bool, NetworkError>) -> Void) {
         guard let url = URL(string: URLDefines.duplicate) else {
-            completion(.failure(NetworkError.invalidURL))
+            completion(.failure(.invalidURL))
             return
         }
         
@@ -627,18 +628,18 @@ class NetworkManager {
             let jsonData = try JSONEncoder().encode(idRequest)
             request.httpBody = jsonData
         } catch {
-            completion(.failure(NetworkError.jsonEncodingFailed))
+            completion(.failure(.jsonEncodingFailed))
             return
         }
         
         httpManager.sendRequest(request) { data, response, error in
             if let error = error {
-                completion(.failure(NetworkError.networkFailed(error)))
+                completion(.failure(.networkFailed(error)))
                 return
             }
             
             guard let data = data, let httpResponse = response else {
-                completion(.failure(NetworkError.noData))
+                completion(.failure(.noData))
                 return
             }
             
@@ -646,7 +647,7 @@ class NetworkManager {
                 if let responseBody = String(data: data, encoding: .utf8) {
                     os_log("[ verifyUserId ] : \(responseBody)")
                 }
-                completion(.failure(NetworkError.invalidResponse(httpResponse.statusCode)))
+                completion(.failure(.invalidResponse(httpResponse.statusCode)))
                 return
             }
             
@@ -654,7 +655,7 @@ class NetworkManager {
                 let isAvailable = try JSONDecoder().decode(Bool.self, from: data)
                 completion(.success(isAvailable))
             } catch {
-                completion(.failure(NetworkError.jsonDecodingFailed))
+                completion(.failure(.jsonDecodingFailed))
             }
         }
     }
