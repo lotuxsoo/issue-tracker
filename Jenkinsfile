@@ -26,8 +26,9 @@ pipeline {
                 withCredentials([file(credentialsId: 'JWT-YML', variable: 'jwtFile'), file(credentialsId: 'DBCONFIG-YML', variable: 'dbConfigFile')]) {
                     script {
                         sh 'pwd'
-                        sh 'cp $jwtFile be/issue_tracker/src/main/resources/jwt.yml'
-                        sh 'cp $dbConfigFile be/issue_tracker/src/main/resources/db-config.yml'
+                        sh 'ls'
+                        sh 'cp $jwtFile issue-tracker/be/issue_tracker/src/main/resources/jwt.yml'
+                        sh 'cp $dbConfigFile issue-tracker/be/issue_tracker/src/main/resources/db-config.yml'
                     }
                 }
             }
