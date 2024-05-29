@@ -23,13 +23,21 @@ pipeline {
 
         stage('Read Credentials') {
             steps {
+                // Credentials에서 파일을 읽어오고 해당 디렉토리에 복사
                 withCredentials([file(credentialsId: 'JWT-YML', variable: 'jwtFile'), file(credentialsId: 'DBCONFIG-YML', variable: 'dbConfigFile')]) {
                     script {
-                        sh "cp ${jwtFile} be/issue_tracker/src/main/resources/jwt.yml"
-                        sh "cp ${dbConfigFile} be/issue_tracker/src/main/resources/db-config.yml"
-                        sh "cat be/issue_tracker/src/main/resources/db-config.yml"
-                        sh "cat be/issue_tracker/src/main/resources/jwt.yml"
-                        sh "ls be/issue_tracker/src/main/resources"
+                        // 복사할 디렉토리 경로
+                        def directory = 'be/issue_tracker/src/main/resources'
+
+                        // 파일 복사
+                        sh "cp ${jwtFile} ${directory}/jwt.yml"
+                        sh "cp ${dbConfigFile} ${directory}/db-config.yml"
+
+                        // 디렉토리 밑의 .yml 파일들 리스트 확인
+                        sh "ls -l ${directory}/*.yml"
+
+                        // 복사된 파일들의 권한 설정 (선택 사항)
+                        sh "chmod 644 ${directory}/*.yml"
                     }
                 }
             }
