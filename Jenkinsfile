@@ -25,12 +25,12 @@ pipeline {
             steps {
                 script {
                     // JWT 파일 읽기 및 저장
-                    def jwtContent = readFile(file: JWT_FILE)
-                    writeFile file: 'src/main/resources/jwt.yml', text: jwtContent
+                    def jwtYml = credentials('JWT-YML')
+                    writeFile file: 'src/main/resources/jwt.yml', text: jwtYml
 
                     // DB Config 파일 읽기 및 저장
-                    def dbConfigContent = readFile(file: DB_CONFIG_FILE)
-                    writeFile file: 'src/main/resources/db-config.yml', text: dbConfigContent
+                    def dbYml = credentials('DBCONFIG-YML')
+                    writeFile file: 'src/main/resources/db-config.yml', text: dbYml
                 }
             }
         }
