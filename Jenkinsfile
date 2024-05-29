@@ -4,8 +4,10 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('docker_token')
         DOCKER_IMAGE = 'tndus5383/issue-tracker'
-        EC2_HOST = '3.36.70.238'
         EC2_CREDENTIALS = credentials('my-keypair')
+        SSH_USER = 'ubuntu'
+        EC2_INSTANCE_IP = '3.36.70.238'
+
     }
 
     stages {
@@ -75,8 +77,11 @@ pipeline {
         stage('SSH to EC2 and Docker run') {
             steps {
                 script {
-                    sshagent([credentials: ${EC2_CREDENTIALS}]) {
-                        sh "ssh ${EC2_HOST} 'docker run -d -p 80:8080 ${DOCKER_IMAGE}:${BUILD_ID}'"
+                    sshagent([credentials: 'EC2_CREDENTIALS']) {
+                        sh '''
+                            ssh -o StrictHostKeyChecking=no ${SSH_USER}@${EC2_INSTANCE_IP}
+                            docker run -d -p 80:8080 ${DOCKER_IMAGE}:${BUILD_ID}
+                        '''
                     }
                 }
             }
