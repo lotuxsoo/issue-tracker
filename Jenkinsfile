@@ -26,7 +26,11 @@ pipeline {
                 // Credentials에서 파일을 읽어오고 해당 디렉토리에 복사
                 withCredentials([file(credentialsId: 'JWT-YML', variable: 'jwtFile'), file(credentialsId: 'DBCONFIG-YML', variable: 'dbConfigFile')]) {
                     script {
+                         // 1. 대상 디렉토리에 대한 쓰기 권한 확인
+                        sh 'ls -ld be/issue_tracker/src/main/resources'
+                        // 2. 파일 존재 여부 확인
                         sh 'ls -l ${jwtFile}'
+
                         sh 'cp $jwtFile be/issue_tracker/src/main/resources/jwt.yml'
                         sh 'cp $dbConfigFile be/issue_tracker/src/main/resources/db-config.yml'
                     }
