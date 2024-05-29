@@ -19,12 +19,10 @@ pipeline {
         stage('Read Encoded Files') {
             steps {
                 script {
-                    // db-config.yml 디코딩
                     def encodedDbConfig = sh(script: "echo \${ENCODED_DB_CONFIG}", returnStdout: true).trim()
                     def decodedDbConfig = sh(script: "echo \${encodedDbConfig} | base64 -d", returnStdout: true).trim()
                     writeFile file: 'db_config.yml', text: decodedDbConfig
 
-                    // jwt.yml 디코딩
                     def encodedJwt = sh(script: "echo \${ENCODED_JWT}", returnStdout: true).trim()
                     def decodedJwt = sh(script: "echo \${encodedJwt} | base64 -d", returnStdout: true).trim()
                     writeFile file: 'jwt.yml', text: decodedJwt
