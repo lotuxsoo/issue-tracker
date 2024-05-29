@@ -16,8 +16,8 @@ pipeline {
         stage('github-clone') {
             steps {
                 git branch: 'deploy',
-                    credentialsId: 'github-token',
-                    url: 'https://github.com/lotuxsoo/issue-tracker.git'
+                        credentialsId: 'github-token',
+                        url: 'https://github.com/lotuxsoo/issue-tracker.git'
             }
         }
 
@@ -27,7 +27,12 @@ pipeline {
                 withCredentials([file(credentialsId: 'JWT-YML', variable: 'jwtFile'), file(credentialsId: 'DBCONFIG-YML', variable: 'dbConfigFile')]) {
                     script {
                         sh 'chmod u+rw ${jwtFile}'
+                        sh 'chmod u+rw ${dbConfigFile}'
                         sh 'ls -l ${jwtFile}'
+                        sh 'ls -l ${dbConfigFile}'
+
+                        // 대상 디렉토리에 대한 쓰기 권한 설정
+                        sh 'chmod -R u+w be/issue_tracker/src/main/resources/'
 
                         sh 'cp $jwtFile be/issue_tracker/src/main/resources/jwt.yml'
                         sh 'cp $dbConfigFile be/issue_tracker/src/main/resources/db-config.yml'
