@@ -26,7 +26,7 @@ pipeline {
                 // Credentials에서 파일을 읽어오고 해당 디렉토리에 복사
                 withCredentials([file(credentialsId: 'JWT-YML', variable: 'jwtFile'), file(credentialsId: 'DBCONFIG-YML', variable: 'dbConfigFile')]) {
                     script {
-                        def jenkinsUser = 'ubuntu'
+                        def jenkinsUser = sh(script: 'whoami', returnStdout: true).trim()
 
                         // 복사할 디렉토리 경로
                         def directory = 'be/issue_tracker/src/main/resources'
