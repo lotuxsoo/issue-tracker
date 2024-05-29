@@ -24,13 +24,11 @@ pipeline {
         stage('Read Credentials') {
             steps {
                 script {
-                    // JWT 파일 읽기
-                    def jwtContent = readFile(file: JWT_FILE)
-                    echo "JWT File Content: ${jwtContent}"
+                    // JWT 파일 읽기 및 저장
+                    writeFile file: 'jwt.yml', text: "${JWT_FILE}"
 
-                    // DB Config 파일 읽기
-                    def dbConfigContent = readFile(file: DB_CONFIG_FILE)
-                    echo "DB Config File Content: ${dbConfigContent}"
+                    // DB Config 파일 읽기 및 저장
+                    writeFile file: 'db-config.yml', text: "${DB_CONFIG_FILE}"
                 }
             }
         }
