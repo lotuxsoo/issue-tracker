@@ -15,6 +15,27 @@ class AuthenticationManager {
             switch result {
             case .success(let token):
                 KeychainManager.shared.saveToken(token, for: "authToken")
+                
+                self.fetchAndSetUserProfile(userID: userRequest.id) { result in
+                    switch result {
+                    case .success:
+                        print(UserProfileModel.shared.getUserProfile()!)
+                        completion(.success(()))
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    private func fetchAndSetUserProfile(userID: String, completion: @escaping (Result<Void, NetworkError>) -> Void) {
+        NetworkManager.shared.fetchUserProfile(userID: userID) { result in
+            switch result {
+            case .success(let userProfile):
+                UserProfileModel.shared.setUserProfile(userProfile)
                 completion(.success(()))
             case .failure(let error):
                 completion(.failure(error))

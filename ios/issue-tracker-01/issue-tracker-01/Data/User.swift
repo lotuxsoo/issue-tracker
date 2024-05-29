@@ -12,3 +12,10 @@ struct UserRequest: Codable {
     let nickname: String?
     let password: String?
 }
+
+struct UserProfileResoponse: Codable {
+    let id: String
+    let nickname: String
+    let profileImage: String?
+    let joinedAt: String?
+}

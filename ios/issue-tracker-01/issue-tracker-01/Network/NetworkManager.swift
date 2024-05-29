@@ -660,6 +660,44 @@ class NetworkManager {
         }
     }
     
+    func fetchUserProfile(userID: String, completion: @escaping (Result<UserProfileResoponse, NetworkError>) -> Void) {
+        guard let url = URL(string: URLDefines.user + "/\(userID)") else {
+            completion(.failure(.invalidURL))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = HTTPMethod.get.rawValue
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        httpManager.sendRequest(request) { data, response, error in
+            if let error = error {
+                completion(.failure(.networkFailed(error)))
+            }
+            
+            guard let data = data, let httpResponse = response else {
+                completion(.failure(.noData))
+                return
+            }
+            
+            guard (200..<300).contains(httpResponse.statusCode) else {
+                if let responseBody = String(data: data, encoding: .utf8) {
+                    completion(.failure(.serverError(responseBody)))
+                } else {
+                    completion(.failure(.invalidResponse(httpResponse.statusCode)))
+                }
+                return
+            }
+            
+            do {
+                let userProfile = try JSONDecoder().decode(UserProfileResoponse.self, from: data)
+                completion(.success(userProfile))
+            } catch {
+                completion(.failure(.jsonDecodingFailed))
+            }
+        }
+    }
+    
     private func prettyPrintJSON<T: Encodable>(_ item: T) {
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted

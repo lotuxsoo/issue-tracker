@@ -83,6 +83,7 @@
 		D6B0826C2C06CF4E00166890 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6B0826B2C06CF4E00166890 /* AuthenticationManager.swift */; };
 		D6B0826F2C06CF7600166890 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6B0826E2C06CF7600166890 /* KeychainManager.swift */; };
 		D6B082762C072E0F00166890 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = D6B082752C072E0F00166890 /* KeychainAccess */; };
+		D6B082782C073FBB00166890 /* UserProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6B082772C073FBB00166890 /* UserProfileModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -181,6 +182,7 @@
 		D6B082672C06BD5500166890 /* SignUpViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SignUpViewController.xib; sourceTree = "<group>"; };
 		D6B0826B2C06CF4E00166890 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
 		D6B0826E2C06CF7600166890 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
+		D6B082772C073FBB00166890 /* UserProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -440,6 +442,7 @@
 				D61AAC862BFAD62700D35399 /* IssueModel.swift */,
 				D61AAC882BFAF1A600D35399 /* LabelModel.swift */,
 				D61AACA22BFDE9E200D35399 /* MilestoneModel.swift */,
+				D6B082772C073FBB00166890 /* UserProfileModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -657,6 +660,7 @@
 				D6A632002BF2200A000E9C30 /* HTTPManager.swift in Sources */,
 				D61AAC992BFDAA4F00D35399 /* Milestone.swift in Sources */,
 				D642E2722BF740A400ACAE45 /* LabelTableCell.swift in Sources */,
+				D6B082782C073FBB00166890 /* UserProfileModel.swift in Sources */,
 				D61AAC972BFDA93100D35399 /* Label.swift in Sources */,
 				D6369F462BEA0F8F001BDAAB /* AppDelegate.swift in Sources */,
 				D61179662BEC6D6800E7C267 /* Color.swift in Sources */,
