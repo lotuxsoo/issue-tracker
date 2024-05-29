@@ -86,21 +86,25 @@ pipeline {
                 script {
                     sshagent(credentials: ['my-keypair']) {
                         sh '''
-                    ssh -o StrictHostKeyChecking=no -tt ${SSH_USER}@${EC2_INSTANCE_IP} << EOF
+                    ssh -o StrictHostKeyChecking=no -tt ${SSH_USER}@${EC2_INSTANCE_IP} << 'EOF'
                     # 변수에 컨테이너 ID를 저장
-                    NEW_ISSUE_ID=$(docker ps -a -q -f name=new_issue)
-                    ISSUE_ID=$(docker ps -a -q -f name=issue)
+                    NEW_ISSUE_ID=\$(docker ps -a -q -f name=new_issue)
+                    ISSUE_ID=\$(docker ps -a -q -f name=issue)
                     
                     # new_issue 컨테이너 처리
-                    if [ -n "$NEW_ISSUE_ID" ]; then
-                        docker stop new_issue
-                        docker rm new_issue
+                    if [ -n "\$NEW_ISSUE_ID" ]; then
+                        for id in \$NEW_ISSUE_ID; do
+                            docker stop \$id
+                            docker rm \$id
+                        done
                     fi
 
                     # issue 컨테이너 처리
-                    if [ -n "$ISSUE_ID" ]; then
-                        docker stop issue
-                        docker rm issue
+                    if [ -n "\$ISSUE_ID" ]; then
+                        for id in \$ISSUE_ID; do
+                            docker stop \$id
+                            docker rm \$id
+                        done
                     fi
 
                     # 새로운 컨테이너 실행 및 이름 변경
