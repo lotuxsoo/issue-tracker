@@ -85,7 +85,7 @@ pipeline {
             steps {
                 script {
                     sshagent(credentials: ['my-keypair']) {
-                        sh 'ssh -o StrictHostKeyChecking=no -tt ${SSH_USER}@${EC2_INSTANCE_IP}'
+                        sh 'ssh -o StrictHostKeyChecking=no -tt ${SSH_USER}@${EC2_INSTANCE_IP} << EOF &'
                         sh 'if [ "$(docker ps -a -q -f name=issue)" ]; then docker stop issue; docker rm issue; fi'
                         sh 'if [ "$(docker ps -a -q -f name=new_issue)" ]; then docker stop new_issue; docker rm new_issue; fi'
                         sh 'docker pull ${DOCKER_IMAGE}:${BUILD_ID}'
