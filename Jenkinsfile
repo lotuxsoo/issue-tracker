@@ -85,27 +85,11 @@ pipeline {
             steps {
                 script {
                     sshagent(credentials: ['my-keypair']) {
-                        sh '''
-                        ssh -o StrictHostKeyChecking=no -tt ${SSH_USER}@${EC2_INSTANCE_IP} << 'EOF'
-                        
-                        # 기존에 issue 컨테이너가 존재하는지 확인 후 중지 및 삭제
-                        if [ "$(docker ps -a -q -f name=issue)" ]; then
-                            docker stop issue
-                            docker rm issue
-                        fi
-                        
-                        # 기존에 new_issue 컨테이너가 존재하는지 확인 후 중지 및 삭제
-                        if [ "$(docker ps -a -q -f name=new_issue)" ]; then
-                            docker stop new_issue
-                            docker rm new_issue
-                        fi
-                        
-                        # 이미지 다운로드 및 컨테이너 실행
-                        docker pull ${DOCKER_IMAGE}:${BUILD_ID}
-                        docker run -d --name issue -p 80:8080 ${DOCKER_IMAGE}:${BUILD_ID}
-                        
-                        EOF
-                        '''
+                        sh 'ssh -o StrictHostKeyChecking=no -tt ${SSH_USER}@${EC2_INSTANCE_IP}'
+                        sh 'if [ "$(docker ps -a -q -f name=issue)" ]; then docker stop issue; docker rm issue; fi'
+                        sh 'if [ "$(docker ps -a -q -f name=new_issue)" ]; then docker stop new_issue; docker rm new_issue; fi'
+                        sh 'docker pull ${DOCKER_IMAGE}:${BUILD_ID}'
+                        sh 'docker run -d --name issue -p 80:8080 ${DOCKER_IMAGE}:${BUILD_ID}'
                     }
                 }
             }
