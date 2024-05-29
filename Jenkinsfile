@@ -30,6 +30,17 @@ pipeline {
             }
         }
 
+        stage('Build Backend') {
+            steps {
+                script {
+                    dir('be/issue_tracker') {
+                        sh 'chmod +x ./gradlew'
+                        sh './gradlew assemble --exclude-task test'
+                    }
+                }
+            }
+        }
+
         stage('build-docker-image') {
             steps {
                 script {
