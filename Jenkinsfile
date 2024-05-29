@@ -77,7 +77,7 @@ pipeline {
         stage('SSH to EC2 and Docker run') {
             steps {
                 script {
-                    sshagent([credentials: 'EC2_CREDENTIALS']) {
+                    sshagent([credentials: 'my-keypair']) {
                         sh '''
                             ssh -o StrictHostKeyChecking=no ${SSH_USER}@${EC2_INSTANCE_IP}
                             docker run -d -p 80:8080 ${DOCKER_IMAGE}:${BUILD_ID}
