@@ -31,8 +31,8 @@ pipeline {
                         // 복사할 디렉토리 경로
                         def directory = 'be/issue_tracker/src/main/resources'
 
-                        sh 'chown -R ${jenkinsUser}:${jenkinsUser} ${directory}''
-                        sh 'chmod 775 ${directory}''
+                        sh 'chown -R ${jenkinsUser}:${jenkinsUser} ${directory}'
+                        sh 'chmod 775 ${directory}'
 
                         sh 'cp ${jwtFile} ${directory}/jwt.yml'
                         sh 'cp ${dbConfigFile} ${directory}/db-config.yml'
@@ -42,7 +42,7 @@ pipeline {
                         sh 'chmod 664 ${directory}/jwt.yml'
                         sh 'chmod 664 ${directory}/db-config.yml'
 
-                        sh "ls -l ${directory}/*.yml"
+                        sh 'ls -l ${directory}/*.yml'
                     }
             }
         }
