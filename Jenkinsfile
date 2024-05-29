@@ -85,7 +85,7 @@ pipeline {
             steps {
                 script {
                     sshagent(credentials: ['my-keypair']) {
-                        sh '''
+                    sh '''
                     ssh -o StrictHostKeyChecking=no -tt ${SSH_USER}@${EC2_INSTANCE_IP} << 'EOF'
                     # 변수에 컨테이너 ID를 저장
                     NEW_ISSUE_ID=$(docker ps -a -q -f name=new_issue)
@@ -106,14 +106,13 @@ pipeline {
                             docker rm $id
                         done
                     fi
-
+                    
                     # 새로운 컨테이너 실행
                     docker run -d --name new_issue -p 80:8080 ${DOCKER_IMAGE}:${BUILD_ID}
                     
                     # 이름 변경
                     docker rename new_issue issue
-                    EOF
-                '''
+                    '''
                     }
                 }
             }
