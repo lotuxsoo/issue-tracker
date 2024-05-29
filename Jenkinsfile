@@ -25,11 +25,11 @@ pipeline {
             steps {
                 script {
                     // JWT 파일 가져오기
-                    def jwtContent = credentials('JWT-YML')
+                    def jwtContent = credentials('JWT-YML').getBytes()
                     writeFile file: 'src/main/resources/jwt.yml', text: jwtContent
 
                     // DB Config 파일 가져오기
-                    def dbConfigContent = credentials('DBCONFIG-YML')
+                    def dbConfigContent = credentials('DBCONFIG-YML').getBytes()
                     writeFile file: 'src/main/resources/db-config.yml', text: dbConfigContent
                 }
             }
