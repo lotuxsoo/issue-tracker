@@ -76,7 +76,7 @@ pipeline {
             steps {
                 script {
                     sshagent([credentials: ${EC2_CREDENTIALS}]) {
-                        sh "ssh ${EC2_HOST} 'docker run -d -p 8081:8080 ${DOCKER_IMAGE}:${BUILD_ID}'"
+                        sh "ssh ${EC2_HOST} 'docker run -d -p 80:8080 ${DOCKER_IMAGE}:${BUILD_ID}'"
                     }
                 }
             }
