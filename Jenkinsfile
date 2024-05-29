@@ -7,7 +7,8 @@ pipeline {
         EC2_CREDENTIALS = credentials('my-keypair')
         SSH_USER = 'ubuntu'
         EC2_INSTANCE_IP = '3.36.70.238'
-
+        ENCODED_DB_CONFIG = credentials('db-config.yml')
+        ENCODED_JWT = credentials('jwt.yml')
     }
 
     stages {
