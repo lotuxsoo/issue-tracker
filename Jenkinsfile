@@ -86,29 +86,18 @@ pipeline {
                 script {
                     sshagent(credentials: ['my-keypair']) {
                         sh '''
-                    ssh -o StrictHostKeyChecking=no -t ${SSH_USER}@${EC2_INSTANCE_IP} << 'ENDSSH'
+                    ssh -o StrictHostKeyChecking=no -tt ${SSH_USER}@${EC2_INSTANCE_IP} << 'ENDSSH'
                     
                     # 기존 컨테이너 중지 및 삭제 (기존 컨테이너가 있는 경우)
-                    if [ $(docker ps -q -f name=new_issue) ]; then
-                        docker stop new_issue
-                        docker rm new_issue
-                    fi
-
-                    if [ $(docker ps -q -f name=issue) ]; then
-                        docker stop issue
-                        docker rm issue
-                    fi
+                    [ $(docker ps -q -f name=new_issue) ] && docker stop new_issue && docker rm new_issue
+                    [ $(docker ps -q -f name=issue) ] && docker stop issue && docker rm issue
                     
                     # 새로운 컨테이너 실행
-                    docker run -d --name new_issue -p 80:8080 ${DOCKER_IMAGE}:${BUILD_ID}
-                    
-                    if [ $? -eq 0 ]; then
-                        # 새 컨테이너를 issue로 이름 변경
-                        docker rename new_issue issue
-                    fi
-                    
+                    docker run -d --name new_issue -p 80:8080 ${DOCKER_IMAGE}:${BUILD_ID} && \
+                    docker rename new_issue issue
+
                     ENDSSH
-                    '''
+                '''
                     }
                 }
             }
