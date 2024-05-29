@@ -16,4 +16,11 @@ extension UIViewController {
         
         return action
     }
+    
+    func showAlert(title: String = "알림", message: String, buttonTitle: String = "확인", handler: ((UIAlertAction) -> Void)? = nil) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let action = UIAlertAction(title: buttonTitle, style: .default, handler: handler)
+        alert.addAction(action)
+        self.present(alert, animated: true)
+    }
 }

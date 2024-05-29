@@ -8,14 +8,13 @@
 import Foundation
 
 enum URLDefines {
-    
     private static let base: String = {
         guard let urlBase = Bundle.main.object(forInfoDictionaryKey: "API_BASE_URL") as? String else {
             return ""
         }
         return urlBase
     }()
-
+    
     static let issue = "\(base)/issue"
     static let issueList = "\(base)/issue/list"
     static let label = "\(base)/label"
@@ -23,4 +22,7 @@ enum URLDefines {
     static let milestone = "\(base)/milestone"
     static let milestoneList = "\(base)/milestone/list"
     static let select = "\(base)/select"
+    static let user = "\(base)/user"
+    static let login = "\(base)/user/login"
+    static let duplicate = "\(base)/user/duplicate"
 }

@@ -47,6 +47,10 @@ class IssueEditorViewController: UIViewController {
         }
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
     private func populateEditingData() {
         guard let issueDetail = issueModel.issueDetail else {
             return

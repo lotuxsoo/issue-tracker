@@ -126,7 +126,7 @@ class IssueDetailMoreViewController: UIViewController {
                     self?.delegate?.didCompleteTask()
                 })
             } else {
-                self?.showAlertWith(message: "이슈 닫기에 실패하였습니다.", actionTitle: "확인")
+                self?.showAlert(message: "이슈 닫기에 실패하였습니다.")
             }
         }
     }
@@ -142,16 +142,9 @@ class IssueDetailMoreViewController: UIViewController {
                     })
                 }
             } else {
-                self?.showAlertWith(message: "이슈 삭제에 실패하였습니다.", actionTitle: "확인")
+                self?.showAlert(message: "이슈 삭제에 실패하였습니다.")
             }
         }
-    }
-    
-    private func showAlertWith(message: String, actionTitle: String) {
-        let alertController = UIAlertController(title: "알림", message: message, preferredStyle: .alert)
-        let action = UIAlertAction(title: actionTitle, style: .default)
-        alertController.addAction(action)
-        present(alertController, animated: true)
     }
 }
 

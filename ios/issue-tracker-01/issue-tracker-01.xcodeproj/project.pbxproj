@@ -77,6 +77,12 @@
 		D6B0825F2C043A2F00166890 /* MilestoneCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6B0825D2C043A2F00166890 /* MilestoneCollectionViewCell.swift */; };
 		D6B082602C043A2F00166890 /* MilestoneCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6B0825E2C043A2F00166890 /* MilestoneCollectionViewCell.xib */; };
 		D6B082632C045AE000166890 /* EditorOptionDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6B082622C045AE000166890 /* EditorOptionDataSource.swift */; };
+		D6B082652C05F78300166890 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6B082642C05F78300166890 /* User.swift */; };
+		D6B082682C06BD5500166890 /* SignUpViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6B082672C06BD5500166890 /* SignUpViewController.xib */; };
+		D6B082692C06BD5500166890 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6B082662C06BD5500166890 /* SignUpViewController.swift */; };
+		D6B0826C2C06CF4E00166890 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6B0826B2C06CF4E00166890 /* AuthenticationManager.swift */; };
+		D6B0826F2C06CF7600166890 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6B0826E2C06CF7600166890 /* KeychainManager.swift */; };
+		D6B082732C06D53B00166890 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = D6B082722C06D53B00166890 /* KeychainAccess */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -170,6 +176,11 @@
 		D6B0825D2C043A2F00166890 /* MilestoneCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestoneCollectionViewCell.swift; sourceTree = "<group>"; };
 		D6B0825E2C043A2F00166890 /* MilestoneCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MilestoneCollectionViewCell.xib; sourceTree = "<group>"; };
 		D6B082622C045AE000166890 /* EditorOptionDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorOptionDataSource.swift; sourceTree = "<group>"; };
+		D6B082642C05F78300166890 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		D6B082662C06BD5500166890 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
+		D6B082672C06BD5500166890 /* SignUpViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SignUpViewController.xib; sourceTree = "<group>"; };
+		D6B0826B2C06CF4E00166890 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
+		D6B0826E2C06CF7600166890 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,6 +188,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D6B082732C06D53B00166890 /* KeychainAccess in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -264,19 +276,17 @@
 			path = Extension;
 			sourceTree = "<group>";
 		};
-		D61179752BEC8FB800E7C267 /* Models */ = {
+		D61179752BEC8FB800E7C267 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				D6B082642C05F78300166890 /* User.swift */,
 				D61179732BEC8FA900E7C267 /* Issue.swift */,
 				D61AAC962BFDA93100D35399 /* Label.swift */,
 				D61AAC982BFDAA4F00D35399 /* Milestone.swift */,
 				D61AACA82BFF38FB00D35399 /* OptionType.swift */,
-				D6A632162BF46ACC000E9C30 /* BaseModel.swift */,
-				D61AAC862BFAD62700D35399 /* IssueModel.swift */,
-				D61AAC882BFAF1A600D35399 /* LabelModel.swift */,
-				D61AACA22BFDE9E200D35399 /* MilestoneModel.swift */,
+				D6B0826A2C06CEA300166890 /* Models */,
 			);
-			path = Models;
+			path = Data;
 			sourceTree = "<group>";
 		};
 		D6369F392BEA0F8F001BDAAB = {
@@ -306,6 +316,7 @@
 			children = (
 				D6369F452BEA0F8F001BDAAB /* AppDelegate.swift */,
 				D6369F472BEA0F8F001BDAAB /* SceneDelegate.swift */,
+				D61179552BEC60D900E7C267 /* TabBarController.swift */,
 				D659C5B22BEB559C007A57C1 /* Login */,
 				D611795D2BEC6A4700E7C267 /* Issue */,
 				D611795E2BEC6A5000E7C267 /* Label */,
@@ -313,8 +324,9 @@
 				D61179602BEC6A5D00E7C267 /* Profile */,
 				D61179672BEC6D7800E7C267 /* Utils */,
 				D611796C2BEC734300E7C267 /* Extension */,
-				D61179752BEC8FB800E7C267 /* Models */,
+				D61179752BEC8FB800E7C267 /* Data */,
 				D6A632012BF221F0000E9C30 /* Network */,
+				D6B0826D2C06CF5500166890 /* Authentication */,
 				D6A631FE2BF20BB1000E9C30 /* URLDefines */,
 				D6369F4B2BEA0F8F001BDAAB /* Main.storyboard */,
 				D6369F4E2BEA0F90001BDAAB /* Assets.xcassets */,
@@ -346,7 +358,8 @@
 			isa = PBXGroup;
 			children = (
 				D6369F492BEA0F8F001BDAAB /* LoginController.swift */,
-				D61179552BEC60D900E7C267 /* TabBarController.swift */,
+				D6B082662C06BD5500166890 /* SignUpViewController.swift */,
+				D6B082672C06BD5500166890 /* SignUpViewController.xib */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -373,8 +386,8 @@
 			isa = PBXGroup;
 			children = (
 				D6A632092BF34589000E9C30 /* IssueDetailViewController.swift */,
-				D6A6320A2BF34589000E9C30 /* IssueDetailViewController.xib */,
 				D6A632262BF5E045000E9C30 /* IssueDetailHeaderView.swift */,
+				D6A6320A2BF34589000E9C30 /* IssueDetailViewController.xib */,
 				D6A632222BF5DD2F000E9C30 /* IssueDetailHeaderView.xib */,
 				D6A6320E2BF35D24000E9C30 /* IssueDetailCell.swift */,
 				D6A6320F2BF35D24000E9C30 /* IssueDetailCell.xib */,
@@ -420,6 +433,26 @@
 			path = OptionEditor;
 			sourceTree = "<group>";
 		};
+		D6B0826A2C06CEA300166890 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				D6A632162BF46ACC000E9C30 /* BaseModel.swift */,
+				D61AAC862BFAD62700D35399 /* IssueModel.swift */,
+				D61AAC882BFAF1A600D35399 /* LabelModel.swift */,
+				D61AACA22BFDE9E200D35399 /* MilestoneModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		D6B0826D2C06CF5500166890 /* Authentication */ = {
+			isa = PBXGroup;
+			children = (
+				D6B0826B2C06CF4E00166890 /* AuthenticationManager.swift */,
+				D6B0826E2C06CF7600166890 /* KeychainManager.swift */,
+			);
+			path = Authentication;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -437,6 +470,9 @@
 			dependencies = (
 			);
 			name = "issue-tracker-01";
+			packageProductDependencies = (
+				D6B082722C06D53B00166890 /* KeychainAccess */,
+			);
 			productName = "issue-tracker-01";
 			productReference = D6369F422BEA0F8F001BDAAB /* issue-tracker-01.app */;
 			productType = "com.apple.product-type.application";
@@ -509,6 +545,9 @@
 				Base,
 			);
 			mainGroup = D6369F392BEA0F8F001BDAAB;
+			packageReferences = (
+				D6B082712C06D53B00166890 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+			);
 			productRefGroup = D6369F432BEA0F8F001BDAAB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -541,6 +580,7 @@
 				D6369F522BEA0F90001BDAAB /* Base in Resources */,
 				D6A632232BF5DD2F000E9C30 /* IssueDetailHeaderView.xib in Resources */,
 				D6A631F52BF1D101000E9C30 /* IssueTableCell.xib in Resources */,
+				D6B082682C06BD5500166890 /* SignUpViewController.xib in Resources */,
 				D6B082602C043A2F00166890 /* MilestoneCollectionViewCell.xib in Resources */,
 				D61179792BECA9D400E7C267 /* labelCell.xib in Resources */,
 				D6A632102BF35D24000E9C30 /* IssueDetailCell.xib in Resources */,
@@ -600,6 +640,9 @@
 				D642E26A2BF6EFD000ACAE45 /* EditorOptionCell.swift in Sources */,
 				D61AACB32C00497700D35399 /* EditorOptionLabelCell.swift in Sources */,
 				D61AAC892BFAF1A600D35399 /* LabelModel.swift in Sources */,
+				D6B082692C06BD5500166890 /* SignUpViewController.swift in Sources */,
+				D6B0826F2C06CF7600166890 /* KeychainManager.swift in Sources */,
+				D6B0826C2C06CF4E00166890 /* AuthenticationManager.swift in Sources */,
 				D61AACAD2BFF3A9400D35399 /* SelectedOptionCell.swift in Sources */,
 				D61AACA92BFF38FB00D35399 /* OptionType.swift in Sources */,
 				D6A631FD2BF20BAC000E9C30 /* URLDefines.swift in Sources */,
@@ -617,6 +660,7 @@
 				D61AAC972BFDA93100D35399 /* Label.swift in Sources */,
 				D6369F462BEA0F8F001BDAAB /* AppDelegate.swift in Sources */,
 				D61179662BEC6D6800E7C267 /* Color.swift in Sources */,
+				D6B082652C05F78300166890 /* User.swift in Sources */,
 				D642E26E2BF717BB00ACAE45 /* EditorOptionViewController.swift in Sources */,
 				D642E2672BF6182B00ACAE45 /* IssueEditorViewController.swift in Sources */,
 				D6A631F42BF1D101000E9C30 /* IssueTableCell.swift in Sources */,
@@ -829,6 +873,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -858,6 +903,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -988,6 +1034,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D6B082712C06D53B00166890 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D6B082722C06D53B00166890 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D6B082712C06D53B00166890 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D6369F3A2BEA0F8F001BDAAB /* Project object */;
 }

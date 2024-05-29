@@ -23,7 +23,13 @@ class NetworkManager {
     static let shared = NetworkManager()
     private let httpManager: HTTPManagerProtocol
     
-    private let token = Bundle.main.object(forInfoDictionaryKey: "API_ACCESS_TOKEN") as? String
+    private func getAuthorizationHeader() -> String? {
+        if let token = KeychainManager.shared.getToken(for: "authToken") {
+            return "Bearer \(token)"
+        } else {
+            return nil
+        }
+    }
     
     init(httpManager: HTTPManagerProtocol = HTTPManager.shared) {
         self.httpManager = httpManager
@@ -51,7 +57,7 @@ class NetworkManager {
             }
         }
     }
-    
+    // MARK: - Issue
     func fetchIssues(completion: @escaping ([Issue]?) -> Void) {
         guard let url = URL(string: URLDefines.issueList) else {
             completion(nil)
@@ -109,7 +115,9 @@ class NetworkManager {
             completion(false)
             return
         }
-        guard let token = token else { return }
+        guard let token = getAuthorizationHeader() else {
+            return
+        }
         
         var request = URLRequest(url: url)
         request.httpMethod = HTTPMethod.delete.rawValue
@@ -130,7 +138,9 @@ class NetworkManager {
             completion(false)
             return
         }
-        guard let token = token else { return }
+        guard let token = getAuthorizationHeader() else {
+            return
+        }
         
         var request = URLRequest(url: url)
         request.httpMethod = HTTPMethod.post.rawValue
@@ -151,10 +161,11 @@ class NetworkManager {
             completion(.failure(NetworkError.invalidURL))
             return
         }
-        guard let token = token else {
+        guard let token = getAuthorizationHeader() else {
             completion(.failure(NetworkError.unauthorized))
             return
         }
+        
         
         var request = URLRequest(url: url)
         request.httpMethod = HTTPMethod.patch.rawValue
@@ -199,7 +210,7 @@ class NetworkManager {
             completion(.failure(NetworkError.invalidURL))
             return
         }
-        guard let token = token else {
+        guard let token = getAuthorizationHeader() else {
             completion(.failure(NetworkError.unauthorized))
             return
         }
@@ -230,6 +241,9 @@ class NetworkManager {
             }
             
             guard (200..<300).contains(httpResponse.statusCode) else {
+                if let responseBody = String(data: data, encoding: .utf8) {
+                    os_log("[ createIssue ]: Invalid Response - %{PUBLIC}@ - %{PUBLIC}@", "\(httpResponse.statusCode)", responseBody)
+                }
                 completion(.failure(NetworkError.invalidResponse(httpResponse.statusCode)))
                 return
             }
@@ -243,6 +257,7 @@ class NetworkManager {
         }
     }
     
+    // MARK: - Label
     func fetchLabels(completion: @escaping ([LabelResponse]?) -> Void) {
         guard let url = URL(string: URLDefines.labelList) else {
             completion(nil)
@@ -273,7 +288,9 @@ class NetworkManager {
             completion(false)
             return
         }
-        guard let token = token else { return }
+        guard let token = getAuthorizationHeader() else {
+            return
+        }
         
         var request = URLRequest(url: url)
         request.httpMethod = HTTPMethod.delete.rawValue
@@ -295,7 +312,9 @@ class NetworkManager {
             completion(false, nil)
             return
         }
-        guard let token = token else { return }
+        guard let token = getAuthorizationHeader() else {
+            return
+        }
         
         var request = URLRequest(url: url)
         request.httpMethod = HTTPMethod.patch.rawValue
@@ -335,7 +354,9 @@ class NetworkManager {
             completion(false, nil)
             return
         }
-        guard let token = token else { return }
+        guard let token = getAuthorizationHeader() else {
+            return
+        }
         
         var request = URLRequest(url: url)
         request.httpMethod = HTTPMethod.post.rawValue
@@ -369,6 +390,8 @@ class NetworkManager {
         }
     }
     
+    // MARK: - Milestone
+    
     func fetchMilestones(completion: @escaping ([MilestoneResponse]?) -> Void) {
         guard let url = URL(string: URLDefines.milestoneList) else {
             completion(nil)
@@ -399,7 +422,9 @@ class NetworkManager {
             completion(false)
             return
         }
-        guard let token = token else { return }
+        guard let token = getAuthorizationHeader() else {
+            return
+        }
         
         var request = URLRequest(url: url)
         request.httpMethod = HTTPMethod.delete.rawValue
@@ -421,7 +446,9 @@ class NetworkManager {
             completion(false, nil)
             return
         }
-        guard let token = token else { return }
+        guard let token = getAuthorizationHeader() else {
+            return
+        }
         
         var request = URLRequest(url: url)
         request.httpMethod = HTTPMethod.patch.rawValue
@@ -461,7 +488,9 @@ class NetworkManager {
             completion(false, nil)
             return
         }
-        guard let token = token else { return }
+        guard let token = getAuthorizationHeader() else {
+            return
+        }
         
         var request = URLRequest(url: url)
         request.httpMethod = HTTPMethod.post.rawValue
@@ -492,6 +521,140 @@ class NetworkManager {
             } catch {
                 os_log("[ createMilestone ] : \(String(describing: error))")
                 completion(false, nil)
+            }
+        }
+    }
+    
+    // MARK: - User
+    
+    func registerUser(userRequest: UserRequest, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let url = URL(string: URLDefines.user) else {
+            completion(.failure(NetworkError.invalidURL))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = HTTPMethod.post.rawValue
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            let jsonData = try JSONEncoder().encode(userRequest)
+            request.httpBody = jsonData
+        } catch {
+            completion(.failure(NetworkError.jsonEncodingFailed))
+            return
+        }
+        
+        httpManager.sendRequest(request) { data, response, error in
+            if let error = error {
+                completion(.failure(NetworkError.networkFailed(error)))
+                return
+            }
+            
+            guard let data = data, let httpResponse = response else {
+                completion(.failure(NetworkError.noData))
+                return
+            }
+            
+            guard (200..<300).contains(httpResponse.statusCode) else {
+                if let responseBody = String(data: data, encoding: .utf8) {
+                    os_log("[ registerUser ] : \(responseBody)")
+                }
+                completion(.failure(NetworkError.invalidResponse(httpResponse.statusCode)))
+                return
+            }
+            
+            completion(.success(()))
+        }
+    }
+    
+    func loginUser(userRequest: UserRequest, completion: @escaping (Result<String, Error>) -> Void) {
+        guard let url = URL(string: URLDefines.login) else {
+            completion(.failure(NetworkError.invalidURL))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = HTTPMethod.post.rawValue
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            let jsonData = try JSONEncoder().encode(userRequest)
+            request.httpBody = jsonData
+        } catch {
+            completion(.failure(NetworkError.jsonEncodingFailed))
+            return
+        }
+        
+        httpManager.sendRequest(request) { data, response, error in
+            if let error = error {
+                completion(.failure(NetworkError.networkFailed(error)))
+                return
+            }
+            
+            guard let data = data, let httpResponse = response else {
+                completion(.failure(NetworkError.noData))
+                return
+            }
+            
+            guard (200..<300).contains(httpResponse.statusCode) else {
+                if let responseBody = String(data: data, encoding: .utf8) {
+                    os_log("[ loginUser ] : \(responseBody)")
+                }
+                completion(.failure(NetworkError.invalidResponse(httpResponse.statusCode)))
+                return
+            }
+            
+            if let token = String(data: data, encoding:  .utf8) {
+                completion(.success(token))
+            } else {
+                completion(.failure(NetworkError.jsonDecodingFailed))
+            }
+        }
+    }
+    
+    func verifyUserId(idRequest: UserRequest, completion: @escaping (Result<Bool, Error>) -> Void) {
+        guard let url = URL(string: URLDefines.duplicate) else {
+            completion(.failure(NetworkError.invalidURL))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = HTTPMethod.post.rawValue
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            let jsonData = try JSONEncoder().encode(idRequest)
+            request.httpBody = jsonData
+        } catch {
+            completion(.failure(NetworkError.jsonEncodingFailed))
+            return
+        }
+        
+        httpManager.sendRequest(request) { data, response, error in
+            if let error = error {
+                completion(.failure(NetworkError.networkFailed(error)))
+                return
+            }
+            
+            guard let data = data, let httpResponse = response else {
+                completion(.failure(NetworkError.noData))
+                return
+            }
+            
+            guard (200..<300).contains(httpResponse.statusCode) else {
+                if let responseBody = String(data: data, encoding: .utf8) {
+                    os_log("[ verifyUserId ] : \(responseBody)")
+                }
+                completion(.failure(NetworkError.invalidResponse(httpResponse.statusCode)))
+                return
+            }
+            
+            do {
+                let isAvailable = try JSONDecoder().decode(Bool.self, from: data)
+                completion(.success(isAvailable))
+            } catch {
+                completion(.failure(NetworkError.jsonDecodingFailed))
             }
         }
     }

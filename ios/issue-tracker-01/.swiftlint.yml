@@ -3,6 +3,7 @@ included:
 disabled_rules:
     - trailing_whitespace
     - type_name
+    - empty_enum_arguments
 opt_in_rules:
     - empty_count
     - empty_string
@@ -10,4 +11,4 @@ file_length:
   warning: 1000
 
 line_length: 300
-type_body_length: 500
+type_body_length: 800
