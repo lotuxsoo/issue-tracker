@@ -24,6 +24,10 @@ class CommentEditorViewController: UIViewController {
         textView.delegate = self
         saveButton.isEnabled = false
     }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
 
     @IBAction func backButtonTapped(_ sender: Any) {
         self.dismiss(animated: true)

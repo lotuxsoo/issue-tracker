@@ -9,6 +9,7 @@ import UIKit
 
 protocol IssueDetailCellDelegate: AnyObject {
     func issueDetailCell(_ cell: IssueDetailCell, commentId: Int, initialContent: String)
+    func issueDetailCellDidRequestDelete(_ cell: IssueDetailCell, commentId: Int)
 }
 
 class IssueDetailCell: UITableViewCell {
@@ -23,6 +24,7 @@ class IssueDetailCell: UITableViewCell {
     @IBOutlet weak var contentLabel: UILabel!
     @IBOutlet weak var authorLabel: UILabel!
     @IBOutlet weak var actionButton: UIButton!
+    @IBOutlet weak var backgroundCellView: UIView!
     
     var commentId: Int?
     var commentModel: CommentModel!
@@ -121,7 +123,8 @@ class IssueDetailCell: UITableViewCell {
     }
     
     private func deleteComment() {
-        
+        guard let commentId = commentId else { return }
+        delegate?.issueDetailCellDidRequestDelete(self, commentId: commentId)
     }
     
     @objc private func heartButtonTapped() {

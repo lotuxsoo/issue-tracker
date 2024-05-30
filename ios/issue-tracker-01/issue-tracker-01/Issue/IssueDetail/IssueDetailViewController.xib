@@ -13,6 +13,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="IssueDetailViewController" customModule="issue_tracker_01" customModuleProvider="target">
             <connections>
                 <outlet property="tableView" destination="H3w-3I-1qz" id="Lq7-FF-2zl"/>
+                <outlet property="textField" destination="fTA-fn-7cA" id="kNF-Ap-atj"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -24,13 +25,22 @@
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="grouped" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="H3w-3I-1qz">
                     <rect key="frame" x="0.0" y="59" width="393" height="710"/>
                     <color key="backgroundColor" name="gray100"/>
+                    <color key="sectionIndexBackgroundColor" name="gray300"/>
                 </tableView>
                 <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TwS-6Y-OXR">
                     <rect key="frame" x="0.0" y="769" width="393" height="49"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <items>
-                        <barButtonItem image="chevron.up" catalog="system" id="u08-DX-aor"/>
-                        <barButtonItem title="Item" image="chevron.down" catalog="system" id="u9c-ZD-7aY"/>
+                        <barButtonItem image="chevron.up" catalog="system" id="u08-DX-aor">
+                            <connections>
+                                <action selector="upButtonTapped:" destination="-1" id="6Tu-BD-kVR"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem image="chevron.down" catalog="system" id="u9c-ZD-7aY">
+                            <connections>
+                                <action selector="downButtonTapped:" destination="-1" id="NqD-sY-VKP"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem width="11" style="plain" systemItem="fixedSpace" id="hqj-M0-ueB"/>
                         <barButtonItem style="plain" id="upx-md-JU2">
                             <textField key="customView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="코멘트를 입력하세요" textAlignment="natural" minimumFontSize="17" id="fTA-fn-7cA">
@@ -62,6 +72,9 @@
         <image name="chevron.up" catalog="system" width="128" height="70"/>
         <namedColor name="gray100">
             <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="gray300">
+            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

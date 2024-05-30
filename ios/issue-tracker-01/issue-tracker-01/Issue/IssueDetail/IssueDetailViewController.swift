@@ -13,6 +13,7 @@ class IssueDetailViewController: UIViewController {
     static let identifier: String = "IssueDetailViewController"
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var textField: UITextField!
     
     var issueId: Int?
     var issueModel: IssueModel!
@@ -23,6 +24,7 @@ class IssueDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.allowsSelection = true
         
         if let issueId = issueId {
             self.fetchIssueDetail(issueId: issueId)
@@ -33,6 +35,11 @@ class IssueDetailViewController: UIViewController {
         bindModel()
         registerForNotifications()
     }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
     private func registerForNotifications() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handleIssueUpdated),
@@ -118,6 +125,44 @@ class IssueDetailViewController: UIViewController {
         
         present(navigationController, animated: true)
     }
+    
+    @IBAction func upButtonTapped(_ sender: Any) {
+        changeCommentFocus(moveUp: true)
+    }
+    
+    @IBAction func downButtonTapped(_ sender: Any) {
+        changeCommentFocus(moveUp: false)
+    }
+    
+    private func changeCommentFocus(moveUp: Bool) {
+        let currentRow = tableView.indexPathForSelectedRow?.row
+        var newRow: Int?
+        
+        if let currentRow = currentRow {
+            newRow = currentRow + (moveUp ? -1 : 1)
+        } else {
+            newRow = moveUp ? (commentModel.count - 1) : 0
+        }
+        
+        if let newRow = newRow, newRow >= 0, newRow < commentModel.count {
+            let newIndexPath = IndexPath(row: newRow, section: 0)
+            tableView.selectRow(at: newIndexPath, animated: true, scrollPosition: .middle)
+            tableView.scrollToRow(at: newIndexPath, at: .middle, animated: true)
+            updateCommentFocus()
+        }
+    }
+
+    private func updateCommentFocus() {
+        if let indexPaths = tableView.indexPathsForVisibleRows {
+            for indexPath in indexPaths {
+                if let cell = tableView.cellForRow(at: indexPath) as? IssueDetailCell {
+                    DispatchQueue.main.async {
+                        cell.backgroundCellView.backgroundColor = (self.tableView.indexPathForSelectedRow == indexPath) ? .gray400 : .systemBackground
+                    }
+                }
+            }
+        }
+    }
 }
 
 extension IssueDetailViewController: UITableViewDataSource, UITableViewDelegate {
@@ -163,6 +208,19 @@ extension IssueDetailViewController: IssueDetailViewControllerDelegate {
 }
 
 extension IssueDetailViewController: IssueDetailCellDelegate {
+    func issueDetailCellDidRequestDelete(_ cell: IssueDetailCell, commentId: Int) {
+        commentModel.deleteComment(commentId: commentId) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    self?.tableView.reloadData()
+                case .failure(let error):
+                    self?.showErrorAlert(for: error)
+                }
+            }
+        }
+    }
+    
     func issueDetailCell(_ cell: IssueDetailCell, commentId: Int, initialContent: String) {
         let commentEditVC = CommentEditorViewController(nibName: CommentEditorViewController.identifier, bundle: nil)
         commentEditVC.commentID = commentId

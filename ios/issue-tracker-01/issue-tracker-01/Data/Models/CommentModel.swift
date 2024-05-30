@@ -9,7 +9,7 @@ import Foundation
 
 class CommentModel: BaseModel<Comment> {
     static let shared = CommentModel()
-
+    
     enum Notifications {
         static let commentUpdated = Notification.Name("commentUpdated")
     }
@@ -46,19 +46,18 @@ class CommentModel: BaseModel<Comment> {
         }
     }
     
-    func deleteComment(at index: Int, completion: @escaping (Result<Bool, NetworkError>) -> Void) {
-        guard let comment = item(at: index) else {
-            completion(.failure(.noData))
-            return
-        }
-        
-        NetworkManager.shared.deleteComment(commentId: comment.id) { [weak self] result in
-            switch result {
-            case .success(_):
-                self?.removeItem(at: index)
-                completion(.success(true))
-            case .failure(let error):
-                completion(.failure(error))
+    func deleteComment(commentId: Int, completion: @escaping (Result<Bool, NetworkError>) -> Void) {
+        NetworkManager.shared.deleteComment(commentId: commentId) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(_):
+                    if let index = self?.items.firstIndex(where: { $0.id == commentId }) {
+                        self?.removeItem(at: index)
+                    }
+                    completion(.success(true))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
             }
         }
     }

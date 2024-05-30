@@ -12,15 +12,15 @@ extension Date {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
         formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.locale = Locale(identifier: "en_US")
         return formatter.date(from: dateString)
     }
     
     func timeAgoDisplay() -> String {
-        let calendar = Calendar.current
+        var calendar = Calendar.current
         let now = Date()
         let components = calendar.dateComponents([.minute, .hour, .day], from: self, to: now)
-        
+        print("Days: \(components.day ?? 0), Hours: \(components.hour ?? 0), Minutes: \(components.minute ?? 0)")
         if let day = components.day, day > 0 {
             return "\(day)일 전"
         }
