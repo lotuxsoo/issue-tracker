@@ -90,8 +90,8 @@ public class IssueService implements Authorizable<Issue, Long> {
 
         try {
             saved = issueRepository.save(issue);
-        } catch (DbActionExecutionException notExistsLabel){
-            throw new IllegalArgumentException("유효하지 않은 이슈 등록 요청 : 유저, 라벨, 마일스톤을 다시 확인하세요.");
+        } catch (DbActionExecutionException failCreate) {
+            throw new IllegalArgumentException("[이슈create실패]" + "유효하지 않은 이슈 등록 요청 : 유저, 라벨, 마일스톤을 다시 확인하세요.");
         }
 
         return saved;
@@ -99,15 +99,32 @@ public class IssueService implements Authorizable<Issue, Long> {
 
     public Issue updateIssue(Long issueId, IssueUpdateRequest updateRequest, String userId) {
         Issue origin = authorize(issueId, userId);
-        return issueRepository.save(updateRequest.toIssue(origin));
+        Issue saved;
+
+        try {
+            saved = issueRepository.save(updateRequest.toIssue(origin));
+        } catch (DbActionExecutionException failUpdate) {
+            throw new IllegalArgumentException("[이슈update실패]");
+        }
+
+        return saved;
     }
 
     public long closeIssue(Long id, String userId) throws NoSuchElementException {
-        Issue issue = authorize(id,userId);
-        if (issue.getStatus() == CLOSE) throw new IllegalStateException(id + "번 이슈는 이미 닫힌 상태입니다!");
+        Issue issue = authorize(id, userId);
+
+        if (issue.getStatus() == CLOSE) {
+            throw new IllegalStateException("[이슈close실패]" + id + "번 이슈는 이미 닫힌 상태입니다!");
+        }
 
         issue.setStatus(CLOSE);
-        issueRepository.save(issue);
+
+        try {
+            issueRepository.save(issue);
+        } catch (DbActionExecutionException failClose) {
+            throw new IllegalArgumentException("[이슈close실패]");
+        }
+
         return id;
     }
 
@@ -141,7 +158,9 @@ public class IssueService implements Authorizable<Issue, Long> {
     @Override
     public Issue authorize(Long issueId, String userId) {
         Issue issue = getIssueById(issueId);
-        if(!issue.getUserId().equals(userId)) throw new AuthorizeException(issueId + "번 이슈에 대한 권한이 없습니다");
+        if (!issue.getUserId().equals(userId)) {
+            throw new AuthorizeException(issueId + "번 이슈에 대한 권한이 없습니다");
+        }
 
         return issue;
     }
