@@ -25,4 +25,5 @@ enum URLDefines {
     static let user = "\(base)/user"
     static let login = "\(base)/user/login"
     static let duplicate = "\(base)/user/duplicate"
+    static let comment = "\(base)/comment"
 }

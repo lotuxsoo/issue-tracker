@@ -148,6 +148,7 @@ extension IssueListController: UITableViewDataSource, UITableViewDelegate {
         let issueDetailVC = IssueDetailViewController(nibName: IssueDetailViewController.identifier, bundle: nil)
         issueDetailVC.issueId = issueId
         issueDetailVC.issueModel = self.issueModel
+        issueDetailVC.userProfileModel = UserProfileModel.shared
         issueDetailVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(issueDetailVC, animated: true)
     }

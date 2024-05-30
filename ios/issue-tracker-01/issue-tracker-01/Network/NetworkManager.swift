@@ -697,6 +697,138 @@ class NetworkManager {
             }
         }
     }
+    // MARK: - Comment
+    
+    func updateComment(commentId: Int, comment: String, completion: @escaping (Result<Comment, NetworkError>) -> Void) {
+        guard let url = URL(string: URLDefines.comment + "/\(commentId)") else {
+            completion(.failure(.invalidURL))
+            return
+        }
+        guard let token = getAuthorizationHeader() else {
+            completion(.failure(.unauthorized))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = HTTPMethod.patch.rawValue
+        request.addValue(token, forHTTPHeaderField: "Authorization")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let commentDictionary: [String: String] = ["content": comment]
+        
+        do {
+            let jsonData = try JSONEncoder().encode(commentDictionary)
+            request.httpBody = jsonData
+        } catch {
+            completion(.failure(.jsonEncodingFailed))
+            return
+        }
+        
+        httpManager.sendRequest(request) { data, response, error in
+            if let error = error {
+                completion(.failure(.networkFailed(error)))
+                return
+            }
+            
+            guard let data = data, let httpResponse = response else {
+                completion(.failure(.noData))
+                return
+            }
+            
+            guard (200..<300).contains(httpResponse.statusCode) else {
+                completion(.failure(.invalidResponse(httpResponse.statusCode)))
+                return
+            }
+            
+            do {
+                let decodedComment = try JSONDecoder().decode(Comment.self, from: data)
+                completion(.success(decodedComment))
+            } catch {
+                completion(.failure(.jsonDecodingFailed))
+            }
+        }
+    }
+    
+    func createComment(commentRequest: CommentCreationRequest, completion: @escaping (Result<Void, NetworkError>) -> Void) {
+        guard let url = URL(string: URLDefines.comment) else {
+            completion(.failure(.invalidURL))
+            return
+        }
+        guard let token = getAuthorizationHeader() else {
+            completion(.failure(.unauthorized))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = HTTPMethod.post.rawValue
+        request.addValue(token, forHTTPHeaderField: "Authorization")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            let jsonData = try JSONEncoder().encode(commentRequest)
+            request.httpBody = jsonData
+        } catch {
+            completion(.failure(.jsonEncodingFailed))
+            return
+        }
+        
+        httpManager.sendRequest(request) { data, response, error in
+            if let error = error {
+                completion(.failure(.networkFailed(error)))
+                return
+            }
+            
+            guard let data = data, let httpResponse = response else {
+                completion(.failure(.noData))
+                return
+            }
+            
+            guard (200..<300).contains(httpResponse.statusCode) else {
+                completion(.failure(.invalidResponse(httpResponse.statusCode)))
+                return
+            }
+            
+            completion(.success(()))
+        }
+    }
+    
+    func deleteComment(commentId: Int, completion: @escaping (Result<Void, NetworkError>) -> Void) {
+        guard let url = URL(string: URLDefines.comment + "/\(commentId)") else {
+            completion(.failure(.invalidURL))
+            return
+        }
+        guard let token = getAuthorizationHeader() else {
+            completion(.failure(.unauthorized))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = HTTPMethod.delete.rawValue
+        request.addValue(token, forHTTPHeaderField: "Authorization")
+        
+        httpManager.sendRequest(request) { data, response, error in
+            if let error = error {
+                completion(.failure(.networkFailed(error)))
+                return
+            }
+            
+            guard let data = data, let httpResponse = response else {
+                completion(.failure(NetworkError.noData))
+                return
+            }
+            
+            guard (200..<300).contains(httpResponse.statusCode) else {
+                if let responseBody = String(data: data, encoding: .utf8) {
+                    completion(.failure(.serverError(responseBody)))
+                } else {
+                    completion(.failure(.invalidResponse(httpResponse.statusCode)))
+                }
+                return
+            }
+            
+            completion(.success(()))
+        }
+    }
     
     private func prettyPrintJSON<T: Encodable>(_ item: T) {
         let encoder = JSONEncoder()

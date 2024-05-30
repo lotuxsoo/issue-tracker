@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CommentEditorViewController" customModule="issue_tracker_01" customModuleProvider="target">
+            <connections>
+                <outlet property="saveButton" destination="gTy-MX-AAh" id="YkV-6s-F5M"/>
+                <outlet property="textView" destination="qJc-aI-B9g" id="GWu-fo-Zcd"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OzW-Rx-fjO">
+                    <rect key="frame" x="0.0" y="59" width="393" height="44"/>
+                    <items>
+                        <navigationItem title="Title" id="TlI-xR-Yaw">
+                            <barButtonItem key="leftBarButtonItem" image="chevron.left" catalog="system" id="ndP-R0-yFm">
+                                <connections>
+                                    <action selector="backButtonTapped:" destination="-1" id="O9q-xn-8xB"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem key="rightBarButtonItem" title="저장" style="done" id="gTy-MX-AAh">
+                                <connections>
+                                    <action selector="saveButtonTapped:" destination="-1" id="85q-Wo-2XH"/>
+                                </connections>
+                            </barButtonItem>
+                        </navigationItem>
+                    </items>
+                </navigationBar>
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="0" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="qJc-aI-B9g">
+                    <rect key="frame" x="0.0" y="103" width="393" height="615"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <color key="textColor" systemColor="labelColor"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                </textView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" name="gray100"/>
+            <constraints>
+                <constraint firstItem="OzW-Rx-fjO" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="6l5-BS-RSR"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="qJc-aI-B9g" secondAttribute="bottom" constant="100" id="ViU-07-hqn"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="qJc-aI-B9g" secondAttribute="trailing" id="ads-4y-OpB"/>
+                <constraint firstItem="OzW-Rx-fjO" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="o48-eY-sWn"/>
+                <constraint firstItem="OzW-Rx-fjO" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="sEe-jH-67M"/>
+                <constraint firstItem="qJc-aI-B9g" firstAttribute="top" secondItem="OzW-Rx-fjO" secondAttribute="bottom" id="tce-pq-5EH"/>
+                <constraint firstItem="qJc-aI-B9g" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="zfW-NF-FZj"/>
+            </constraints>
+            <point key="canvasLocation" x="130.53435114503816" y="-12.67605633802817"/>
+        </view>
+        <view contentMode="scaleToFill" id="UkT-ds-Hj3">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <viewLayoutGuide key="safeArea" id="8el-BP-Pfj"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <point key="canvasLocation" x="778" y="37"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="chevron.left" catalog="system" width="97" height="128"/>
+        <namedColor name="gray100">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

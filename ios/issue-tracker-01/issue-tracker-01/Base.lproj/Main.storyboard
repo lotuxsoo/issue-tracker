@@ -308,9 +308,21 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="내 계정" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xET-1l-Nkf">
-                                <rect key="frame" x="112" y="402.66666666666669" width="169" height="72"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="60"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z4h-xN-u48">
+                                <rect key="frame" x="16" y="203" width="361" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="3Ua-Qq-hrQ"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nJs-ED-Rbs">
+                                <rect key="frame" x="16" y="283" width="361" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="EL1-nv-7Cg"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -318,11 +330,21 @@
                         <viewLayoutGuide key="safeArea" id="4EQ-uN-sHg"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="xET-1l-Nkf" firstAttribute="centerX" secondItem="4EQ-uN-sHg" secondAttribute="centerX" id="8YG-xc-hMj"/>
-                            <constraint firstItem="xET-1l-Nkf" firstAttribute="centerY" secondItem="4EQ-uN-sHg" secondAttribute="centerY" id="awQ-dh-sY2"/>
+                            <constraint firstItem="nJs-ED-Rbs" firstAttribute="centerX" secondItem="4EQ-uN-sHg" secondAttribute="centerX" id="1mV-3e-RTA"/>
+                            <constraint firstItem="4EQ-uN-sHg" firstAttribute="trailing" secondItem="nJs-ED-Rbs" secondAttribute="trailing" constant="16" id="4jn-h9-fFb"/>
+                            <constraint firstItem="Z4h-xN-u48" firstAttribute="centerX" secondItem="4EQ-uN-sHg" secondAttribute="centerX" id="6jA-RS-Qwc"/>
+                            <constraint firstItem="4EQ-uN-sHg" firstAttribute="trailing" secondItem="Z4h-xN-u48" secondAttribute="trailing" constant="16" id="8sa-g7-SjL"/>
+                            <constraint firstItem="nJs-ED-Rbs" firstAttribute="leading" secondItem="4EQ-uN-sHg" secondAttribute="leading" constant="16" id="E2q-t7-ZTm"/>
+                            <constraint firstItem="Z4h-xN-u48" firstAttribute="leading" secondItem="4EQ-uN-sHg" secondAttribute="leading" constant="16" id="Q1D-G2-GWJ"/>
+                            <constraint firstItem="nJs-ED-Rbs" firstAttribute="top" secondItem="Z4h-xN-u48" secondAttribute="bottom" constant="40" id="jbJ-Q1-dsc"/>
+                            <constraint firstItem="Z4h-xN-u48" firstAttribute="top" secondItem="4EQ-uN-sHg" secondAttribute="top" constant="144" id="kc2-1v-BqG"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="내 계정" image="property=profileS" id="Woc-RE-D8F"/>
+                    <connections>
+                        <outlet property="idLabel" destination="Z4h-xN-u48" id="djk-u1-Z7H"/>
+                        <outlet property="nicknameLabel" destination="nJs-ED-Rbs" id="gL0-rt-9VS"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3k0-eQ-Jno" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

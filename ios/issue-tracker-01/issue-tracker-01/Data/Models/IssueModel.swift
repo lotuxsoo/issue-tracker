@@ -27,10 +27,11 @@ class IssueModel: BaseModel<Issue> {
         }
     }
     
-    func fetchIssueDetail(issueId: Int) {
+    func fetchIssueDetail(issueId: Int, completion: @escaping () -> Void) {
         NetworkManager.shared.fetchIssueDetail(issueId: issueId) { [weak self] issueDetail in
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
                 self?.issueDetail = issueDetail
+                completion()
             }
         }
     }

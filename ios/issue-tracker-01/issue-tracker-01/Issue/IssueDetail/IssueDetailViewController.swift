@@ -16,34 +16,44 @@ class IssueDetailViewController: UIViewController {
     
     var issueId: Int?
     var issueModel: IssueModel!
-    let commentViewModel = BaseModel<Comment>()
+    let commentModel = CommentModel.shared
+    var userProfileModel: UserProfileModel!
+    
     private var cancellables = Set<AnyCancellable>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        self.navigationItem.largeTitleDisplayMode = .never
-        
-        setupNavigationBar()
-        setupTableView()
-        bindModel()
-        registerForNotifications()
         
         if let issueId = issueId {
             self.fetchIssueDetail(issueId: issueId)
         }
+        self.navigationItem.largeTitleDisplayMode = .never
+        setupNavigationBar()
+        setupTableView()
+        bindModel()
+        registerForNotifications()
     }
-    
     private func registerForNotifications() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handleIssueUpdated),
                                                name: IssueModel.Notifications.issueUpdated,
                                                object: nil
         )
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleCommentUpdated),
+                                               name: CommentModel.Notifications.commentUpdated,
+                                               object: nil
+        )
     }
     
     @objc private func handleIssueUpdated(notification: Notification) {
         self.tableView.reloadData()
+    }
+    
+    @objc private func handleCommentUpdated(notification: Notification) {
+        if let issueId = issueId {
+            self.fetchIssueDetail(issueId: issueId)
+        }
     }
     
     private func setupTableView() {
@@ -54,14 +64,18 @@ class IssueDetailViewController: UIViewController {
     }
     
     private func fetchIssueDetail(issueId: Int) {
-        issueModel.fetchIssueDetail(issueId: issueId)
+        issueModel.fetchIssueDetail(issueId: issueId) {
+            DispatchQueue.main.async { [weak self] in
+                self?.tableView.reloadData()
+            }
+        }
     }
     
     private func bindModel() {
         issueModel.issueDetailPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
-                self?.commentViewModel.updateItems(with: self?.issueModel.comment)
+                self?.commentModel.updateItems(with: self?.issueModel.comment)
                 self?.tableView.reloadData()
             }
             .store(in: &cancellables)
@@ -108,17 +122,20 @@ class IssueDetailViewController: UIViewController {
 
 extension IssueDetailViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return commentViewModel.count
+        return commentModel.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: IssueDetailCell.identifier, for: indexPath) as? IssueDetailCell,
-              let issueDetail = issueModel.issueDetail else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: IssueDetailCell.identifier, for: indexPath) as? IssueDetailCell else {
             return UITableViewCell()
         }
         
-        if let comment = commentViewModel.item(at: indexPath.row) {
-            cell.setComment(with: comment, issueAuthor: issueDetail.author)
+        if let comment = commentModel.item(at: indexPath.row) {
+            cell.userProfileModel = self.userProfileModel
+            cell.setComment(with: comment)
+            cell.commentId = comment.id
+            cell.commentModel = self.commentModel
+            cell.delegate = self
         }
         
         return cell
@@ -142,5 +159,16 @@ extension IssueDetailViewController: UITableViewDataSource, UITableViewDelegate 
 extension IssueDetailViewController: IssueDetailViewControllerDelegate {
     func didCompleteTask() {
         navigationController?.popViewController(animated: true)
+    }
+}
+
+extension IssueDetailViewController: IssueDetailCellDelegate {
+    func issueDetailCell(_ cell: IssueDetailCell, commentId: Int, initialContent: String) {
+        let commentEditVC = CommentEditorViewController(nibName: CommentEditorViewController.identifier, bundle: nil)
+        commentEditVC.commentID = commentId
+        commentEditVC.initialContent = initialContent
+        
+        let navigationController = UINavigationController(rootViewController: commentEditVC)
+        self.present(navigationController, animated: true)
     }
 }

@@ -37,6 +37,11 @@ struct Comment: Codable {
     let lastModifiedAt: String
 }
 
+struct CommentCreationRequest: Codable {
+    let issueId: Int
+    let content: String
+}
+
 struct IssueCreationRequest: Codable {
     let title: String
     let comment: String

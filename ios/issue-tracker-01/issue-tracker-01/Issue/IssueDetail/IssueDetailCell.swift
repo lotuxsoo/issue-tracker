@@ -7,9 +7,15 @@
 
 import UIKit
 
+protocol IssueDetailCellDelegate: AnyObject {
+    func issueDetailCell(_ cell: IssueDetailCell, commentId: Int, initialContent: String)
+}
+
 class IssueDetailCell: UITableViewCell {
     
     static let identifier: String = "IssueDetailCell"
+    
+    weak var delegate: IssueDetailCellDelegate?
 
     @IBOutlet weak var userImage: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
@@ -17,6 +23,10 @@ class IssueDetailCell: UITableViewCell {
     @IBOutlet weak var contentLabel: UILabel!
     @IBOutlet weak var authorLabel: UILabel!
     @IBOutlet weak var actionButton: UIButton!
+    
+    var commentId: Int?
+    var commentModel: CommentModel!
+    var userProfileModel: UserProfileModel?
     
     private let defaultImage = UIImage(named: "profileL")
     private let heartImage = UIImage(systemName: "heart.fill")
@@ -32,10 +42,13 @@ class IssueDetailCell: UITableViewCell {
         
         self.userImage.image = defaultImage
         self.nameLabel.text = nil
-        self.timeLabel.text = nil
         self.contentLabel.text = nil
         self.contentLabel.text = nil
         self.authorLabel.isHidden = true
+        
+        actionButton.setImage(nil, for: .normal)
+        actionButton.removeTarget(self, action: nil, for: .allEvents)
+        actionButton.menu = nil
     }
     
     private func configureFont() {
@@ -49,10 +62,10 @@ class IssueDetailCell: UITableViewCell {
         self.authorLabel.layer.borderColor = UIColor.gray200.cgColor
     }
     
-    func setComment(with comment: Comment, issueAuthor: String) {
+    func setComment(with comment: Comment) {
         self.nameLabel.text = comment.authorName
         self.contentLabel.text = comment.content
-        self.userImage.image = defaultImage
+        self.userImage.image = self.defaultImage
         
         if let date = Date.dateFromString(comment.lastModifiedAt) {
             self.timeLabel.text = date.timeAgoDisplay()
@@ -60,19 +73,55 @@ class IssueDetailCell: UITableViewCell {
             self.timeLabel.text = "날짜 오류"
         }
         
-        if comment.authorName == issueAuthor {
-            self.authorLabel.isHidden = false
-            self.actionButton.addTarget(self, action: #selector(moreButtonTapped), for: .touchUpInside)
+        self.updateAuthorLabel(comment: comment)
+        self.updateActionButton(comment: comment)
+    }
+    
+    private func updateAuthorLabel(comment: Comment) {
+        guard let userProfile = userProfileModel?.getUserProfile() else { return }
+        authorLabel.isHidden = !(comment.authorId == userProfile.id)
+    }
+
+    private func updateActionButton(comment: Comment) {
+        if comment.authorId == userProfileModel?.getUserProfile()?.id {
+            configureActionButtonMenu()
         } else {
-            self.authorLabel.isHidden = true
-            self.actionButton.setImage(heartImage, for: .normal)
-            self.actionButton.addTarget(self, action: #selector(heartButtonTapped), for: .touchUpInside)
+            configureHeartButton()
         }
     }
     
-    @objc private func moreButtonTapped() {
-        print("more버튼 Tapped!")
-        animateButton()
+    private func configureActionButtonMenu() {
+        let editAction = UIAction(title: "편집",
+                                  image: UIImage(systemName: "pencil")) { [weak self] _ in
+            self?.editComment()
+        }
+        
+        let deleteAction = UIAction(title: "삭제",
+                                    image: UIImage(systemName: "trash.fill"),
+                                    attributes: .destructive) { [weak self] _ in
+            self?.deleteComment()
+        }
+        
+        let menu = UIMenu(children: [editAction, deleteAction])
+        actionButton.setImage(UIImage(systemName: "ellipsis"), for: .normal)
+        actionButton.menu = menu
+        actionButton.showsMenuAsPrimaryAction = true
+        actionButton.removeTarget(self, action: #selector(heartButtonTapped), for: .touchUpInside)
+    }
+    
+    private func configureHeartButton() {
+        actionButton.setImage(heartImage, for: .normal)
+        actionButton.addTarget(self, action: #selector(heartButtonTapped), for: .touchUpInside)
+        actionButton.showsMenuAsPrimaryAction = false
+    }
+    
+    private func editComment() {
+        guard let commentId = commentId, let comment = commentModel.getComment(by: commentId) else { return }
+        delegate?.issueDetailCell(self, commentId: commentId, initialContent: comment.content)
+    }
+    
+    private func deleteComment() {
+        
     }
     
     @objc private func heartButtonTapped() {

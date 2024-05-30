@@ -11,4 +11,4 @@ file_length:
   warning: 1000
 
 line_length: 300
-type_body_length: 800
+type_body_length: 1000
