@@ -30,7 +30,8 @@ public class IssueService implements Authorizable<Issue, Long> {
     }
 
     public List<Issue> getOpenIssues() {
-        return issueRepository.findAllByStatus(IssueStatus.OPEN);
+        List<Issue> issues = issueRepository.findAllByStatus(IssueStatus.OPEN);
+        return issues;
     }
 
     public Issue showIssue(Long id) throws NoSuchElementException {

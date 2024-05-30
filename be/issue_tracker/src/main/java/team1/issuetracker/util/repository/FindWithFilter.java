@@ -14,4 +14,5 @@ public interface FindWithFilter<T> {
         iterable.forEach(list::add);
         return list;
     }
+
 }
