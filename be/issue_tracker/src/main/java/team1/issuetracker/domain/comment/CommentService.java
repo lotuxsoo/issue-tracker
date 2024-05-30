@@ -35,10 +35,10 @@ public class CommentService implements Authorizable<Comment, Long> {
                 ).toList();
     }
 
-    public void addComment(long issueId, String userId, CommentPostRequest request) throws NoSuchElementException {
+    public Comment addComment(long issueId, String userId, CommentPostRequest request) throws NoSuchElementException {
         issueService.getIssueById(issueId);
         Comment newComment = Comment.makeOnlyComment(issueId, userId, request.content());
-        commentRepository.save(newComment);
+        return commentRepository.save(newComment);
     }
 
     public int likeComment(String userId, long commentId) {
