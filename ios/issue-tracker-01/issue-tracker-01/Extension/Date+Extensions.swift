@@ -11,13 +11,13 @@ extension Date {
     static func dateFromString(_ dateString: String) -> Date? {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        formatter.locale = Locale(identifier: "en_US")
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.timeZone = TimeZone(abbreviation: "KST")
         return formatter.date(from: dateString)
     }
     
     func timeAgoDisplay() -> String {
-        var calendar = Calendar.current
+        let calendar = Calendar.current
         let now = Date()
         let components = calendar.dateComponents([.minute, .hour, .day], from: self, to: now)
         print("Days: \(components.day ?? 0), Hours: \(components.hour ?? 0), Minutes: \(components.minute ?? 0)")

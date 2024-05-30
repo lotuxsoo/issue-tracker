@@ -11,7 +11,6 @@ class ProfileController: UIViewController {
     
     @IBOutlet weak var idLabel: UILabel!
     @IBOutlet weak var nicknameLabel: UILabel!
-    
     let userProfile = UserProfileModel.shared.getUserProfile()
     
     override func viewDidLoad() {
