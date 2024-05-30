@@ -10,7 +10,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import team1.issuetracker.domain.Issue.dto.IssueKeyword;
 import team1.issuetracker.domain.Issue.dto.IssueUpdateRequest;
+import team1.issuetracker.domain.Issue.ref.LabelRefId;
+import team1.issuetracker.domain.Issue.ref.UserRefId;
 import team1.issuetracker.domain.ResultWithError;
 
 import team1.issuetracker.domain.user.auth.Authorizable;
@@ -30,8 +33,52 @@ public class IssueService implements Authorizable<Issue, Long> {
     }
 
     public List<Issue> getOpenIssues() {
-        List<Issue> issues = issueRepository.findAllByStatus(IssueStatus.OPEN);
+        return issueRepository.findAllByStatus(IssueStatus.OPEN);
+    }
+
+    public List<Issue> getKeywordIssues(IssueKeyword issueKeyword) {
+        Query query = QueryMaker.getQuery(issueKeyword);
+        List<Issue> issues = issueRepository.findAll(query,Issue.class);
+
+        if (issueKeyword.assignees() != null){
+            issues = getAssignIssues(issueKeyword, issues);
+        }
+
+        if (issueKeyword.labelsId() != null){
+            issues = getLabeledIssues(issueKeyword, issues);
+        }
+
         return issues;
+    }
+
+    private List<Issue> getAssignIssues(IssueKeyword issueKeyword, List<Issue> issues) {
+        List<Issue> assignIssues = new ArrayList<>();
+
+        for (Issue issue : issues) {
+            Set<UserRefId> assigneeRefSet = issue.getIssueAssignees();
+            List<String> assignIds = assigneeRefSet.stream().map(UserRefId::getUserId).toList();
+
+            if (assignIds.containsAll(issueKeyword.assignees())) {
+                assignIssues.add(issue);
+            }
+        }
+
+        return assignIssues;
+    }
+
+    private List<Issue> getLabeledIssues(IssueKeyword issueKeyword, List<Issue> issues) {
+        List<Issue> labeledIssues = new ArrayList<>();
+
+        for (Issue issue : issues) {
+            Set<LabelRefId> labelRefSet = issue.getIssueHasLabel();
+            List<Long> labelIds = labelRefSet.stream().map(LabelRefId::getLabelId).toList();
+
+            if (labelIds.containsAll(issueKeyword.labelsId())) {
+                labeledIssues.add(issue);
+            }
+        }
+
+        return labeledIssues;
     }
 
     public Issue showIssue(Long id) throws NoSuchElementException {

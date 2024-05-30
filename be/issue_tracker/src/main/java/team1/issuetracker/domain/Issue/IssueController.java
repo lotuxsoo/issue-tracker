@@ -54,6 +54,15 @@ public class IssueController {
         return openIssues.stream().map(this::getPreviewOf).toList();
     }
 
+    @GetMapping("/filter")
+    public List<IssueListResponse> getFilterIssues(@RequestBody IssueKeyword issueKeyword) {
+        log.debug("Show keyword issue list");
+
+        List<Issue> openIssues = issueService.getKeywordIssues(issueKeyword);
+
+        return openIssues.stream().map(this::getPreviewOf).toList();
+    }
+
     @Authenticate
     @PostMapping
     public IssueListResponse createIssue(@RequestBody IssueMakeRequest issueMakeRequest, @AuthenticatedUserId String userId) {
