@@ -772,13 +772,13 @@ class NetworkManager {
             return
         }
         
-        httpManager.sendRequest(request) { data, response, error in
+        httpManager.sendRequest(request) { _, response, error in
             if let error = error {
                 completion(.failure(.networkFailed(error)))
                 return
             }
             
-            guard let data = data, let httpResponse = response else {
+            guard let httpResponse = response else {
                 completion(.failure(.noData))
                 return
             }
@@ -819,6 +819,7 @@ class NetworkManager {
             
             guard (200..<300).contains(httpResponse.statusCode) else {
                 if let responseBody = String(data: data, encoding: .utf8) {
+                    print(responseBody)
                     completion(.failure(.serverError(responseBody)))
                 } else {
                     completion(.failure(.invalidResponse(httpResponse.statusCode)))

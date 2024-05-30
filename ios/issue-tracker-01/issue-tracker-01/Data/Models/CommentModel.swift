@@ -38,7 +38,6 @@ class CommentModel: BaseModel<Comment> {
         NetworkManager.shared.createComment(commentRequest: commentRequest) { result in
             switch result {
             case .success:
-                NotificationCenter.default.post(name: Self.Notifications.commentUpdated, object: nil)
                 completion(.success(()))
             case .failure(let error):
                 completion(.failure(error))

@@ -26,6 +26,8 @@ class IssueDetailViewController: UIViewController {
         super.viewDidLoad()
         tableView.allowsSelection = true
         
+        textField.delegate = self
+        
         if let issueId = issueId {
             self.fetchIssueDetail(issueId: issueId)
         }
@@ -228,5 +230,30 @@ extension IssueDetailViewController: IssueDetailCellDelegate {
         
         let navigationController = UINavigationController(rootViewController: commentEditVC)
         self.present(navigationController, animated: true)
+    }
+}
+
+extension IssueDetailViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        
+        if let text = textField.text, !text.isEmpty {
+            createComment(content: text)
+            textField.text = ""
+        }
+        return true
+    }
+    
+    private func createComment(content: String) {
+        guard let issueId = issueId else { return }
+        let commentRequest = CommentCreationRequest(issueId: issueId, content: content)
+        commentModel.createComment(commentRequest: commentRequest) { result in
+            switch result {
+            case .success():
+                self.fetchIssueDetail(issueId: issueId)
+            case .failure(let error):
+                self.showErrorAlert(for: error)
+            }
+        }
     }
 }
