@@ -24,7 +24,7 @@ public class CommentController {
     @Authenticate
     @PostMapping("/comment")
     public CommentListResponse createComment(@RequestBody CommentPostRequest commentInfo, @AuthenticatedUserId String userId) {
-        return CommentListResponse.of(commentService.addComment(commentInfo.issueId(), userId, commentInfo), userService.getNameById(userId));
+        return CommentListResponse.of(commentService.addComment(userId, commentInfo), userService.getNameById(userId));
     }
 
     @Authenticate

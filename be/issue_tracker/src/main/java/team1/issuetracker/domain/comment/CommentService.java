@@ -35,9 +35,8 @@ public class CommentService implements Authorizable<Comment, Long> {
                 ).toList();
     }
 
-    public Comment addComment(long issueId, String userId, CommentPostRequest request) throws NoSuchElementException {
-        issueService.getIssueById(issueId);
-        Comment newComment = Comment.makeOnlyComment(issueId, userId, request.content());
+    public Comment addComment(String userId, CommentPostRequest request) throws NoSuchElementException {
+        Comment newComment = request.toComment(userId);
         return commentRepository.save(newComment);
     }
 
@@ -82,7 +81,7 @@ public class CommentService implements Authorizable<Comment, Long> {
     public Comment updateComment(long id, String userId, CommentPostRequest commentInfo)
             throws NoSuchElementException, AuthorizeException {
         Comment origin = authorize(id, userId);
-        Comment newComment = Comment.makeOnlyComment(id, origin.getIssueId(), userId, commentInfo.content());
+        Comment newComment = commentInfo.toUpdate(origin);
         commentRepository.save(newComment);
         return getCommentById(id);
     }
