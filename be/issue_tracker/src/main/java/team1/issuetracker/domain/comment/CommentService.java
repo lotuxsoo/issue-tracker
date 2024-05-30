@@ -72,14 +72,17 @@ public class CommentService implements Authorizable<Comment, Long> {
 
     public String getFirstCommentTextAtIssue(Issue issue) {
         Comment firstAtIssue = commentRepository.findFirstAtIssue(issue.getId());
-        if (firstAtIssue == null) return null;
+        if (firstAtIssue == null) {
+            return null;
+        }
 
         return firstAtIssue.getContent();
     }
 
-    public Comment updateComment(long id, String userId, CommentPostRequest commentInfo) throws NoSuchElementException, AuthorizeException {
+    public Comment updateComment(long id, String userId, CommentPostRequest commentInfo)
+            throws NoSuchElementException, AuthorizeException {
         Comment origin = authorize(id, userId);
-        Comment newComment = Comment.makeOnlyComment(origin.getIssueId(), userId, commentInfo.content());
+        Comment newComment = Comment.makeOnlyComment(id, origin.getIssueId(), userId, commentInfo.content());
         commentRepository.save(newComment);
         return getCommentById(id);
     }
@@ -89,16 +92,20 @@ public class CommentService implements Authorizable<Comment, Long> {
     }
 
     @Override
-    public Comment authorize(Long commentId, String userId) throws NoSuchElementException{
+    public Comment authorize(Long commentId, String userId) throws NoSuchElementException {
         Comment comment = getCommentById(commentId);
-        if(!comment.getUserId().equals(userId)) throw new AuthorizeException(commentId + "번 댓글에 대한 권한이 없습니다");
+        if (!comment.getUserId().equals(userId)) {
+            throw new AuthorizeException(commentId + "번 댓글에 대한 권한이 없습니다");
+        }
 
         return comment;
     }
 
     private Comment getCommentById(long commentId) {
         Optional<Comment> byId = commentRepository.findById(commentId);
-        if (byId.isEmpty()) throw new NoSuchElementException("존재하지 않는 댓글입니다");
+        if (byId.isEmpty()) {
+            throw new NoSuchElementException("존재하지 않는 댓글입니다");
+        }
 
         return byId.get();
     }

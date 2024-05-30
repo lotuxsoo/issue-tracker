@@ -36,7 +36,8 @@ public class CommentController {
 
     @Authenticate
     @DeleteMapping("/comment/{id}")
-    public void deleteComment(@PathVariable long id, @AuthenticatedUserId String userId) throws NoSuchElementException, AuthorizeException {
+    public void deleteComment(@PathVariable long id, @AuthenticatedUserId String userId)
+            throws NoSuchElementException, AuthorizeException {
         commentService.deleteComment(id, userId);
     }
 

@@ -50,4 +50,14 @@ public class Comment {
                 .files(new ArrayList<>()).
                 build();
     }
+
+    public static Comment makeOnlyComment(Long id, Long issueId, String userId, String content) {
+        return Comment.builder()
+                .id(id)
+                .issueId(issueId)
+                .userId(userId)
+                .content(content)
+                .files(new ArrayList<>()).
+                build();
+    }
 }
