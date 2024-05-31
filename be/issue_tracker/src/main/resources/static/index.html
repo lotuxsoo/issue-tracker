@@ -18,13 +18,14 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 10px;
         }
 
         .image-container a {
             display: block;
             width: 200px;
             height: 200px;
+            padding: 10px;
         }
 
         .image-container img {
@@ -77,18 +78,6 @@
 </head>
 <body>
 <div class="image-container">
-    <a href="https://github.com/login/oauth/authorize?client_id=Ov23liHjM2Bq7fvWH4iZ"
-       style="
-            text-align: center;
-            color: orange;
-            font-size: 3.0em;
-            font-weight: bold;
-            background: #efefef;
-            "
-    >
-        로그인
-    </a>
-
     <a href="https://github.com/codesquad-masters2024-team01/issue-tracker/tree/Deploy" target="_blank">
         <img src="https://soapbucket51.s3.ap-northeast-2.amazonaws.com/issue_tracker/github.png" alt="Image 1">
     </a>
@@ -101,41 +90,60 @@
     </a>
 </div>
 
-<div style="padding-left: 100px">
-    <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" id="fileInput" name="image" accept="image/*">
-        <div class="upload-image-container" id="imagePreview">
-            <p>No image chosen</p>
-        </div>
-        <button type="button" class="upload-btn" id="chooseImageBtn">Choose Image</button>
-        <button type="submit" class="upload-btn">Upload Image</button>
-    </form>
+<div style="padding-left: 100px; align-items: center; align-content: center">
+    <a href="https://github.com/login/oauth/authorize?client_id=Ov23liHjM2Bq7fvWH4iZ"
+       style="
+            display: flex;
+            text-align: center;
+            text-decoration-line: none;
+            align-items: center;
+            justify-content: center;
+            color: midnightblue;
+            font-size: 3.0em;
+            font-weight: bold;
+            background: #efefef;
+            "
+    >
+        ⭐GitHub Login⭐
+    </a>
+    <div style="display:flex;
+                align-items: center;
+                justify-content: center;">
+        <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+            <input type="file" id="fileInput" name="image" accept="image/*">
+            <div class="upload-image-container" id="imagePreview">
+                <p>No image chosen</p>
+            </div>
+            <button type="button" class="upload-btn" id="chooseImageBtn">Choose Image</button>
+            <button type="submit" class="upload-btn">Upload Image</button>
+        </form>
+    </div>
 </div>
 
 <script>
-        const fileInput = document.getElementById('fileInput');
-        const chooseImageBtn = document.getElementById('chooseImageBtn');
-        const imagePreview = document.getElementById('imagePreview');
+    const fileInput = document.getElementById('fileInput');
+    const chooseImageBtn = document.getElementById('chooseImageBtn');
+    const imagePreview = document.getElementById('imagePreview');
 
-        chooseImageBtn.addEventListener('click', function() {
-            fileInput.click();
-        });
+    chooseImageBtn.addEventListener('click', function () {
+        fileInput.click();
+    });
 
-        fileInput.addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    imagePreview.innerHTML = '';
-                    imagePreview.appendChild(img);
-                };
-                reader.readAsDataURL(file);
-            } else {
-                imagePreview.innerHTML = '<p>No image chosen</p>';
-            }
-        });
-    </script>
+    fileInput.addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                imagePreview.innerHTML = '';
+                imagePreview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            imagePreview.innerHTML = '<p>No image chosen</p>';
+        }
+    });
+</script>
 </body>
 </html>
