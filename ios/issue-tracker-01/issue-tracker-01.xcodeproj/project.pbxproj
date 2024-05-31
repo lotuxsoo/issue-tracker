@@ -249,6 +249,7 @@
 		D611795F2BEC6A5500E7C267 /* Milestone */ = {
 			isa = PBXGroup;
 			children = (
+				D611795E2BEC6A5000E7C267 /* Label */,
 				D61179592BEC62F100E7C267 /* MilestoneListController.swift */,
 				D61AAC9E2BFDD56D00D35399 /* MilestoneTableCell.swift */,
 				D61AAC9F2BFDD56D00D35399 /* MilestoneTableCell.xib */,
@@ -330,7 +331,6 @@
 				D61179552BEC60D900E7C267 /* TabBarController.swift */,
 				D659C5B22BEB559C007A57C1 /* Login */,
 				D611795D2BEC6A4700E7C267 /* Issue */,
-				D611795E2BEC6A5000E7C267 /* Label */,
 				D611795F2BEC6A5500E7C267 /* Milestone */,
 				D61179602BEC6A5D00E7C267 /* Profile */,
 				D61179672BEC6D7800E7C267 /* Utils */,
