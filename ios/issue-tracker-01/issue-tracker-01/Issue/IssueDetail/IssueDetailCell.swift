@@ -26,6 +26,7 @@ class IssueDetailCell: UITableViewCell {
     @IBOutlet weak var actionButton: UIButton!
     @IBOutlet weak var backgroundCellView: UIView!
     
+    var issueId: Int?
     var commentId: Int?
     var commentModel: CommentModel!
     var userProfileModel: UserProfileModel?

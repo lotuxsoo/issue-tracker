@@ -11,6 +11,7 @@ class CommentEditorViewController: UIViewController {
 
     static let identifier: String = "CommentEditorViewController"
     
+    var issueId: Int?
     var commentID: Int?
     var initialContent: String?
     
@@ -34,13 +35,14 @@ class CommentEditorViewController: UIViewController {
     }
     
     @IBAction func saveButtonTapped(_ sender: Any) {
-        guard let commentID = commentID else { return }
+        guard let commentID = commentID, let issueId = issueId else { return }
         guard let updatedContent = textView.text, !updatedContent.isEmpty else {
             showAlert(message: "코멘트 내용을 입력해주세요.")
             return
         }
+        let comment = CommentCreationRequest(issueId: issueId, content: updatedContent)
         
-        CommentModel.shared.updateComment(commentId: commentID, comment: updatedContent) { [weak self] result in
+        CommentModel.shared.updateComment(commentId: commentID, commentRequest: comment) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success:

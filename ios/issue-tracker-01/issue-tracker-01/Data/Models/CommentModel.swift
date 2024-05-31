@@ -18,8 +18,8 @@ class CommentModel: BaseModel<Comment> {
         return items.first { $0.id == id }
     }
     
-    func updateComment(commentId: Int, comment: String, completion: @escaping (Result<Bool, NetworkError>) -> Void) {
-        NetworkManager.shared.updateComment(commentId: commentId, comment: comment) { result in
+    func updateComment(commentId: Int, commentRequest: CommentCreationRequest, completion: @escaping (Result<Bool, NetworkError>) -> Void) {
+        NetworkManager.shared.updateComment(commentId: commentId, commentRequest: commentRequest) { result in
             switch result {
             case .success(let updatedComment):
                 if let index = self.items.firstIndex(where: { $0.id == updatedComment.id }) {

@@ -699,7 +699,7 @@ class NetworkManager {
     }
     // MARK: - Comment
     
-    func updateComment(commentId: Int, comment: String, completion: @escaping (Result<Comment, NetworkError>) -> Void) {
+    func updateComment(commentId: Int, commentRequest: CommentCreationRequest, completion: @escaping (Result<Comment, NetworkError>) -> Void) {
         guard let url = URL(string: URLDefines.comment + "/\(commentId)") else {
             completion(.failure(.invalidURL))
             return
@@ -714,10 +714,8 @@ class NetworkManager {
         request.addValue(token, forHTTPHeaderField: "Authorization")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        let commentDictionary: [String: String] = ["content": comment]
-        
         do {
-            let jsonData = try JSONEncoder().encode(commentDictionary)
+            let jsonData = try JSONEncoder().encode(commentRequest)
             request.httpBody = jsonData
         } catch {
             completion(.failure(.jsonEncodingFailed))

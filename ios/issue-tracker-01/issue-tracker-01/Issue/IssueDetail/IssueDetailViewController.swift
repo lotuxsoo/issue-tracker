@@ -181,6 +181,7 @@ extension IssueDetailViewController: UITableViewDataSource, UITableViewDelegate 
             cell.userProfileModel = self.userProfileModel
             cell.setComment(with: comment)
             cell.commentId = comment.id
+            cell.issueId = self.issueId
             cell.commentModel = self.commentModel
             cell.delegate = self
         }
@@ -226,6 +227,7 @@ extension IssueDetailViewController: IssueDetailCellDelegate {
     func issueDetailCell(_ cell: IssueDetailCell, commentId: Int, initialContent: String) {
         let commentEditVC = CommentEditorViewController(nibName: CommentEditorViewController.identifier, bundle: nil)
         commentEditVC.commentID = commentId
+        commentEditVC.issueId = self.issueId
         commentEditVC.initialContent = initialContent
         
         let navigationController = UINavigationController(rootViewController: commentEditVC)
