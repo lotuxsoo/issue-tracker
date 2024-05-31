@@ -87,6 +87,7 @@
 		D6B0827B2C07627B00166890 /* CommentEditorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D6B0827A2C07627B00166890 /* CommentEditorViewController.xib */; };
 		D6B0827C2C07627B00166890 /* CommentEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6B082792C07627B00166890 /* CommentEditorViewController.swift */; };
 		D6B0827E2C076A7F00166890 /* CommentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6B0827D2C076A7F00166890 /* CommentModel.swift */; };
+		D6B082802C0986E700166890 /* animation.gif in Resources */ = {isa = PBXBuildFile; fileRef = D6B0827F2C0986E700166890 /* animation.gif */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -189,6 +190,7 @@
 		D6B082792C07627B00166890 /* CommentEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentEditorViewController.swift; sourceTree = "<group>"; };
 		D6B0827A2C07627B00166890 /* CommentEditorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CommentEditorViewController.xib; sourceTree = "<group>"; };
 		D6B0827D2C076A7F00166890 /* CommentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentModel.swift; sourceTree = "<group>"; };
+		D6B0827F2C0986E700166890 /* animation.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = animation.gif; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -322,6 +324,7 @@
 		D6369F442BEA0F8F001BDAAB /* issue-tracker-01 */ = {
 			isa = PBXGroup;
 			children = (
+				D6B0827F2C0986E700166890 /* animation.gif */,
 				D6369F452BEA0F8F001BDAAB /* AppDelegate.swift */,
 				D6369F472BEA0F8F001BDAAB /* SceneDelegate.swift */,
 				D61179552BEC60D900E7C267 /* TabBarController.swift */,
@@ -577,6 +580,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D61AACB92C0268FB00D35399 /* IssueDetailMoreViewController.xib in Resources */,
+				D6B082802C0986E700166890 /* animation.gif in Resources */,
 				D61179502BEB792D00E7C267 /* .swiftlint.yml in Resources */,
 				D61AAC8C2BFB884500D35399 /* LabelEditorViewController.xib in Resources */,
 				D642E2732BF740A400ACAE45 /* LabelTableCell.xib in Resources */,

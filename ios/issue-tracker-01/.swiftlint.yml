@@ -4,6 +4,7 @@ disabled_rules:
     - trailing_whitespace
     - type_name
     - empty_enum_arguments
+    - force_cast
 opt_in_rules:
     - empty_count
     - empty_string
