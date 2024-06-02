@@ -80,6 +80,7 @@ create table ISSUE_HAS_LABEL
     id       bigint auto_increment primary key,
     issue_id bigint,
     label_id bigint,
+    sequence int default 0,
     foreign key (issue_id) references ISSUE (id) ON DELETE CASCADE,
     foreign key (label_id) references LABEL (id) ON DELETE CASCADE,
     unique (issue_id, label_id)
@@ -90,6 +91,7 @@ create table ISSUE_HAS_ASSIGNEE
     id          bigint auto_increment primary key,
     issue_id    bigint,
     assignee_id varchar(255),
+    sequence int default 0,
     foreign key (issue_id) references ISSUE (id) ON DELETE CASCADE,
     foreign key (assignee_id) references USERS (id) ON DELETE CASCADE,
     unique (issue_id, assignee_id)

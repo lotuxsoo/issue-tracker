@@ -9,6 +9,7 @@ import team1.issuetracker.domain.Issue.IssueStatus;
 import team1.issuetracker.domain.comment.dto.CommentListResponse;
 import team1.issuetracker.domain.label.dto.LabelListResponse;
 import team1.issuetracker.domain.milestone.dto.MilestoneShowResponse;
+import team1.issuetracker.domain.user.dto.AssigneeInfo;
 
 @Getter
 @AllArgsConstructor
@@ -18,14 +19,14 @@ public class IssueShowResponse {
     private String author;
     private LocalDateTime lastModifiedAt;
     private IssueStatus status;
-    private List<String> assignees;
+    private List<AssigneeInfo> assignees;
     private List<LabelListResponse> labels;
     private MilestoneShowResponse milestone;
     private List<CommentListResponse> comments;
 
     public static IssueShowResponse of(Issue issue,
                                        String authorName,
-                                       List<String> assignees,
+                                       List<AssigneeInfo> assignees,
                                        List<LabelListResponse> labels,
                                        MilestoneShowResponse milestone,
                                        List<CommentListResponse> comments) {

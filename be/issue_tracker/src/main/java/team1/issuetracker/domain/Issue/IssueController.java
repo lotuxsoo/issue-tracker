@@ -3,10 +3,9 @@ package team1.issuetracker.domain.Issue;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import team1.issuetracker.domain.Issue.dto.IssueListResponse;
-import team1.issuetracker.domain.Issue.dto.IssueMakeRequest;
-import team1.issuetracker.domain.Issue.dto.IssueShowResponse;
-import team1.issuetracker.domain.Issue.dto.IssueUpdateRequest;
+
+import team1.issuetracker.domain.Issue.dto.*;
+
 import team1.issuetracker.domain.comment.CommentService;
 import team1.issuetracker.domain.comment.dto.CommentPostRequest;
 import team1.issuetracker.domain.label.LabelService;
@@ -48,9 +47,18 @@ public class IssueController {
     }
 
     @GetMapping("/list")
-    public List<IssueListResponse> openIssues() {
+    public List<IssueListResponse> getOpenIssues() {
         log.debug("Show Open issue list");
         List<Issue> openIssues = issueService.getOpenIssues();
+
+        return openIssues.stream().map(this::getPreviewOf).toList();
+    }
+
+    @GetMapping("/filter")
+    public List<IssueListResponse> getFilterIssues(@RequestBody IssueKeyword issueKeyword) {
+        log.debug("Show keyword issue list");
+
+        List<Issue> openIssues = issueService.getKeywordIssues(issueKeyword);
 
         return openIssues.stream().map(this::getPreviewOf).toList();
     }
@@ -64,19 +72,18 @@ public class IssueController {
         Issue saved = issueService.createIssue(issue);
 
         String comment = issueMakeRequest.getComment();
-        commentService.addComment(saved.getId(), userId, new CommentPostRequest(saved.getId(), comment));
+        commentService.addComment(userId, new CommentPostRequest(saved.getId(), comment));
 
         return getPreviewOf(issue);
     }
 
     @Authenticate
     @PatchMapping("/{id}")
-    public IssueShowResponse updateIssue(@PathVariable Long id, @RequestBody IssueUpdateRequest issueUpdateRequest, @AuthenticatedUserId String userId) {
+    public IssueUpdateResponse updateIssue(@PathVariable Long id, @RequestBody IssueUpdateRequest issueUpdateRequest, @AuthenticatedUserId String userId) {
         log.debug("Update issue with \n{}", issueUpdateRequest);
 
         Issue updated = issueService.updateIssue(id, issueUpdateRequest, userId);
-
-        return showIssue(updated.getId());
+        return new IssueUpdateResponse(getPreviewOf(updated) , showIssue(updated.getId()));
     }
 
     @Authenticate
@@ -112,7 +119,7 @@ public class IssueController {
         return IssueShowResponse.of(
                 issue,
                 authorName,
-                userService.getAssigneeNameAtIssue(issue),
+                userService.getAssigneeInfoAtIssue(issue),
                 labelService.getLabelsAyIssue(issue),
                 milestoneService.getMilestoneAtIssue(issue),
                 commentService.getCommentsAtIssue(issue.getId()));

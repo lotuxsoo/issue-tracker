@@ -1,15 +1,12 @@
 package team1.issuetracker.domain.label;
 
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team1.issuetracker.domain.Issue.Issue;
-import team1.issuetracker.domain.Issue.ref.LabelRef;
+import team1.issuetracker.domain.Issue.ref.LabelRefId;
 import team1.issuetracker.domain.label.dto.LabelListResponse;
-
-import java.util.List;
-import java.util.Set;
 
 import team1.issuetracker.domain.label.dto.LabelMakeRequest;
 import team1.issuetracker.domain.user.auth.Authorizable;
@@ -57,10 +54,13 @@ public class LabelService implements Authorizable<Label, Long> {
     }
 
     public List<LabelListResponse> getLabelsAyIssue(Issue issue) {
-        Set<LabelRef> issueLabels = issue.getIssueHasLabel();
-        List<Long> labelIds = issueLabels.stream().map(LabelRef::getLabelId).toList();
+        Set<LabelRefId> issueLabels = issue.getIssueHasLabel();
+        List<Long> labelIds = issueLabels.stream()
+                .sorted(Comparator.comparingInt(LabelRefId::getSequence))
+                .map(LabelRefId::getLabelId).toList();
 
-        return labelRepository.findByIdIn(labelIds).stream().map(LabelListResponse::of).toList();
+        return labelIds.stream().map(id -> labelRepository.findById(id).get())
+                .map(LabelListResponse::of).toList();
     }
 
     @Override

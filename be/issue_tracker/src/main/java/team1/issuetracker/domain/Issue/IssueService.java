@@ -1,17 +1,24 @@
 package team1.issuetracker.domain.Issue;
 
+import java.util.ArrayList;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
+import org.springframework.data.relational.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.StringJoiner;
 
+import java.util.*;
+
+import team1.issuetracker.domain.Issue.dto.IssueKeyword;
 import team1.issuetracker.domain.Issue.dto.IssueUpdateRequest;
+import team1.issuetracker.domain.Issue.ref.LabelRefId;
+import team1.issuetracker.domain.Issue.ref.UserRefId;
+import team1.issuetracker.domain.ResultWithError;
+
 import team1.issuetracker.domain.user.auth.Authorizable;
 import team1.issuetracker.domain.user.auth.exception.AuthorizeException;
+import team1.issuetracker.util.repository.QueryMaker;
 
 import static team1.issuetracker.domain.Issue.IssueStatus.CLOSE;
 
@@ -29,6 +36,51 @@ public class IssueService implements Authorizable<Issue, Long> {
         return issueRepository.findAllByStatus(IssueStatus.OPEN);
     }
 
+    public List<Issue> getKeywordIssues(IssueKeyword issueKeyword) {
+        Query query = QueryMaker.getQuery(issueKeyword);
+        List<Issue> issues = issueRepository.findAll(query,Issue.class);
+
+        if (issueKeyword.assignees() != null){
+            issues = getAssignIssues(issueKeyword, issues);
+        }
+
+        if (issueKeyword.labelsId() != null){
+            issues = getLabeledIssues(issueKeyword, issues);
+        }
+
+        return issues;
+    }
+
+    private List<Issue> getAssignIssues(IssueKeyword issueKeyword, List<Issue> issues) {
+        List<Issue> assignIssues = new ArrayList<>();
+
+        for (Issue issue : issues) {
+            Set<UserRefId> assigneeRefSet = issue.getIssueAssignees();
+            List<String> assignIds = assigneeRefSet.stream().map(UserRefId::getUserId).toList();
+
+            if (assignIds.containsAll(issueKeyword.assignees())) {
+                assignIssues.add(issue);
+            }
+        }
+
+        return assignIssues;
+    }
+
+    private List<Issue> getLabeledIssues(IssueKeyword issueKeyword, List<Issue> issues) {
+        List<Issue> labeledIssues = new ArrayList<>();
+
+        for (Issue issue : issues) {
+            Set<LabelRefId> labelRefSet = issue.getIssueHasLabel();
+            List<Long> labelIds = labelRefSet.stream().map(LabelRefId::getLabelId).toList();
+
+            if (labelIds.containsAll(issueKeyword.labelsId())) {
+                labeledIssues.add(issue);
+            }
+        }
+
+        return labeledIssues;
+    }
+
     public Issue showIssue(Long id) throws NoSuchElementException {
         return getIssueById(id);
     }
@@ -38,8 +90,8 @@ public class IssueService implements Authorizable<Issue, Long> {
 
         try {
             saved = issueRepository.save(issue);
-        } catch (DbActionExecutionException notExistsLabel){
-            throw new IllegalArgumentException("유효하지 않은 이슈 등록 요청 : 유저, 라벨, 마일스톤을 다시 확인하세요.");
+        } catch (DbActionExecutionException failCreate) {
+            throw new IllegalArgumentException("[이슈create실패]" + "유효하지 않은 이슈 등록 요청 : 유저, 라벨, 마일스톤을 다시 확인하세요.");
         }
 
         return saved;
@@ -47,15 +99,32 @@ public class IssueService implements Authorizable<Issue, Long> {
 
     public Issue updateIssue(Long issueId, IssueUpdateRequest updateRequest, String userId) {
         Issue origin = authorize(issueId, userId);
-        return issueRepository.save(updateRequest.toIssue(origin));
+        Issue saved;
+
+        try {
+            saved = issueRepository.save(updateRequest.toIssue(origin));
+        } catch (DbActionExecutionException failUpdate) {
+            throw new IllegalArgumentException("[이슈update실패]");
+        }
+
+        return saved;
     }
 
     public long closeIssue(Long id, String userId) throws NoSuchElementException {
-        Issue issue = authorize(id,userId);
-        if (issue.getStatus() == CLOSE) throw new IllegalStateException(id + "번 이슈는 이미 닫힌 상태입니다!");
+        Issue issue = authorize(id, userId);
+
+        if (issue.getStatus() == CLOSE) {
+            throw new IllegalStateException("[이슈close실패]" + id + "번 이슈는 이미 닫힌 상태입니다!");
+        }
 
         issue.setStatus(CLOSE);
-        issueRepository.save(issue);
+
+        try {
+            issueRepository.save(issue);
+        } catch (DbActionExecutionException failClose) {
+            throw new IllegalArgumentException("[이슈close실패]");
+        }
+
         return id;
     }
 
@@ -72,25 +141,26 @@ public class IssueService implements Authorizable<Issue, Long> {
         return optionalIssue.get();
     }
 
-    public void closeIssues(List<Long> issueIds, String userId) {
+    public ResultWithError<List<Long>> closeIssues(List<Long> issueIds, String userId) {
+        List<Long> result = new ArrayList<>();
         StringJoiner exceptionMessages = new StringJoiner("\n");
         issueIds.forEach(id -> {
             try {
                 closeIssue(id, userId);
+                result.add(id);
             } catch (RuntimeException exception) {
                 exceptionMessages.add(exception.getMessage());
             }
         });
-
-        if (exceptionMessages.length() != 0) {
-            throw new RuntimeException(exceptionMessages.toString());
-        }
+        return new ResultWithError<>(result, exceptionMessages.toString());
     }
 
     @Override
     public Issue authorize(Long issueId, String userId) {
         Issue issue = getIssueById(issueId);
-        if(!issue.getUserId().equals(userId)) throw new AuthorizeException(issueId + "번 이슈에 대한 권한이 없습니다");
+        if (!issue.getUserId().equals(userId)) {
+            throw new AuthorizeException(issueId + "번 이슈에 대한 권한이 없습니다");
+        }
 
         return issue;
     }
