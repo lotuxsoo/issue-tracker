@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import team1.issuetracker.domain.user.auth.annotation.AuthenticatedUserId;
+import team1.issuetracker.domain.user.auth.exception.AuthenticateException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

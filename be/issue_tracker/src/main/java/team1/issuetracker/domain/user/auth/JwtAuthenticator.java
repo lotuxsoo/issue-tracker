@@ -1,9 +1,9 @@
 package team1.issuetracker.domain.user.auth;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import team1.issuetracker.domain.user.auth.exception.AuthenticateException;
 
 @Component
 public class JwtAuthenticator implements Authenticator{
@@ -18,19 +18,19 @@ public class JwtAuthenticator implements Authenticator{
     }
 
     @Override
-    public String authenticate(HttpServletRequest request) throws AuthenticationException {
+    public String authenticate(HttpServletRequest request) throws AuthenticateException {
         String jwtToken = parseBearerAuthorizeHeader(request.getHeader(AUTHORIZE_HEADER));
         String userId = jwtUtil.validateToken(jwtToken);
-        if(userId == null) throw new AuthenticationException("유효하지 않은 JWT 토큰");
+        if(userId == null) throw new AuthenticateException("유효하지 않은 JWT 토큰");
 
         return userId;
     }
 
-    private String parseBearerAuthorizeHeader(String authorizeValue) throws AuthenticationException {
+    private String parseBearerAuthorizeHeader(String authorizeValue) throws AuthenticateException {
         try {
             return authorizeValue.substring(BEARER.length() + 1); // "Bearer" + "\s"
         }catch (NullPointerException noAuthorizeHeader){
-            throw new AuthenticationException("인증 정보 미포함");
+            throw new AuthenticateException("인증 정보 미포함");
         }
     }
 }
