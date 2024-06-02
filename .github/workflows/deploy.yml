@@ -2,7 +2,7 @@ name: CD with Gradle
 
 on:
    push:
-     branches: [ "Deploy" ]
+     branches: [ "Deploy0000" ]
 
 permissions:
   contents: read
