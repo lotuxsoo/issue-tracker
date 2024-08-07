@@ -52,5 +52,5 @@
 <br/>
 
 ## ERD
+![image](https://github.com/user-attachments/assets/2e656374-2eef-4e7a-b59e-c9ff24fd36a4)
 
-![image](https://github.com/lotuxsoo/issue-tracker/assets/86272865/77efb8de-efd7-474a-953c-e031e179a643)
